@@ -3,9 +3,6 @@ title: "Godot Engine Eğitim Serisi - Bölüm 8: 3D Dünyaya Giriş ve Karakter 
 date: 2026-03-08 12:00:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
-image:
-  path: https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCa-pGfHQR3gppiHIwXry0Qz7OiG8c-40LiOrS48AbksghV22toYQm5FIQDwiQE7m9Aik01-Rq8oLabJdhuXWEDemb75jKiv9botaCErWOV9xpH9yea5Ter3w4L0AqRTisIU4ELxroQ8aIDl3811LFC9dYxDlv9HTBZ8rmRK7BWbGYlWcXQEatYSj2Aw/s1600/player_scene_nodes.webp
-  alt: Player Scene Nodes
 ---
 
 # Godot Engine Eğitim Serisi - Bölüm 8: 3D Dünyaya Giriş ve Karakter Kontrolü
