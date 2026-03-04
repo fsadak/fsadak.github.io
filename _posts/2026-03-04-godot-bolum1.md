@@ -3,10 +3,9 @@ title: "Godot Eğitim Serisi - Bölüm 1: Godot Nedir ve Neden Seçmeliyiz?"
 date: 2026-03-04 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, oyun motoru, başlangıç, gdscript]
-image:
-  path: https://blogger.googleusercontent.com/img/a/AVvXsEjZp7qDLMv-fohVPdQ1DYTz0XbJtbBdn42QOCoZDtKJtQMhaFOERw3XlwlEshg3Lnd7kiUUfiZpCIm-_ifdIMihty_kjBp03z6ag1wnj1lpes11GR7dDDVvSi818Svmsg6VHoVVW0BjRKbI3DIgXyYN0k2ogqAK5iLQpwn6S_tIeFtndoQJrBrt41OrhQ=w640-h340
-  alt: Godot Engine Editör Görünümü
 ---
+
+# Godot Eğitim Serisi - Bölüm 1: Godot Nedir ve Neden Seçmeliyiz?
 
 Herkese merhaba! Sıfırdan başlayarak profesyonel düzeyde oyunlar geliştirmeyi öğreneceğimiz Godot Engine eğitim serimizin ilk bölümüne hoş geldiniz. Bu yazıda ve eşlik eden videomuzda, Godot’un ne olduğuna, neler yapabildiğine ve neden son yılların en çok konuşulan oyun motoru haline geldiğine yakından bakacağız.
 
