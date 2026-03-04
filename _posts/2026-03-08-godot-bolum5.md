@@ -57,7 +57,7 @@ Tekrar **Project Settings -> Input Map** sekmesine gelin. Yukarıdaki "Add New A
 
 Şimdi işin eğlenceli kod kısmına geçelim! `Player` düğümüne Script ekleyin.
 
-```gdscript
+```
 extends Area2D
 
 @export var speed = 400 # Saniyede px cinsinden hız.
