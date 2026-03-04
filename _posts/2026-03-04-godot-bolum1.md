@@ -1,10 +1,4 @@
 ---
-title: Yazının Başlığı
-date: 2026-03-04 12:00:00 +0300
-categories: [Kategori1]
-tags: [etiket1, etiket2]
----
----
 title: "Godot Eğitim Serisi - Bölüm 1: Godot Nedir ve Neden Seçmeliyiz?"
 date: 2026-03-04 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
