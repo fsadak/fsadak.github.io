@@ -5,8 +5,6 @@ categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, enemies, collision, spawning]
 ---
 
-# Godot Engine Eğitim Serisi - Bölüm 9: 3D Düşmanlar ve Çarpışma Mekanikleri
-
 Bu yazıda, Godot 3D projemize hareket ve tehlike katıyoruz. Düşman (Mob) sahnemizi tasarlayacak, onları rastgele oluşturacak (spawning) ve oyuncumuzun çarpışma sistemiyle etkileşime girip, üzerlerine zıplayarak (squash) onları ezmesini sağlayacağız.
 
 ### 1- Düşman Sahnesinin (Mob) Mimarisini Kurmak
