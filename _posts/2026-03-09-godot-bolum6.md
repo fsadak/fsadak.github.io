@@ -23,7 +23,7 @@ Sahneye eklenecek Alt düğümler:
 2.  **CollisionShape2D:** Vurulma alanımız.
 3.  **VisibleOnScreenNotifier2D:** Ekrandan çıkışları yakalamak için.
 
-![Mask Ayarları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfOKbCqtGo4sTI2vd1Hh5LvVtZaDrTkNUJn0kEo18bNc4KOIwngiqTcmUk7uPy3rJWCxR7BOp2NEdxDb_cFZjwkSlNWp-_vn8l_9RnzxRjrhrvsZDdMlZWM6bO10ef27N5NBTQkRI6JtYHTgwxgb2U7j5iDTmTBJfomiO1r2M4kwT7QwFRzy9-3KNafg/s320/set_collision_mask.webp)
+<!--![Mask Ayarları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfOKbCqtGo4sTI2vd1Hh5LvVtZaDrTkNUJn0kEo18bNc4KOIwngiqTcmUk7uPy3rJWCxR7BOp2NEdxDb_cFZjwkSlNWp-_vn8l_9RnzxRjrhrvsZDdMlZWM6bO10ef27N5NBTQkRI6JtYHTgwxgb2U7j5iDTmTBJfomiO1r2M4kwT7QwFRzy9-3KNafg/s320/set_collision_mask.webp)-->
 
 ---
 
@@ -33,7 +33,7 @@ Sahneye eklenecek Alt düğümler:
 
 Sonrasında CollisionShape2D için ‘CapsuleShape2D’ seçin, ancak kapsül dikeydir, düşmanlarımız yatay olduğu için **Transform > Rotation** kısmından `90` derece çevirin ve boyutu tam olarak düşmana oturtun. `mob.tscn` olarak kaydedin.
 
-![Mob Animasyonları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHTNmDVHSG6Gd0girHieJLusoA_iJJcXJ8Fjm5bO-q8Ml-uMMA-_NprWRgdrnnGf4By0KQ1M8-Hz5_Blxijgwwq0HVtCzeOyyuzEftp6LhGUPy9T6Z67Yj8-3AVQk_yIrEU2nIzbzz9sCkq26ZN9-dSjHQ71bRvhk8rChyphenhyphenx7rIU5OiXtYy7QvEx1b9Ww/s320/mob_animations.webp)
+<!--![Mob Animasyonları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHTNmDVHSG6Gd0girHieJLusoA_iJJcXJ8Fjm5bO-q8Ml-uMMA-_NprWRgdrnnGf4By0KQ1M8-Hz5_Blxijgwwq0HVtCzeOyyuzEftp6LhGUPy9T6Z67Yj8-3AVQk_yIrEU2nIzbzz9sCkq26ZN9-dSjHQ71bRvhk8rChyphenhyphenx7rIU5OiXtYy7QvEx1b9Ww/s320/mob_animations.webp)-->
 
 ---
 
