@@ -5,8 +5,6 @@ categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
 ---
 
-# Godot Engine Eğitim Serisi - Bölüm 8: 3D Dünyaya Giriş ve Karakter Kontrolü
-
 Godot Engine ile ikinci projemizde yepyeni bir boyuta, 3D’ye geçiyoruz! Artık önümüzde geniş bir X, Y (boy) ve Z (derinlik) koordinat sistemi var. Bu yazıda size zemin hazırlamayı, bir 3D oyuncu yaratmayı ve kodla onun fiziksel dünyada ilerlemesini aktaracağım.
 
 Başlangıç Asist dosyaları (Sesler, Modeller): [Squash the Creeps Assets (Zip)](https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/3d_squash_the_creeps_starter.zip)
