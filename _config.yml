@@ -225,3 +225,6 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+google_adsense:
+  publisher_id: "ca-pub-7025916496705120"
