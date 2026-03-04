@@ -34,8 +34,8 @@ Her etiketin Inspector (Sağ) paneline gidin, **Theme Overrides -> Fonts** kısm
 * **Message Labal:** Metne “Dodge the Creeps!” yazın, Autowrap Mode ayarını “Word” yaparak satır atlamasını sağlayın, Layout kısmında Size X’i 480 vererek ortalayın (Anchor=Center).
 * **StartButton:** Anchor ayarını Center Bottom (Alt Orta) yapıp, position Y eksenini 580’e oturtun. Daha tok görünmesi için Size kutularına 200’e 100 yazabilirsiniz.
 
-![Font Yükleme](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhywkkpWOxy-FBflzOQWikOQ_YJfUoNQCg_nLHLULtFRAyD-BYD7kxAqbDILYwDZvP-W4mrKrZv-LwdjwkvETlXpx2GA2hN18RCMJHWQ7l6IC_RvUzRUMkzJzfNgaFFjSP3QBKAqVQrCuUKZG9GGW0siCo4zHEzJUab_jiT9fYUSEsTTwVDTdaLX1Lt1w/s320/custom_font_load_font.webp)
-![Font Boyutu](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnidWq0fBek72WKd-6NyOwVekidIMt96oXp2ABWqLMJtOG1gSKnl0cyjiro6lmAp9IPLXMlQ9PQ2AG0_yjB98N2Zb-EFg4kcDCTunbzoUq5FirrrlCYR-zMbdBuWuVbs5FhpK3SLkWutzQ2Rl28gh_zP0PIS6xn002zUK4dJjH5yG3rd0JP-9hyphenhyphennvDyQ/s1600/custom_font_size.webp)
+<!--![Font Yükleme](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhywkkpWOxy-FBflzOQWikOQ_YJfUoNQCg_nLHLULtFRAyD-BYD7kxAqbDILYwDZvP-W4mrKrZv-LwdjwkvETlXpx2GA2hN18RCMJHWQ7l6IC_RvUzRUMkzJzfNgaFFjSP3QBKAqVQrCuUKZG9GGW0siCo4zHEzJUab_jiT9fYUSEsTTwVDTdaLX1Lt1w/s320/custom_font_load_font.webp)
+![Font Boyutu](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnidWq0fBek72WKd-6NyOwVekidIMt96oXp2ABWqLMJtOG1gSKnl0cyjiro6lmAp9IPLXMlQ9PQ2AG0_yjB98N2Zb-EFg4kcDCTunbzoUq5FirrrlCYR-zMbdBuWuVbs5FhpK3SLkWutzQ2Rl28gh_zP0PIS6xn002zUK4dJjH5yG3rd0JP-9hyphenhyphennvDyQ/s1600/custom_font_size.webp)-->
 
 ---
 
