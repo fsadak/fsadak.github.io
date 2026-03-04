@@ -4,7 +4,7 @@ date: 2026-03-07 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, signals, sinyaller, gdscript, node]
 ---
-
+<!--Test-->
 Tekrar merhaba! Godot serimizin dördüncü bölümüne hoş geldiniz. Geçen derste ilk script'imizi yazıp Godot ikonumuzu ekranda hareket ettirmeyi başarmıştık. Peki ya bu ikon, bir butona bastığımızda dursun veya hareket etsin isteseydik bunu nasıl yapardık?
 
 İşte burada devreye Godot'un **Sinyaller (Signals)** sistemi giriyor. Sinyaller, oyun içindeki düğümlerin (nodes) birbirlerine "Hey, bana bir şey oldu!" deme şeklidir. Örneğin bir buton, kendisine tıklandığında etrafına "Bana basıldı!" diye bağırır (emit). Başka bir düğüm bu bağırmayı duyup (listen) buna göre bir eylem gerçekleştirebilir.
