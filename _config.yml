@@ -16,7 +16,7 @@ timezone:
 
 title: Siber Atölye # the main title
 
-tagline: Yazılım, Godot ve Teknoloji Günlüğüe # it will display as the subtitle
+tagline: Yazılım, Godot ve Teknoloji Günlüğü # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
