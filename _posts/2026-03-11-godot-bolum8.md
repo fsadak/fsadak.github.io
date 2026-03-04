@@ -30,9 +30,9 @@ Godot’da sabit zeminler, harita unsurları `StaticBody3D` sınıfına aittir. 
 
 Kapanış için sahnenize **DirectionalLight3D** güneşi ekleyip “Shadows” u açın ve açıyı kırmızı halkasından yamultun. Zemin hazır.
 
-![Zemin Yapısı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5RUiWZC-MTgWViFMMxo-gFHVePjpRxJggYKeW8xFrrv1CaFw_w8i2kQBMSyEtPxfUqFFJJwlS86tV-PAhCxphPgQqaW_MGquYsR_aPEC0i_igRBzJd0KwhtOxJ-Zu6aM4NPGTHH2gAUdSlpEwOl48Qk_U8cQmNAbZB7cJNXXSHCvB2qTKCDTi2Edo1g/s1600/05.main_node.webp)
+<!--![Zemin Yapısı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5RUiWZC-MTgWViFMMxo-gFHVePjpRxJggYKeW8xFrrv1CaFw_w8i2kQBMSyEtPxfUqFFJJwlS86tV-PAhCxphPgQqaW_MGquYsR_aPEC0i_igRBzJd0KwhtOxJ-Zu6aM4NPGTHH2gAUdSlpEwOl48Qk_U8cQmNAbZB7cJNXXSHCvB2qTKCDTi2Edo1g/s1600/05.main_node.webp)
 ![Boyut Ayarları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEZQzSJMptYpXwh9ZtFh8lDfqG1fCkBK3XoYxajnROQdNOO0xNNDx_VBiXNlhCvi0r5X-_Gvc02dj-PoZBUz9LWWBpL9xV-KkhT_rvE7ovvrQNLXZRl0reS1arOMaecl72_4-p88yriqEgl0tZ1ZA0JlX8SZkebM3cFNSf3mGd5TfPo5IwXiI9ft2CLg/s320/09.box_size.webp)
-![Gölgeleri Açmak](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiE_r5vv2dwftcoijk2LCFx9iZsgVu2cMrS-S6NPTf4knGqfmjM2R_Mc8vY1kNwGe_von3hBI-XHpJvSfIwBoPoRbEE-z-vsrr8hEYh9QDFYj8h-70O6KKq1IPdsRLl85KTCKgsiR-LIUjEfHSXeRZhk_W-DhD-lX2BK5YuCnN4I-gfbaJHsQRQulgCBg/s320/16.turn_on_shadows.webp)
+![Gölgeleri Açmak](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiE_r5vv2dwftcoijk2LCFx9iZsgVu2cMrS-S6NPTf4knGqfmjM2R_Mc8vY1kNwGe_von3hBI-XHpJvSfIwBoPoRbEE-z-vsrr8hEYh9QDFYj8h-70O6KKq1IPdsRLl85KTCKgsiR-LIUjEfHSXeRZhk_W-DhD-lX2BK5YuCnN4I-gfbaJHsQRQulgCBg/s320/16.turn_on_shadows.webp)-->
 
 ---
 
@@ -46,8 +46,8 @@ Yeni sahnemizde oyuncu için **CharacterBody3D** (Adı `Player` olsun) açıyoru
 2.  FileSystem içinde bulunan `art/player.glb` model dosyasını sahnede direkt `Pivot` içine sürükleyerek bırakın. İsmini `Character` yapın.
 3.  Bu da fiziksel olduğu için `Player`'a geri dönerek **CollisionShape3D** bağlayıp bir **SphereShape3D** verin ve modelin içine oturacak şekilde büyütün. Merkezinin zemine değdiğinden emin olup sahneyi `player.tscn` olarak kaydedin.
 
-![Oyuncu Sahne Ağacı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCa-pGfHQR3gppiHIwXry0Qz7OiG8c-40LiOrS48AbksghV22toYQm5FIQDwiQE7m9Aik01-Rq8oLabJdhuXWEDemb75jKiv9botaCErWOV9xpH9yea5Ter3w4L0AqRTisIU4ELxroQ8aIDl3811LFC9dYxDlv9HTBZ8rmRK7BWbGYlWcXQEatYSj2Aw/s1600/player_scene_nodes.webp)
-![Çarpışma Alanı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiR-QpJ5_HI-pFVnVoNbyMUr_4zVqeeFIF2S6lVJPXg4DSaFyYgUb9s0NYK3rspgUsSC1UMNaVeKDj_oKTBcpplyg9mNMn5qv8_fveZ3JAYtvN2u1DVRmodSq1Q-h8sNhVqww2Tj4vUE8kcKeTNugyl7Fp8DK5uBVnnIY1UoRQfGmrBo3cTtVPdz0N8Nw/s320/player_coll_shape.webp)
+<!--![Oyuncu Sahne Ağacı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCa-pGfHQR3gppiHIwXry0Qz7OiG8c-40LiOrS48AbksghV22toYQm5FIQDwiQE7m9Aik01-Rq8oLabJdhuXWEDemb75jKiv9botaCErWOV9xpH9yea5Ter3w4L0AqRTisIU4ELxroQ8aIDl3811LFC9dYxDlv9HTBZ8rmRK7BWbGYlWcXQEatYSj2Aw/s1600/player_scene_nodes.webp)
+![Çarpışma Alanı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiR-QpJ5_HI-pFVnVoNbyMUr_4zVqeeFIF2S6lVJPXg4DSaFyYgUb9s0NYK3rspgUsSC1UMNaVeKDj_oKTBcpplyg9mNMn5qv8_fveZ3JAYtvN2u1DVRmodSq1Q-h8sNhVqww2Tj4vUE8kcKeTNugyl7Fp8DK5uBVnnIY1UoRQfGmrBo3cTtVPdz0N8Nw/s320/player_coll_shape.webp)-->
 
 ---
 
@@ -65,7 +65,7 @@ Godot **Project Settings -> Input Map** menüsünden şu girdileri Yaratın ve K
 * 2D de olan `_process(delta)`'yi unutun, fiziksel hareket varsa Frame bağımsız stabil çalışan **`_physics_process(delta)`** kullanılır.
 * Ayrıca bir objeyi döndürmek için Vector3’ün `.normalized()` ayarı ve objenin `basis`'i (temeli) kullanılır.
 
-![Input Map](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjC4DR53H4q84GbLszhyow_rWsFN47A0v1kQn8zybA_ZKtg5ssSrBiJVFVo0eBAsjassJ0x9-KvnN3mX8dzm0hzePB_M64p83gLVm91mJBApLwn4wtYStzV1ldf9vrQ5iaAehNXQ6Z0LWAKZ9JOj5UtyuqRGOkhtfU8PGr75BKl7Pf7Te6297gbcecz1g/s320/input-mapping-completed.webp)
+<!--![Input Map](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjC4DR53H4q84GbLszhyow_rWsFN47A0v1kQn8zybA_ZKtg5ssSrBiJVFVo0eBAsjassJ0x9-KvnN3mX8dzm0hzePB_M64p83gLVm91mJBApLwn4wtYStzV1ldf9vrQ5iaAehNXQ6Z0LWAKZ9JOj5UtyuqRGOkhtfU8PGr75BKl7Pf7Te6297gbcecz1g/s320/input-mapping-completed.webp)-->
 
 Kodumuzun tüm hali şöyledir:
 
