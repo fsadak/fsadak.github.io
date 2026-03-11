@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 5: 2D Oyuna Hazırlık ve Oyuncu Karakteri"
-date: 2026-03-08 12:00:00 +0300
+date: 2026-03-26 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, oyuncu, animasyon, input]
+published: true
 ---
 
 Godot Engine eğitim serimizin ilk gerçek oyun yapma aşamasına hoş geldiniz! Bu dersimizde basit bir "Kaçınma" oyunu hazırlayacağız. İlk olarak projeyi kuracak ve oyuncumuzun (Player) kontrollerini ve animasyonlarını hazırlayacağız.
