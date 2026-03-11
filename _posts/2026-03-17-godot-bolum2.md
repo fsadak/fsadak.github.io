@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 2: Godot'un Kalbi - Düğümler ve
 date: 2026-03-17 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, node, scene, düğüm, sahne]
+permalink: /godot-egitim-serisi-bolum-2/
 published: true
 ---
 
