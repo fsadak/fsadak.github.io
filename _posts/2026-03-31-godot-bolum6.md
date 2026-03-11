@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 6: Düşmanları Yaratmak ve Ana S
 date: 2026-03-31 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, düşman, rigidbody2d, path2d, timer]
+permalink: /godot-egitim-serisi-bolum-6/
 published: true
 ---
 
