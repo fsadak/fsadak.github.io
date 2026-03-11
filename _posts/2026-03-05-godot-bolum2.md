@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 2: Godot'un Kalbi - Düğümler ve Sahneler"
-date: 2026-03-05 12:00:00 +0300
+date: 2026-03-17 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, node, scene, düğüm, sahne]
+published: true
 ---
 
 Herkese merhaba! Godot Engine eğitim serimizin ikinci bölümüne hoş geldiniz. Geçen bölümde Godot'un felsefesinden ve neden harika bir motor olduğundan bahsetmiştik. Bu bölümde ise Godot'un kalbine, motorun çalışma mantığının özüne iniyoruz: **Düğümler (Nodes)** ve **Sahneler (Scenes)** kavramlarını öğreneceğiz. Bu iki kavramı anladığınızda, Godot'da yapamayacağınız hiçbir şey kalmayacak!
