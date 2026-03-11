@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 8: 3D Dünyaya Giriş ve Karakter Kontrolü"
-date: 2026-03-08 12:00:00 +0300
+date: 2026-04-07 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
+published: true
 ---
 
 Godot Engine ile ikinci projemizde yepyeni bir boyuta, 3D’ye geçiyoruz! Artık önümüzde geniş bir X, Y (boy) ve Z (derinlik) koordinat sistemi var. Bu yazıda size zemin hazırlamayı, bir 3D oyuncu yaratmayı ve kodla onun fiziksel dünyada ilerlemesini aktaracağım.
