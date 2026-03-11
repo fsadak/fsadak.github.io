@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 3: Kodlamaya Giriş ve İlk Script
 date: 2026-03-19 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, script, kodlama, başlangıç]
+permalink: /godot-egitim-serisi-bolum-3/
 published: true
 ---
 
