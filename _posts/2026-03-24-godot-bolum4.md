@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 4: Nesneler Arası İletişim: Sin
 date: 2026-03-24 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, signals, sinyaller, gdscript, node]
+permalink: /godot-egitim-serisi-bolum-4/
 published: true
 ---
 Tekrar merhaba! Godot serimizin dördüncü bölümüne hoş geldiniz. Geçen derste ilk script'imizi yazıp Godot ikonumuzu ekranda hareket ettirmeyi başarmıştık. Peki ya bu ikon, bir butona bastığımızda dursun veya hareket etsin isteseydik bunu nasıl yapardık?
