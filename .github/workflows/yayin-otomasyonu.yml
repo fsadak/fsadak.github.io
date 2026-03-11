@@ -1,22 +1,23 @@
 name: "Otomatik Yayin Tetikleyici"
 
 on:
-	schedule:
-		# Bu ayar her gün Türkiye saati ile 18:05'te çalışır.
-		# (UTC 09:05 = TSİ 12:05)
-		- cron: '05 09 * * *'
-	workflow_dispatch: # Bu satır sayesinde elle de tetikleyebilirsin.
+  schedule:
+    # Her gün TSİ 12:05'te çalışır (UTC 09:05)
+    - cron: '05 09 * * *'
+  workflow_dispatch:
 
 jobs:
-	update-site:
-		runs-on: ubuntu-latest
-		steps:
-			- name: Repoyu Kopyala
-				uses: actions/checkout@v3
+  update-site:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Repoyu Kopyala
+        uses: actions/checkout@v3
 
-			- name: Bos Bir Commit At (Siteyi Gunceller)
-				run: |
-					git config --global user.name "Siber Atolye Bot"
-					git config --global user.email "bot@goldenware.tr"
-					git commit --allow-empty -m "Planlanmış içerik yayını tetiklendi"
-					git push
+      - name: Bos Bir Commit At (Siteyi Gunceller)
+        run: |
+          git config --global user.name "Siber Atolye Bot"
+          git config --global user.email "bot@goldenware.tr"
+          git commit --allow-empty -m "Planlanmış içerik yayını tetiklendi"
+          git push
