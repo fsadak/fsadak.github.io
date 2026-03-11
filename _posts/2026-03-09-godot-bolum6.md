@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 6: Düşmanları Yaratmak ve Ana Sahne"
-date: 2026-03-09 12:00:00 +0300
+date: 2026-03-31 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, düşman, rigidbody2d, path2d, timer]
+published: true
 ---
 
 Oyunumuzu artık tam bir oyun yapacak ana bileşenlere geldik: Düşmanlardan kaçmak! Önce düşmanları yaratacak, ardından `Main` adı vereceğimiz bir sahnede düşmanlarımızı, oyuncuyu ve genel kuralları birleştireceğiz.
