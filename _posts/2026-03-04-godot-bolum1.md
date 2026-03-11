@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 1: Godot Engine Nedir ve Neden Seçmeliyiz?"
-date: 2026-03-01 12:00:00 +0300
+date: 2026-03-12 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, engine, giriş, başlangıç, oyun motoru]
+published: true
 ---
 
 Herkese merhaba! Sıfırdan başlayarak profesyonel düzeyde oyunlar geliştirmeyi öğreneceğimiz Godot Engine eğitim serimizin ilk bölümüne hoş geldiniz. Bu yazıda ve eşlik eden videomuzda, Godot’un ne olduğuna, neler yapabildiğine ve neden son yılların en çok konuşulan oyun motoru haline geldiğine yakından bakacağız.
