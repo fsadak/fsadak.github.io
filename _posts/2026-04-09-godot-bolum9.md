@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 9: 3D Düşmanlar ve Çarpışma M
 date: 2026-04-09 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, enemies, collision, spawning]
+permalink: /godot-egitim-serisi-bolum-9/
 published: true
 ---
 
