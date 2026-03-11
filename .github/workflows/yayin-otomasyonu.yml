@@ -3,7 +3,7 @@ name: "Otomatik Yayin Tetikleyici"
 on:
 	schedule:
 		# Bu ayar her gün Türkiye saati ile 18:05'te çalışır.
-		# (UTC 15:05 = TSİ 18:05)
+		# (UTC 09:05 = TSİ 12:05)
 		- cron: '05 09 * * *'
 	workflow_dispatch: # Bu satır sayesinde elle de tetikleyebilirsin.
 
