@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 7: Arayüz (HUD) ve Oyunu Tamamlama"
-date: 2026-03-10 12:00:00 +0300
+date: 2026-04-02 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, hud, canvaslayer, ui, ses]
+published: true
 ---
 
 Godot Engine ile adım adım yaptığınız oyunumuzun son aşamasına geldik! Bir oyunun tamamen fonksiyonel olabilmesi için bir Kullanıcı Arayüzü (User Interface - UI) şart. Oyuncuya skorunu ve durumu iletmek zorundayız.
