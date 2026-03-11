@@ -2,8 +2,9 @@ name: "Otomatik Yayin Tetikleyici"
 
 on:
   schedule:
-    # Her gün TSİ 12:05'te çalışır (UTC 09:05)
-    - cron: '05 09 * * *'
+    # Her Salı ve Perşembe TSİ 12:05'te çalışır.
+    # (UTC 09:05 = TSİ 12:05)
+    - cron: '05 09 * * 2,4'
   workflow_dispatch:
 
 jobs:
@@ -13,11 +14,11 @@ jobs:
       contents: write
     steps:
       - name: Repoyu Kopyala
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # v3'ten v4'e güncellendi (Node 24 uyumlu)
 
       - name: Bos Bir Commit At (Siteyi Gunceller)
         run: |
           git config --global user.name "Siber Atolye Bot"
           git config --global user.email "bot@goldenware.tr"
-          git commit --allow-empty -m "Planlanmış içerik yayını tetiklendi"
+          git commit --allow-empty -m "Sali/Persembe planlanmis yayin tetiklendi"
           git push
