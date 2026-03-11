@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 5: 2D Oyuna Hazırlık ve Oyuncu K
 date: 2026-03-26 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, oyuncu, animasyon, input]
+permalink: /godot-egitim-serisi-bolum-5/
 published: true
 ---
 
