@@ -1,8 +1,9 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 3: Kodlamaya Giriş ve İlk Script'imiz"
-date: 2026-03-06 12:00:00 +0300
+date: 2026-03-19 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, script, kodlama, başlangıç]
+published: true
 ---
 
 Herkese merhaba! Godot eğitim serimizin üçüncü bölümüyle karşınızdayız. Geçen bölümde Sahneler ve Düğümler (Nodes & Scenes) ile oyunumuzun iskeletini oluşturduk. Ama bu iskelet henüz hiçbir şey yapmıyor, etkiye tepki vermiyor. Bir oyunun canlı hissettirmesi için **Mantığa (Logic)**, yani koda ihtiyacı vardır.
