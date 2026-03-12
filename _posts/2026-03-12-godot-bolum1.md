@@ -15,7 +15,7 @@ Herkese merhaba! Sıfırdan başlayarak profesyonel düzeyde oyunlar geliştirme
 
 Godot, hem 2D hem de 3D oyun geliştirmek için tasarlanmış, genel amaçlı bir oyun motorudur. Bu motorla geliştirdiğin oyunları ya da uygulamaları masaüstü, mobil ve web platformlarında yayınlayabilirsin. Konsol desteği de mevcut, ancak bunun için ya güçlü bir programlama alt yapısı ya da oyununu porta edecek deneyimli bir geliştirici gerekiyor.
 
-> 💡 Konsollar hakkında daha fazla bilgi için [Godot'nun resmi web sitesini](https://godotengine.org) inceleyebilirsin.
+> Konsollar hakkında daha fazla bilgi için [Godot'nun resmi web sitesini](https://godotengine.org) inceleyebilirsin.
 
 ---
 
