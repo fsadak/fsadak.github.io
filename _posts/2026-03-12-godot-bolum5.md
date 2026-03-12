@@ -50,17 +50,13 @@ Bir sınıf referans sayfası sana şunları söyler:
 ![Sınıf Referans Kalıtım Hiyerarşisi](/assets/images/manual_class_reference_inheritance.webp)
 *Bir sınıfın kalıtım hiyerarşisi — hangi özelliklerin nereden geldiğini buradan takip edebilirsin*
 
-> 💡 **İpucu:** Kılavuzda veya sınıf referansında eksik ya da yetersiz bilgi bulursan, bunu [godot-docs GitHub deposuna](https://github.com/godotengine/godot-docs) bir Issue açarak bildirebilirsin. Açık kaynak topluluğu bu katkılara çok değer veriyor.
+> 💡 **İpucu:** Kılavuzda veya sınıf referansında eksik ya da yetersiz bilgi bulursan, bunu [godot-docs GitHub deposuna](https://github.com/godotengine/godot-docs) bir Issue (Sorun Bildirimi) açarak bildirebilirsin. Açık kaynak topluluğu bu katkılara çok değer veriyor.
 
 ---
 
 ## Programlama Mantığını Öğrenmek
 
 Godot dokümantasyonu programlama temellerini öğretmeyi hedeflemez. Eğer programlamaya yeni başlıyorsan, aşağıdaki iki ücretsiz kaynağı incelemeni öneririz:
-
-### GDQuest — Learn GDScript From Zero
-Mutlak sıfırdan başlayanlar için tasarlanmış, interaktif ve ücretsiz bir GDScript eğitim uygulaması. Tarayıcı üzerinden ya da masaüstü uygulaması olarak kullanılabilir.
-🔗 [gdquest.itch.io/learn-gdscript-from-zero](https://gdquest.itch.io/learn-gdscript-from-zero)
 
 ### Automate The Boring Stuff With Python
 Al Sweigart tarafından yazılmış, ücretsiz bir e-kitap. Python tabanlı olmakla birlikte, genel programlama mantığını sağlam bir şekilde öğretir. GDScript Python'a benzediği için bu kitaptan edindiğin alışkanlıklar doğrudan işe yarar.
