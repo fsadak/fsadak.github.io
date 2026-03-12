@@ -75,6 +75,10 @@ Zaten biraz programlama geçmişin varsa? O zaman doğrudan devam edebiliriz. GD
 
 ---
 
+Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='DhBRf5KU_hM' %}
+
 ## Sıradaki Adım
 
 Bir sonraki bölümde Godot'nun temel yapı taşlarını — **sahne (scene)** ve **düğüm (node)** sistemini — tanıyacağız. Godot'nun çalışma mantığını kavramak, ileride yazacağın her kod satırını çok daha anlamlı kılacak.

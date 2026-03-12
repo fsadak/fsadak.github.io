@@ -124,6 +124,10 @@ Godot çok sayıda özelliğe sahip zengin bir motordur. Bu özelliklerden en iy
 
 ---
 
+Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='DhBRf5KU_hM' %}
+
 ## Sıradaki Adım
 
 Bu yazıda Godot'nun ne olduğuna, hangi projelerde kullanılabileceğine ve nasıl çalıştığına genel bir bakış attık. Serinin ilerleyen bölümlerinde Godot'nun temel kavramlarını adım adım ele alacağız.
