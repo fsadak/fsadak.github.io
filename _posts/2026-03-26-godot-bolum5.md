@@ -1,5 +1,5 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 5: 2D Oyuna Hazırlık ve Oyuncu Karakteri"
+title: "Godot Engine Eğitim Serisi - Bölüm 5: Godot'da Yeni Şeyler Nasıl Öğrenilir? Kaynaklar ve Topluluk"
 date: 2026-03-26 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, oyuncu, animasyon, input]
@@ -7,180 +7,137 @@ permalink: /godot-egitim-serisi-bolum-5/
 published: true
 ---
 
-Godot Engine eğitim serimizin ilk gerçek oyun yapma aşamasına hoş geldiniz! Bu dersimizde basit bir "Kaçınma" oyunu hazırlayacağız. İlk olarak projeyi kuracak ve oyuncumuzun (Player) kontrollerini ve animasyonlarını hazırlayacağız.
+Godot özellik dolu, zengin bir oyun motorudur. Her şeyi tek seferde öğrenmek mümkün değil — ve buna gerek de yok. Önemli olan, **ihtiyaç duyduğunda doğru kaynağa nasıl ulaşacağını bilmek**. Bu yazıda resmi kılavuzu, yerleşik kod referansını ve topluluğu en verimli şekilde nasıl kullanacağını ele alacağız.
 
-## 1. Oyun Alanı: Ekran Boyutlandırma
+---
 
-Dikey ekranda oynanan bir oyun yapımız olacak. Telefon ekranı gibi düşünebilirsiniz.
+## Resmi Kılavuzdan (Manual) En İyi Şekilde Yararlanmak
 
-Godot menüsünden **Project -> Project Settings** diyerek ayarları açın. **Display -> Window** bölümünde "Viewport Width" (Genişlik) değerini `480`, "Viewport Height" (Yükseklik) değerini `720` yapın.
+Şu an okuduğun bu yazı serisi, Godot'nun **kullanıcı kılavuzuna** (user manual) dayanmaktadır. Kılavuz, motorun kavramlarını ve özelliklerini kapsamlı biçimde belgeler.
 
-Oyunumuzun farklı ekranlarda doğru oranda büyümesi için **Stretch** (Esnetme) seçeneklerinde **Mode** değerini `canvas_items`, **Aspect** değerini ise `keep` yapmayı unutmayın.
+Yeni bir konu öğrenmek istediğinde şu adımları izleyebilirsin:
 
-![Ekran Boyutu Ayarı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgN_42a4sI0XjzgivK2OoAQe3deTbK8S38kqZE4THFHabZlfC9xAliU0XfHizKNg2G9Ouirp6GJ8K5oC1fS3ZvfyWXkpmJFAAt3KmZUla_ksP_fixctQ9lrdtgbfZGCSWucfpwFzxkKPm-laIVnhp5QISdxLk7uteXkqVR7eoaCiDe7ot1KNSjjjeWHuQ/s782/setting-project-width-and-height.webp)
+- **Sol menüden** geniş konulara göz at
+- **Arama çubuğunu** kullanarak daha özgün sayfalara ulaş
+- Bir konu sayfası genellikle ilgili diğer sayfalara da bağlantı içerir — onları da takip et
 
-![Stretch Modu Ayarı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgg1vv1RGmKv5EBt8eXTfwOIKbizmdpcu4dbZMS2QLW9vneesp2MhFA8CzzPsuoH7cM2uQMVpjDINPt9V62GEoWeWA_EA9I4qAyigBUbS9O1Oqp89k0PNlHE6B7tE1Tb3nOUEgAEUbPOqFHzzU4RzMOfLIFIgFHmYDLLT0LjeP5uprbWXXXs_OlRVWRMg/s782/setting-stretch-mode.webp)
+![Godot Dokümantasyon Arama](/assets/images/manual_search.png)
+*Godot dokümantasyonunda arama çubuğuyla istediğin konuyu hızlıca bulabilirsin*
 
-## 2. Oyuncu Sahnesi ve Temeller
+Kılavuzun yanında bir de **sınıf referansı (class reference)** bulunur. Kılavuz genel kavramları ve editörü anlatırken, sınıf referansı Godot'nun script API'sini — yani kullanabileceğin tüm sınıf, fonksiyon ve özellikleri — açıklar.
 
-Oyuncu karakterimiz için işleri temiz tutmak adına yeni bir sahne oluşturacağız. Bu sahnemizin ana düğümü bir **Area2D** olacak. Çünkü düşmanlarla çarpışma tespiti üzerine çalışacağız.
+---
 
-Sol üstten "Other Node" ile **Area2D** ekleyin ve adını `Player` olarak değiştirin.
+## Yerleşik Sınıf Referansı
 
-Hemen ardından sağ kısımdaki gruplama (Lock/Kilitleme) ikonuna basarak çocuk düğümlerle ana düğümü birbirine kenetleyin. Böylece sahnede taşıma işlemi yaparken parçalar birbirinden kopmaz.
+Sınıf referansına hem çevrimiçi hem de çevrimdışı ulaşabilirsin. **Godot editörü içinden** erişmek en pratik yoldur:
 
-![Kilitleme İkonu](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjeKlI5hQ3AUQOlRt2RkxrEOm18Fgw62cueM_qa7f3fyQ65lRW84pcAz3BBoZsIAXSwrS-cAUK4DsktqnUYC5wB0JwVNQ1WmRkmq-nBGIr09vCAnkdzdDcQNdtaXPIxyk4P3XktKzGxxDt8nB7wiSXdVRugFtaQ01SAq50mk-S7XHas4Id4fvcsDtmMEg/s608/lock_children.webp)
+- `Help > Search Help` menüsüne git
+- Ya da herhangi bir yerde **F1** tuşuna bas
 
-Sahnemizi `player.tscn` adıyla kaydedin.
+Editör içinde bir sınıf adına, fonksiyon adına ya da yerleşik bir değişkene **Ctrl + tıklayarak** (macOS'ta Cmd + tık) da doğrudan ilgili dokümantasyon sayfasına atlayabilirsin.
 
-## 3. Görseller ve Animasyon (AnimatedSprite2D)
+![Sınıf Referans Arama](/assets/images/manual_class_reference_search.webp)
+*Editör içindeki sınıf referansı arama — tam ihtiyaç duyduğun anda yanı başında*
 
-Oyuncumuzun hareketli görünmesini istiyoruz. Player düğümüne bir **AnimatedSprite2D** ekleyin. Sağda açılan Inspector panelinde "Sprite Frames" karşısında "[empty]" tıkla ve **New SpriteFrames** diyerek yeni bir paket yaratın.
+Bir sınıf referans sayfası sana şunları söyler:
 
-Alt kısımda açılan sahnede, "default" olan animasyonun adını `walk` (yürüme) yapın. Yeni bir tane daha ekleyip ona da `up` (yukarı) diyin. Daha önce projenize attığınız `art` (görsel) dosyalarından ilgili kareleri sürükleyerek bu animasyon pencerelerine ekleyin. Görüntü ekranda çok büyük gözükeceğinden AnimatedSprite2D'nin Scale ayarını `x: 0.5, y: 0.5` yaparak küçültebilirsiniz.
+- **Kalıtım hiyerarşisi:** Sınıfın hangi üst sınıftan türediği, hangi özellikleri ve metodları miras aldığı. Üst sınıflara tıklayarak hiyerarşide yukarı çıkabilirsin.
+- **Sınıfın özeti:** Ne işe yaradığı ve kullanım senaryoları
+- **Özellikler (properties), metodlar, sinyaller, enum'lar ve sabitler:** Her birinin açıklaması
+- **Manuel sayfalara bağlantılar:** Sınıfı daha ayrıntılı ele alan sayfalara yönlendirme
 
-![SpriteFrames Paneli](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpOBHHM_ytWLKqEBv6BEbDcozFI1Gg7fbMeeEVHAVtaANxdW9gVXLJMFQvKj8Wnj8oPwqzvMgzhL7i-Duiu2eIWfjmr2nvVmjWU11WsybZYpTVOF5mgiLf4QcKDVUD4MNBsDXuVeX1n_VE1znllDKPUiNDcT_m5csZCi3uCUhHxaD5UPFKiri4XbB7LA/s1107/spriteframes_panel2.webp)
+![Sınıf Referans Kalıtım Hiyerarşisi](/assets/images/manual_class_reference_inheritance.webp)
+*Bir sınıfın kalıtım hiyerarşisi — hangi özelliklerin nereden geldiğini buradan takip edebilirsin*
 
-## 4. Hitbox (Çarpışma Alanı) Belirleme
+> 💡 **İpucu:** Kılavuzda veya sınıf referansında eksik ya da yetersiz bilgi bulursan, bunu [godot-docs GitHub deposuna](https://github.com/godotengine/godot-docs) bir Issue açarak bildirebilirsin. Açık kaynak topluluğu bu katkılara çok değer veriyor.
 
-Area2D'ler çarpışma sınırlarını bilmek için bir şekle ihtiyaç duyarlar. Player düğümüne çocuk olarak bir **CollisionShape2D** ekleyin. Shape alanından "New CapsuleShape2D" seçin ve ekrandaki turuncu kontrolcüleri sürükleyerek karakter formuna oturtun.
+---
 
-![Çarpışma Şekli](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-CL2MJMGwZ292lfZwMEq4HZrULwE5HANfK225sxgLdrZeZ6_cnn4N7CRcKb8ZtmLRjyVqAJ2wb5w9Rh2GvrTF6d2IDo9Lda2guEaWcrNGEW_-Yn0FAcCcc5gUu_Mjpdh4447Ok01m0_HwQJq3zROtdQTq4M3wj6Deifze7Qhyphenhyphena7qJznrhPvOueDhwTA/s403/player_coll_shape1.webp)
+## Programlama Mantığını Öğrenmek
 
-## 5. Input Map ile Kontrolleri Tanımlamak
+Godot dokümantasyonu programlama temellerini öğretmeyi hedeflemez. Eğer programlamaya yeni başlıyorsan, aşağıdaki iki ücretsiz kaynağı incelemeni öneririz:
 
-Kodlamaya geçmeden oyuncu kontrollerini (ok tuşları) tanıtalım.
+### GDQuest — Learn GDScript From Zero
+Mutlak sıfırdan başlayanlar için tasarlanmış, interaktif ve ücretsiz bir GDScript eğitim uygulaması. Tarayıcı üzerinden ya da masaüstü uygulaması olarak kullanılabilir.
+🔗 [gdquest.itch.io/learn-gdscript-from-zero](https://gdquest.itch.io/learn-gdscript-from-zero)
 
-Tekrar **Project Settings -> Input Map** sekmesine gelin. Yukarıdaki "Add New Action" çubuğuna `move_right`, `move_left`, `move_up` ve `move_down` isimlerini yazıp listeleyin. Yanlarındaki + butonuna basıp klavyenizdeki ilgili yön tuşlarını tanımlayın.
+### Automate The Boring Stuff With Python
+Al Sweigart tarafından yazılmış, ücretsiz bir e-kitap. Python tabanlı olmakla birlikte, genel programlama mantığını sağlam bir şekilde öğretir. GDScript Python'a benzediği için bu kitaptan edindiğin alışkanlıklar doğrudan işe yarar.
+🔗 [automatetheboringstuff.com](https://automatetheboringstuff.com)
 
-![Input Map Tamamlandı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiXzA4QmfsMhzP0F6UWPkZC4Yp8aERV5zNoNz11peGPFKgS6y-Bcvtjiv89cGZPKZ-UF6qHH1fGF0b0Xznfa10UJ_15Wrlv9IxotfmjXHS-FpAaUMnPiQT8zYWJwnDLQ6TPf_cXk0urFonK-kLjnwR0AqeLAcPKFAmXeF4uRUXMADAAnMTl7h1Pco07GQ/s782/input-mapping-completed.webp)
+---
 
-## 6. Oyuncuyu Kodlamak (Karakter Hareketi)
+## Toplulukla Birlikte Öğrenmek
 
-Şimdi işin eğlenceli kod kısmına geçelim! `Player` düğümüne Script ekleyin.
+Godot'nun büyüyen ve aktif bir topluluğu var. Bir sorunla karşılaştığında ya da bir şeyi nasıl yapacağını bilemediğinde topluluğa başvurabilirsin.
 
-```gdscript
-extends Area2D
+### Soru Sormanın En İyi Yeri: Godot Forumu
 
-@export var speed = 400 # Saniyede px cinsinden hız.
-var screen_size # Ekran boyutunu tutacağımız değişken.
+Soru sormak ve daha önce sorulmuş cevapları bulmak için en iyi yer **resmi Godot Forumu**dur. Forum yanıtları arama motorlarında da çıktığı için topluluğun tamamına fayda sağlar.
 
-func _ready():
-    screen_size = get_viewport_rect().size
-    hide() # Oyun başlarken karakterimiz gizli başlayacak.
-```
+🔗 [forum.godotengine.org](https://forum.godotengine.org)
 
-**Kod Açıklaması:**
+---
 
-- `extends Area2D`: Bu scriptin bir Area2D düğümü (ve özelliklerini) temel aldığını belirtir.
-- `@export var speed = 400`: `speed` (hız) adında bir değişken tanımlar. Başına koyulan `@export` takısı sayesinde bu değişkeni doğrudan Inspector panelinde görebilir ve kodu açmadan değiştirebilirsiniz.
-- `var screen_size`: Ekranımızın o anki genişliğini ve yüksekliğini kaydetmek için oluşturulan boş değişken.
-- `screen_size = get_viewport_rect().size`: Oyun ilk başladığında oyun penceresinin büyüklüğünü alır ve değişkene kaydeder.
-- `hide()`: Karakteri görünmez yapar. Çünkü oyun tam olarak başladığında onu ortaya çıkaracağız.
+## Etkili Soru Sormanın Sırları
 
-Şimdi hareket döngümüzü `_process(delta)` içerisine inşa ediyoruz:
+Soru sormadan önce bu sitede ya da bir arama motoruyla mevcut cevapları aramak iyi bir alışkanlıktır. Soru sorarken ne kadar net ve detaylı olursan, o kadar hızlı ve kaliteli yanıt alırsın.
 
-```gdscript
-func _process(delta):
-    var velocity = Vector2.ZERO # Hareket vektörü sıfırlı başlar.
-    if Input.is_action_pressed("move_right"):
-        velocity.x += 1
-    if Input.is_action_pressed("move_left"):
-        velocity.x -= 1
-    if Input.is_action_pressed("move_down"):
-        velocity.y += 1
-    if Input.is_action_pressed("move_up"):
-        velocity.y -= 1
+İyi bir soru şunları içermelidir:
 
-    if velocity.length() > 0:
-        velocity = velocity.normalized() * speed
-        $AnimatedSprite2D.play()
-    else:
-        $AnimatedSprite2D.stop()
-```
+**1. Hedefini açıkla**
+Ne yapmaya çalıştığını anlat. Bazen başka bir kullanıcı daha basit bir çözüm önerebilir.
 
-**Kod Açıklaması:**
+**2. Varsa hata mesajının tamamını paylaş**
+Editörün Debugger panelinden hata mesajını kopyalayıp yapıştır. "Bir hata aldım" demek yeterli değil.
 
-- `var velocity = Vector2.ZERO`: Her saniye hareket yönünü sıfırdan `(0, 0)` hesaplamak için boş bir vektör oluştururuz.
-- `if Input.is_action_pressed("move_right"):`: Belirlediğimiz `move_right` (Sağ tuş) eylemine basılıp basılmadığını kontrol eder.
-- `velocity.x += 1` vb.: İlgili tuşa basılmışsa hareket vektörünün X (Yatay) veya Y (Dikey) eksenini o yönde 1 birim artırır veya azaltır.
-- `if velocity.length() > 0:`: Eğer vektörün uzunluğu 0'dan büyükse (yani oyuncu herhangi bir tuşa basıyorsa)…
-- `.normalized() * speed`: Çapraz giderken ekstra hızlanmayı engellemek için vektör uzunluğunu 1'e eşitler ve hız ile çarpar.
-- `$AnimatedSprite2D.play() / stop()`: `$` işareti ile alt düğümü ismiyle bulur. Karakter hareket ediyorsa animasyonu oynatır, duruyorsa durdurur.
+**3. İlgili kod parçasını paylaş**
+Kodunu görmeden kimse sorunu çözemez. Kısa kodları sohbet kutusuna doğrudan yapıştır, uzun dosyalar için [Pastebin](https://pastebin.com) gibi bir servis kullan.
 
-Karakter konumunu güncelleyelim ve sınırları (`clamp`) belirleyelim ki ekrandan çıkamasın:
+**4. Scene Dock'un ekran görüntüsünü ekle**
+Yazdığın kodun büyük bölümü sahnedeki node'larla etkileşir. Scene Dock görüntüsü bağlamı netleştirir.
 
-```gdscript
-    position += velocity * delta
-    position = position.clamp(Vector2.ZERO, screen_size)
-```
+> ⚠️ **Uyarı:** Ekran görüntüsünü telefon kamerayla çekme. Düşük kalite ve ekran yansımaları okunabilirliği zorlaştırır. İşletim sisteminin yerleşik ekran görüntüsü aracını kullan (Windows'ta PrtSc, macOS'ta Cmd + Shift + 3).
 
-**Kod Açıklaması:**
+**5. Oyunundan video paylaş**
+Bazen sorunun ne olduğunu anlamak için oyunun çalışırken görülmesi gerekir. [OBS Studio](https://obsproject.com) veya [ScreenToGIF](https://www.screentogif.com) gibi araçlarla ekran kaydı alabilirsin.
 
-- `position += velocity * delta`: Oyuncunun mevcut konumuna hesaplanan hız vektörüyle geçen sürenin çarpımını ekleyerek karakteri hareket ettirir.
-- `.clamp(Vector2.ZERO, screen_size)`: Oyuncunun pozisyonunu sadece `(0,0)` ile `screen_size` arasında tutar. Yani karakter ekran dışına çıkamaz.
+**6. Godot sürümünü belirt**
+Özellikler ve arayüz sürümden sürüme hızla değişiyor. Hangi sürümü kullandığını belirtmek, doğru yanıt alma şansını artırır.
 
-Animasyon yönünü ayarlamak için hızımıza göre sprite resmimizin yönünü çeviriyoruz (flip):
+---
 
-```gdscript
-    if velocity.x != 0:
-        $AnimatedSprite2D.animation = "walk"
-        $AnimatedSprite2D.flip_v = false
-        $AnimatedSprite2D.flip_h = velocity.x < 0
-    elif velocity.y != 0:
-        $AnimatedSprite2D.animation = "up"
-        $AnimatedSprite2D.flip_v = velocity.y > 0
-```
+## Topluluk Eğitimleri ve Ekstra Kaynaklar
 
-**Kod Açıklaması:**
+Bu yazı serisi Godot'nun özelliklerine kapsamlı bir referans sunmayı hedefliyor. Ancak belirli oyun türlerine — RPG, platform oyunu, bulmaca gibi — özel eğitimler burada yer almıyor.
 
-- `if velocity.x != 0:`: Eğer yatay eksende bir hareket varsa "walk" animasyonunu seç.
-- `flip_v = false`: Dikeyde takla atmasını durdur.
-- `flip_h = velocity.x < 0`: Sola gidiyorsa sprite görselini yatayda ters çevir.
-- `elif velocity.y != 0:`: Eğer dikey eksende bir hareket varsa "up" animasyonuna geç. Yönü aşağı ise dikeyde ters çevir.
+Bu tür içerikler için Godot topluluğunun hazırladığı [Tutorials and Resources](https://docs.godotengine.org/en/stable/community/tutorials.html) sayfasını inceleyebilirsin.
 
-## 7. Düşmanlara Çarpma (Sinyaller)
+![Godot Sahne Ağacı Örneği](/assets/images/key_concepts_scene_tree.webp)
+*Toplulukta soru sorarken Scene Dock'un bu tür görüntülerini paylaşmak büyük kolaylık sağlar*
 
-Düşmanımız henüz hazır değil ama onlara çarptığımızda çalışacak altyapıyı "Sinyaller" ile kuralım.
+---
 
-Scriptin en üstüne, `extends Area2D` satırının altına şu kodu yazın:
+## Özet
 
-```gdscript
-signal hit
-```
+| Kaynak | Ne İşe Yarar? |
+|---|---|
+| **Resmi Kılavuz** | Kavramlar, özellikler ve editör kullanımı |
+| **Sınıf Referansı** | API, sınıflar, metodlar, sinyaller |
+| **Godot Forumu** | Soru sor, cevapları ara |
+| **GDScript From Zero** | Sıfırdan programlama öğren |
+| **Automate The Boring Stuff** | Python ile programlama temelleri |
+| **Topluluk Eğitimleri** | Oyun türüne özel eğitimler |
 
-Player düğümü seçiliyken sağ üstteki "Node" kısmından `body_entered` sinyaline çift tıklayın. Kod otomatik olarak bağlanıp metod oluşturacaktır. Metodun içini aşağıdaki gibi doldurun:
+---
 
-```gdscript
-func _on_body_entered(_body):
-    hide() # Çarpınca kendimizi gizliyoruz
-    hit.emit() # Özel sinyalimizi fırlatıyoruz
+## Sıradaki Adım
 
-    # Sinyalin birden fazla kez tetiklenmemesi için deferred olarak collision'ı kapatıyoruz:
-    $CollisionShape2D.set_deferred("disabled", true)
-```
+Artık Godot'nun ne olduğunu, temel kavramlarını, editörünü ve nasıl öğrenmeye devam edeceğini biliyorsun. **Giriş serisi burada tamamlandı!**
 
-**Kod Açıklaması:**
+Bir sonraki adımda Godot'yu bilgisayarına kuracak ve **Step by Step** serisiyle ilk projeni oluşturmaya başlayacağız. Heyecanlı kısım başlıyor!
 
-- `hide()`: Çarpışma olduğunda oyuncuyu görünmez yapar.
-- `hit.emit()`: Üstte tanımladığımız "hit" sinyalimizi ateşler ve tüm oyuna "ben vuruldum" mesajı gönderir.
-- `.set_deferred("disabled", true)`: Fizik işlemleri hesaplanırken çarpışma kutusunu aniden kapatmak motoru çökertebilir. `set_deferred` ile güvenli olan ilk anda kapat diyoruz.
+---
 
-![Sinyal Bağlantısı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEip8CKJupVd0ITl39GsMwG7jh8JIrMtyxmnJxczCVcS7fDPuN_Pzl5lqHiulOFnYWRCg9pjQM3VEJKDBMjQPq53vRH7_CtuiyRttTXmPb_HoIQywN1daV6U5YECNxgL2_armJqoL3PCGjLfplzSvIt4w5_GGynx90oxIyK5PpkmLW7CcLlSKorwrPsBlA/s417/player_signal_connection.webp)
-
-Son olarak oyun her yeni baştan başladığında çağıracağımız start fonksiyonunu ekliyoruz:
-
-```gdscript
-func start(pos):
-    position = pos
-    show()
-    $CollisionShape2D.disabled = false
-```
-
-**Kod Açıklaması:**
-
-- `func start(pos):`: Kendi yarattığımız başlangıç fonksiyonu. Oyunu her resetlediğimizde `Player.start()` diyerek konumu (pos) yollayacağız.
-- `show()`: Karakteri tekrar görünür hale getirir.
-- `disabled = false`: Çarpışma kutumuzu tekrar aktif eder, düşmanlar bize yeniden çarpabilir duruma gelir.
-
-Tebrikler! Oyuncu karakteriniz hareket etmeye ve çarpışmalara hazır. Sıradaki bölümde bu karakterin arkasından koşturacağımız düşmanlarımızı (Mob) ekleyeceğiz!
+*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/introduction/learning_new_features.html) esas alınarak Türkçe olarak hazırlanmıştır.*

@@ -1,5 +1,5 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 7: Arayüz (HUD) ve Oyunu Tamamlama"
+title: "Godot Engine Eğitim Serisi - Bölüm 7: Node'lar ve Sahneler: İlk Sahneyi Oluşturalım"
 date: 2026-04-02 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, hud, canvaslayer, ui, ses]
@@ -7,140 +7,206 @@ permalink: /godot-egitim-serisi-bolum-7/
 published: true
 ---
 
-Godot Engine ile adım adım yaptığınız oyunumuzun son aşamasına geldik! Bir oyunun tamamen fonksiyonel olabilmesi için bir Kullanıcı Arayüzü (User Interface - UI) şart. Oyuncuya skorunu ve durumu iletmek zorundayız.
+Daha önce Godot'nun temel yapı taşlarına genel bir bakış atmıştık. Şimdi biraz daha derine inme ve **ilk sahnemizi oluşturma** zamanı. Bu yazıda node'ların ve sahnelerin ne olduğunu pekiştireceğiz, ardından adım adım ilk Godot sahnemizi birlikte oluşturacağız.
 
-## 1. CanvasLayer ve HUD Sahnesi
+---
 
-Oyun elemanları çizilirken arayüz elemanlarının hep en üst katmanda, silinmez şekilde görünmesini isteriz. Bunu Godot ile sağlamanın en iyi yolu, kök nesnesi `CanvasLayer` olan bir sistem kurmaktır.
+## Node Nedir?
 
-Yeni bir sahne oluşturun, kök düğüm olarak `CanvasLayer` ekleyin ve adına `HUD` diyin.
+Node'lar oyunun **temel yapı taşlarıdır** — tıpkı bir tarifin malzemeleri gibi. Onlarca farklı türde node vardır: ekranda görüntü çizen, ses çalayan, kamerayı temsil eden ve çok daha fazlasını yapan node türleri mevcuttur.
 
-Daha sonra şu UI alt düğümlerini ekleyin:
+Tüm node'ların şu ortak özellikleri vardır:
 
-1. İki adet `Label` (Biri `ScoreLabel`, biri `Message`)
-2. Bir adet `Button` (`StartButton`)
-3. Bir zamanlayıcı için `Timer` (`MessageTimer` adında)
+- Bir **ismi** vardır
+- **Düzenlenebilir özelliklere** (properties) sahiptir
+- Her **kare (frame)** güncellenmek için geri çağrı (callback) alırlar
+- Yeni özellikler ve fonksiyonlarla **genişletilebilirler**
+- Başka bir node'un **alt öğesi (child)** olarak eklenebilirler
 
-Sahneyi `hud.tscn` olarak kaydedin.
+![Node Türleri Listesi](/assets/images/nodes_and_scenes_nodes.webp)
+*Godot'nun sunduğu node türlerinden bazıları — liste oldukça uzun!*
 
-## 2. Arayüz Görsel Ayarları ve Fontlar
+Bu son özellik çok önemli: Node'lar bir araya gelerek **ağaç (tree)** yapısı oluşturur. Farklı görevlere sahip node'ları birleştirerek karmaşık davranışlar elde edebilirsin.
 
-Arayüz elemanlarında `ttf` formatında kendi fontlarımızı atayabiliriz. Bu projede Xolonium fontunu kullanıyoruz. ([https://www.dafont.com/xolonium.font](https://www.dafont.com/xolonium.font)) Fontu indirip proje klasörüne koymanız gerekir.
+Örneğin oynatılabilir bir karakter şu node'lardan oluşabilir:
 
-Her etiketin Inspector (Sağ) paneline gidin, **Theme Overrides -> Fonts** kısmından font dosyanızı "Load" diyerek yükleyin ve yine Theme Overrides altındaki **Font Sizes**'ı `64` yapın.
+- `CharacterBody2D` — fizik ve hareket
+- `Sprite2D` — karakterin görseli
+- `Camera2D` — karakteri takip eden kamera
+- `CollisionShape2D` — çarpışma alanı
 
-- **ScoreLabel:** Metne "0" girin. Horizontal ve Vertical Alignment ayarlarını Center (Orta) yapın. Üst çubuktaki "Anchor Preset" (Çıpa) aracıyla "Center Top" (Üst Orta) olarak hizalayın.
-- **Message Label:** Metne "Dodge the Creeps!" yazın, Autowrap Mode ayarını "Word" yaparak satır atlamasını sağlayın, Layout kısmında Size X'i 480 vererek ortalayın (Anchor=Center).
-- **StartButton:** Anchor ayarını Center Bottom (Alt Orta) yapıp, position Y eksenini 580'e oturtun. Daha tok görünmesi için Size kutularına 200x100 yazabilirsiniz.
+![Karakter Node Yapısı](/assets/images/nodes_and_scenes_character_nodes.webp)
+*Bir oyuncu karakterini oluşturan node ağacı*
 
-![Font Yükleme](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhywkkpWOxy-FBflzOQWikOQ_YJfUoNQCg_nLHLULtFRAyD-BYD7kxAqbDILYwDZvP-W4mrKrZv-LwdjwkvETlXpx2GA2hN18RCMJHWQ7l6IC_RvUzRUMkzJzfNgaFFjSP3QBKAqVQrCuUKZG9GGW0siCo4zHEzJUab_jiT9fYUSEsTTwVDTdaLX1Lt1w/s320/custom_font_load_font.webp)
+---
 
-![Font Boyutu](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnidWq0fBek72WKd-6NyOwVekidIMt96oXp2ABWqLMJtOG1gSKnl0cyjiro6lmAp9IPLXMlQ9PQ2AG0_yjB98N2Zb-EFg4kcDCTunbzoUq5FirrrlCYR-zMbdBuWuVbs5FhpK3SLkWutzQ2Rl28gh_zP0PIS6xn002zUK4dJjH5yG3rd0JP-9hyphenhyphennvDyQ/s1600/custom_font_size.webp)
+## Sahne Nedir?
 
-## 3. HUD Yazılımları
+Node'ları bir ağaç yapısında düzenlediğinde — tıpkı yukarıdaki karakter örneğinde olduğu gibi — buna **sahne (scene)** denir.
 
-HUD üzerinden mesaj yollamak, skoru yenilemek ve butonu kontrol etmek için `hud.gd` scripti yaratın. Bunun için HUD kök düğümüne sağ tıklayıp "Attach Script" seçin. Eğer Start butonuna basılırsa dışarıya yollanması (emit) için bir özel sinyal oluşturmalıyız.
+Bir sahne kaydedildiğinde editörde yeni bir node türü gibi davranır. Başka bir node'un alt öğesi olarak ekleyebilirsin; editörde iç yapısı gizlenerek tek bir node olarak görünür.
 
-```gdscript
-extends CanvasLayer
+Sahneler şu ek özelliklere sahiptir:
 
-signal start_game
+- Her zaman **tek bir kök node'u (root node)** vardır
+- Yerel diske **kaydedilebilir** ve sonradan yüklenebilir
+- **İstediğin kadar örnek (instance)** oluşturabilirsin — Character sahneninden on farklı karakter yaratabilirsin
 
-func show_message(text):
-    $Message.text = text
-    $Message.show()
-    $MessageTimer.start() # MessageTimer'ı 2 saniyelik 'One-Shot' olarak düzeltin.
+![3D Sahne Örneği](/assets/images/nodes_and_scenes_3d_scene_example.webp)
+*Sahneler iç içe geçerek büyük ve karmaşık oyun dünyaları oluşturur*
 
-func show_game_over():
-    show_message("Game Over")
-    await $MessageTimer.timeout # Timer bitene kadar kod burada duraklar (Async)
-    $Message.text = "Dodge the Creeps!"
-    $Message.show()
-    await get_tree().create_timer(1.0).timeout # Kod ile anlık timer oluşturup bekletme tekniği
-    $StartButton.show()
+Godot editörü özünde bir **sahne editörüdür**. 2D, 3D ve kullanıcı arayüzü için zengin araçlar sunar. Bir Godot projesi istediğin kadar sahne içerebilir; ancak motorun başlatmak için **tek bir ana sahneye (main scene)** ihtiyacı vardır.
 
-func update_score(score):
-    $ScoreLabel.text = str(score)
+---
 
-func _on_start_button_pressed():
-    $StartButton.hide()
-    start_game.emit() # Özel Sinyal Fırlatıldı
+## İlk Sahneyi Oluşturalım
 
-func _on_message_timer_timeout(): # Node'dan Timer'ı bağlamayı unutmayın
-    $Message.hide()
-```
+Yeterince teori! Şimdi pratiğe geçelim ve ilk sahnemizi birlikte oluşturalım.
 
-**Kod Açıklaması:**
+> 💡 Bunun için önce yeni bir Godot projesi oluşturman gerekiyor. Projeyi açtıktan sonra aşağıdaki adımları takip edebilirsin.
 
-- `extends CanvasLayer`: Bu HUD scriptinin, sahne objelerinin üzerine çizen CanvasLayer türünden olduğunu belirtir.
-- `signal start_game`: "Başlama tuşuna basıldı" bilgisini Main sahnesine iletmek için özel sinyal tanımlar.
-- `show_message(text)`: Ekrana kısa süreli bildirimler basmak için yazılmış özel fonksiyondur. Metni yazar, label'ı gösterir ve geri sayımı başlatır.
-- `await $MessageTimer.timeout`: Fonksiyonun bir alt satıra geçmeden önce `MessageTimer` süresinin bitmesini beklemesini söyler. Gecikme işlemlerinde hayat kurtarır.
-- `await get_tree().create_timer(1.0).timeout`: Sahnemde hazır bir timer düğümü yoksa, sadece o an için 1 saniyelik geçici bir zamanlayıcı yaratır ve bitmesini bekler.
-- `str(score)`: Gelen skor değeri bir sayı (Integer) tipindedir ancak etiketler (Label) sadece metin (String) yazar. `str()` komutuyla bu sayıyı metne dönüştürür.
-- `start_game.emit()`: Butona basıldığında butonu saklayıp ardından dışarıya özel tanımladığımız `start_game` sinyalini ateşler.
+### Adım 1: Boş Editörü Tanı
 
-## 4. Bağlantı Zamanı!
+Projeyi açtığında boş bir editörle karşılaşırsın. Sol taraftaki **Scene doku** kök node hızlıca eklemek için birkaç seçenek sunar:
 
-HUD sahnemizi bitirdik. Şimdi `main.tscn` içerisine `player.tscn`'yi getirdiğimiz gibi HUD sahnesini Instance (Zincir butonu) ederek getirelim.
+![Boş Editör Görünümü](/assets/images/nodes_and_scenes_01_empty_editor.webp)
+*Yeni projeyi açtığında seni boş bir editör karşılar*
 
-Sonra HUD objesini seçip sağdaki **Node > Signals** kısmından kendi hazırladığımız `start_game` sinyaline çift tıklayarak Main scriptindeki mevcut `new_game()` fonksiyonuna bağlayalım! Neden? Çünkü StartButton'a basıldığında oyunun `new_game` döngüsü devreye girmeli. (Start tuşumuz olduğuna göre Main scriptin `_ready` bölümündeki `new_game()` denemesini silin, yoksa Start diyemeden oyun başlar!)
+![Scene Doku Seçenekleri](/assets/images/nodes_and_scenes_02_scene_dock.webp)
+*Scene doku — kök node eklemek için hızlı seçenekler sunar*
 
-Main içindeki skor yenilemelerini ve sinyal iletişimini de aşağıdaki gibi tamamlayın:
+Scene doku'daki seçenekler:
 
-```gdscript
-func new_game():
-    # ... Önceki yazılan kodlar
-    $HUD.update_score(score)
-    $HUD.show_message("Get Ready")
+- **2D Scene** → `Node2D` ekler
+- **3D Scene** → `Node3D` ekler
+- **User Interface** → `Control` ekler
+- **Other Node** → istediğin herhangi bir node'u seçmeni sağlar
 
-func game_over():
-    # ... Önceki yazılan kodlar
-    $HUD.show_game_over()
+Bu presetler sadece kolaylık için var; zorunlu değil.
 
-func _on_score_timer_timeout():
-    # score += 1
-    $HUD.update_score(score)
-```
+### Adım 2: Label Node Ekle
 
-**Kod Açıklaması:**
+Sahneye bir **Label** node'u ekleyeceğiz. Label'ın görevi ekrana metin çizmektir.
 
-- `$HUD.update_score(score)`: Main sahnesinden HUD'a o anki skoru gönderir ve arayüzü günceller.
-- `$HUD.show_message(...)`: Ekrandaki etiketi doğrudan yazmak yerine, HUD içinde tanımladığımız fonksiyona "Get Ready" veya benzeri metinleri yollayarak onun halletmesini sağlar.
+Scene doku'daki **"Add Child Node"** butonuna ya da **"Other Node"** seçeneğine tıkla. **Create New Node** penceresi açılır:
 
-**Temizlik Önemlidir (Groups Kullanımı):**
+![Node Oluşturma Penceresi](/assets/images/nodes_and_scenes_03_create_node_window.webp)
+*Create New Node penceresi — yüzlerce node türü arasından seçim yapabilirsin*
 
-Yeni bir oyun başlatsak bile eski düşmanlar sahnede süzülmeye devam eder. Her yeni oyunda sahneyi düşmanlardan temizlememiz lazım. Mob sahnesine gidin, Node sekmesinin hemen solundaki **Groups** (Gruplar) sekmesini açın ve "mobs" adında grubunuzu yaratın. Artık üretilen her düşman klonu bu grubun üyesidir.
+Arama kutusuna `Label` yaz, listede filtrele. **Label** node'una tıkla ve pencerenin altındaki **Create** butonuna bas.
 
-Bir gruba hitap etmek için Node aramamıza gerek yok. Main scriptindeki `new_game` içerisine şu kodu ekleyin:
+![Label Node Seçimi](/assets/images/nodes_and_scenes_04_create_label_window.webp)
+*Label node'unu seçip Create'e tıklıyoruz*
 
-`get_tree().call_group("mobs", "queue_free")` (Sahnede kim "mobs" grubundaysa `queue_free` yani ölme emrini yolla demektir!)
+### Adım 3: Sahneyi İncele
 
-![Groups Sekmesi](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhVhGbUAYdeN-SzScS9-E-ShYQA3H8nOg-MlZQ2cUoGWNi1AywVtYsKTRocIo1R9ySX6fUCSD8qA22O2x-m5QErypMgxMLXjgb5rn5wtyiH2fwxtDBxU2lC5HktYPLv35KnJAg7S9ky4Ccv3gqy0tivV4MkxMrHtzVc2UHKBQ2I1Hwh5V-eCE2JgKTynA/s1600/group_tab.webp)
+Label node'u eklediğinde birkaç şey aynı anda gerçekleşir:
 
-## 5. Ses Efektleri, Arkaplan Rengi ve Oyun Tamam!
+- Editör **2D çalışma alanına** geçer (çünkü Label bir 2D node'udur)
+- Label, viewport'un sol üst köşesinde **seçili olarak** belirir
+- Sol taraftaki **Scene doku**'nda node görünür
+- Sağ taraftaki **Inspector doku**'nda node'un özellikleri listelenir
 
-Arkaplan için `Main` düğümüne çocuk olarak `ColorRect` atın ve listelendiğinde diğer düğümlerden en üstte durduğuna emin olun çünkü arkada olması gerekir! Rengini inspector'dan değiştirebilir ve Anchor'ı "Full Rect" yapabilirsiniz.
+![Label Eklenmiş Editör](/assets/images/nodes_and_scenes_05_editor_with_label.webp)
+*Label node'u eklendikten sonra editör bu hâle gelir*
 
-Ses için Main düğümüne iki adet `AudioStreamPlayer` yükleyin: isimleri `Music` ve `DeathSound`. Müzik dosyalarını ekleyin. Müziğin sonsuz döngüde ("Loop") olması için dosyaya sağ tık "Make Unique" deyin ve Stream altındaki ticki açın.
+### Adım 4: Text Özelliğini Değiştir
 
-Ve işte son satırlar! Seslerin çalması için `main.gd` içindeki yerlerine eklentileri yapın:
+Şimdi Label'ın **Text** özelliğini değiştireceğiz. Sağdaki **Inspector doku**'na git, `Text` alanını bul ve içine `Hello World` yaz.
 
-```gdscript
-func new_game():
-    $Music.play()
+Yazdıkça metnin viewport'ta belirdiğini göreceksin.
 
-func game_over():
-    $Music.stop()
-    $DeathSound.play()
-```
+![Label Text Özelliği](/assets/images/nodes_and_scenes_06_label_text.webp)
+*Inspector'da Text özelliğine "Hello World" yazıyoruz*
 
-**Kod Açıklaması:**
+> 💡 **İpucu:** Inspector'da listelenen herhangi bir özelliği bu şekilde düzenleyebilirsin. Text sadece başlangıç için iyi bir örnek.
 
-- `$Music.play()`: Yeni oyun başladığında müzik dosyasını en baştan oynatmaya başlar.
-- `$Music.stop()`: Oyuncu düşmana çarpıp `game_over` olduğunda arkaplan müziğini anında keser.
-- `$DeathSound.play()`: Müzik durduğu saniye "Ölüm" ses efektini anlık olarak tek sefer çalar.
+### Adım 5: Label'ı Ortaya Taşı
 
-> **Not:** Ses dosyası olarak wav, mp3 veya ogg kullanabilirsiniz. Zevkinize göre istediğiniz müzik ve efekti proje klasörüne koyup kullanabilirsiniz.
+Araç çubuğundan **taşıma (move) aracını** seçerek Label'ı viewport'ta istediğin yere sürükleyebilirsin. Onu görünür dikdörtgenin ortasına taşı.
 
-İşte hepsi bu! 2D alanında kusursuz mini bir eğitim oyununu baştan sona yazdınız. Kendinizi tebrik edebilirsiniz. Bir sonraki bölümde buluşuncaya dek Godot Engine dünyasında güzel yolculuklar!
+![Taşıma Aracı](/assets/images/nodes_and_scenes_07_move_tool.webp)
+*Taşıma aracıyla Label'ı viewport'un ortasına konumlandırıyoruz*
+
+Editörde sahne bu şekilde görünmeli:
+
+![Hello World Metni Viewport'ta](/assets/images/nodes_and_scenes_08_hello_world_text.webp)
+*"Hello World" metni viewport'ta ortada konumlandırılmış hâlde*
+
+---
+
+## Sahneyi Çalıştır
+
+Her şey hazır! Sahneyi çalıştırma zamanı.
+
+Ekranın sağ üst köşesindeki **Run Current Scene** butonuna tıkla ya da **F6** tuşuna bas (macOS'ta Cmd + R).
+
+![Sahne Çalıştırma Butonu](/assets/images/nodes_and_scenes_09_play_scene_button.webp)
+*"Run Current Scene" butonu — sahneyi test etmek için kullanılır*
+
+Çalıştırmadan önce sahneyi kaydetmen gerektiğini söyleyen bir pencere açılacak. **Save** butonuna tıkla ve dosyayı `label.tscn` olarak kaydet.
+
+![Sahneyi Kaydetme Penceresi](/assets/images/nodes_and_scenes_10_save_scene_as.webp)
+*Sahneyi kaydetmeden çalıştıramazsın — `label.tscn` olarak kaydediyoruz*
+
+> 📁 **Not:** Godot'nun dosya diyaloğu yalnızca proje klasörü içine kaydetmene izin verir. Üstteki `res://` yolu projenin kök dizinini temsil eder ve "resource path" (kaynak yolu) anlamına gelir.
+
+Uygulama yeni bir pencerede açılır ve ekranda `Hello World` metnini göstermelidir. Pencereyi kapat ya da **F8** (macOS'ta Cmd + .) tuşuna basarak çalışan sahneden çık.
+
+![Çalışan Sahnenin Sonucu](/assets/images/nodes_and_scenes_11_final_result.webp)
+*İlk Godot sahnesi başarıyla çalışıyor — "Hello World!" ekranda görünüyor 🎉*
+
+---
+
+## Ana Sahneyi Ayarla
+
+Test için **Run Current Scene** butonunu kullandık. Yanındaki **Run Project** butonu ise projenin **ana sahnesini** ayarlayıp çalıştırmanı sağlar. Bunun için **F5** (macOS'ta Cmd + B) kısayolunu da kullanabilirsin.
+
+![Run Project Butonu](/assets/images/nodes_and_scenes_12_play_button.webp)
+*"Run Project" butonu — projenin ana sahnesini başlatır*
+
+> ⚠️ **Dikkat:** "Run Current Scene" ile "Run Project" farklı şeylerdir. Beklenmedik bir davranışla karşılaşırsan hangi butona bastığını kontrol et.
+
+Butona ilk kez tıkladığında ana sahneyi seçmeni isteyen bir pencere açılır:
+
+![Ana Sahne Seçim Popup'ı](/assets/images/nodes_and_scenes_13_main_scene_popup.webp)
+*Ana sahne ilk kez ayarlanıyor*
+
+**Select** butonuna tıkla ve açılan dosya diyaloğunda `label.tscn` dosyasına çift tıkla:
+
+![Ana Sahne Dosya Seçimi](/assets/images/nodes_and_scenes_14_select_main_scene.webp)
+*`label.tscn` dosyasını ana sahne olarak seçiyoruz*
+
+Artık projeyi her çalıştırdığında Godot bu sahneyi başlangıç noktası olarak kullanacak.
+
+> 📝 **Not:** Ana sahnenin yolu `project.godot` dosyasına kaydedilir. Bu dosyayı doğrudan düzenleyebilir ya da `Project > Project Settings` menüsünden değiştirebilirsin.
+
+---
+
+## Özet
+
+Bu bölümde şunları yaptık:
+
+- Node'ların ve sahnelerin ne olduğunu pekiştirdik
+- Boş bir projede ilk node'umuzu (**Label**) ekledik
+- Inspector'dan node özelliğini (**Text**) düzenledik
+- Sahneyi kaydettik ve çalıştırdık
+- Projenin ana sahnesini ayarladık
+
+| Kavram | Açıklama |
+|---|---|
+| **Node** | Oyunun en küçük yapı taşı, belirli bir görevi var |
+| **Sahne (Scene)** | Node ağacından oluşan, kaydedilebilir ve tekrar kullanılabilir birim |
+| **Inspector** | Seçili node'un özelliklerini düzenlediğin panel |
+| **Run Current Scene** | Sadece açık sahneyi çalıştırır (F6) |
+| **Run Project** | Ana sahneyi başlatır (F5) |
+
+---
+
+## Sıradaki Adım
+
+İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsın? Bu, Godot'nun en güçlü özelliklerinden biri. 🚀
+
+---
+
+*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html) esas alınarak Türkçe olarak hazırlanmıştır.*

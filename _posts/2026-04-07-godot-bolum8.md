@@ -1,5 +1,5 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 8: 3D Dünyaya Giriş ve Karakter Kontrolü"
+title: "Godot Engine Eğitim Serisi - Bölüm 8: Sahne Örneklemesi (Instancing): Şablondan Nesne Üretmek"
 date: 2026-04-07 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
@@ -7,121 +7,219 @@ permalink: /godot-egitim-serisi-bolum-8/
 published: true
 ---
 
-Godot Engine ile ikinci projemizde yepyeni bir boyuta, 3D’ye geçiyoruz! Artık önümüzde geniş bir X, Y (boy) ve Z (derinlik) koordinat sistemi var. Bu yazıda size zemin hazırlamayı, bir 3D oyuncu yaratmayı ve kodla onun fiziksel dünyada ilerlemesini aktaracağım.
+Önceki bölümde bir sahnenin, ağaç yapısında düzenlenmiş node'lardan oluştuğunu öğrendik. Şimdi bu sahneleri nasıl bir şablon gibi kullanabileceğimizi — yani **örnekleme (instancing)** kavramını — ele alacağız. Bu, Godot'nun en güçlü ve en sık kullanılan özelliklerinden biridir.
 
-Başlangıç Asist dosyaları (Sesler, Modeller): [Squash the Creeps Assets (Zip)](https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/3d_squash_the_creeps_starter.zip)
+---
 
-*İndirdiğiniz bu dosya aslında sıfırdan oluşturacağımız 3D oyunumuzun önceden ayarlanmış boş klasörüdür. Zip dosyasını bilgisayarınızda bir klasöre çıkartın. Godot’yu açın ve başlangıçtaki ‘Project Manager’ ekranında “Import” (İçe Aktar) butonuna tıklayın. Çıkarttığınız klasörün içindeki `project.godot` dosyasını bulup seçin. Bu projeyi içe aktarıp açtığınızda, aslında “Squash the Creeps” (3D Oyunumuz) isimli yepyeni projemize giriş yapmış oluyorsunuz. İçerisinde sadece `art/` ve `fonts/` gibi ihtiyacımız olacak tasarım dosyaları var. Kendi sahnelerimizi ve kodlarımızı bu projenin içine kurmaya başlayacağız.*
+## Packed Scene Nedir?
 
-### 1- Oyun Alanının Kutusu (StaticBody3D)
+Projeyi istediğin kadar sahneye bölebilirsin. Her sahne `.tscn` uzantılı bir dosyaya kaydedilir — bu, "text scene" (metin sahne) anlamına gelir. Önceki bölümde oluşturduğumuz `label.tscn` bunun bir örneğiydi.
 
-Godot’da sabit zeminler, harita unsurları `StaticBody3D` sınıfına aittir. Kök düğümü basit bir `Node` olan yeni bir `main.tscn` yarattıktan sonra şu şekilde zeminimizi oluşturalım:
+Bu dosyalara **Packed Scene** denir, çünkü sahnenin içeriğine dair tüm bilgiyi paketlenmiş hâlde saklarlar.
 
-1. Bir `StaticBody3D` (Adı: `Ground` olsun)
-2. Çarpışması için çocuk düğüm olan `CollisionShape3D`.
-3. Görünmesi (boyanması) için çocuk düğüm olan `MeshInstance3D`.
+---
 
-Şimdi `CollisionShape3D` Inspectoründen yeni bir `BoxShape3D` seçip X, Y ve Z “Size” değerlerini (60, 2, 60) girin (2, kalındığı belirtir). `MeshInstance3D` Inspectorü içinden de yeni bir `BoxMesh` seçip aynı değerleri girerek onu görünür kılın. Zeminimizi Grid (ızgaraya) ortalaması için Y eksenindeki konumunu (Position) `-1` yapın. Kapanış için sahnenize `DirectionalLight3D` güneşi ekleyip “Shadows” u açın ve açıyı kırmızı halkasından yamultun. Zemin hazır.
+## Instancing Nedir?
 
-![Zemin Düğümleri](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5RUiWZC-MTgWViFMMxo-gFHVePjpRxJggYKeW8xFrrv1CaFw_w8i2kQBMSyEtPxfUqFFJJwlS86tV-PAhCxphPgQqaW_MGquYsR_aPEC0i_igRBzJd0KwhtOxJ-Zu6aM4NPGTHH2gAUdSlpEwOl48Qk_U8cQmNAbZB7cJNXXSHCvB2qTKCDTi2Edo1g/s1600/05.main_node.webp)
+Bir sahneyi kaydettikten sonra, onu bir **şablon (blueprint)** gibi kullanabilirsin: başka sahnelerde istediğin kadar çoğaltabilirsin. Bu işleme **instancing (örnekleme)**, üretilen her kopyaya ise **instance (örnek)** denir.
 
-![Zemin Boyutları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEZQzSJMptYpXwh9ZtFh8lDfqG1fCkBK3XoYxajnROQdNOO0xNNDx_VBiXNlhCvi0r5X-_Gvc02dj-PoZBUz9LWWBpL9xV-KkhT_rvE7ovvrQNLXZRl0reS1arOMaecl72_4-p88yriqEgl0tZ1ZA0JlX8SZkebM3cFNSf3mGd5TfPo5IwXiI9ft2CLg/s320/09.box_size.webp)
+Somutlaştırmak için bir örnek düşünelim: **Top (Ball) sahnesi.**
 
-![Gölgeleri Açmak](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiE_r5vv2dwftcoijk2LCFx9iZsgVu2cMrS-S6NPTf4knGqfmjM2R_Mc8vY1kNwGe_von3hBI-XHpJvSfIwBoPoRbEE-z-vsrr8hEYh9QDFYj8h-70O6KKq1IPdsRLl85KTCKgsiR-LIUjEfHSXeRZhk_W-DhD-lX2BK5YuCnN4I-gfbaJHsQRQulgCBg/s320/16.turn_on_shadows.webp)
+Bu sahne şu node'lardan oluşuyor:
+- `RigidBody2D` (kök node, "Ball" adında) — topun düşmesini ve duvarlara çarpmasını sağlar
+- `Sprite2D` — topun görseli
+- `CollisionShape2D` — çarpışma alanı
 
-### 2- Oyuncu (CharacterBody3D) ve Gözleri (Pivot)
+![Top Sahnesi Yapısı](/assets/images/instancing_ball_scene.webp)
+*ball.tscn — bir topu temsil eden sahne. Kök node RigidBody2D.*
 
-Yeni sahnemizde oyuncu için `CharacterBody3D` (Adı `Player` olsun) açıyoruz.
+Bu sahneyi kaydettikten sonra başka sahnelere defalarca ekleyebilirsin. Her instance editörde tek bir node gibi görünür; iç yapısı gizlenir. Her kopya benzersiz bir isme sahip olur.
 
-**Pivot Tekniği:** Modellerin kendi referans noktası yerine bizim eksenimizde dönmesini istiyorsak, ona `Node3D`den oluşan bir `Pivot` düğümü verip modeli o pivotun altında tutarız.
+![Birden Fazla Top Instance'ı](/assets/images/instancing_ball_instances_example.webp)
+*Aynı ball.tscn sahnesinden üretilen birden fazla instance — her biri bağımsız davranır*
 
-- `Player`'a bir adet `Node3D` atayın ve adını `Pivot` koyun.
-- FileSystem içinde bulunan `art/player.glb` model dosyasını sahnede direkt `Pivot` içine sürükleyerek bırakın. İsmini `Character` yapın.
-- Bu da fiziksel olduğu için `Player`'a geri dönerek `CollisionShape3D` bağlayıp bir `SphereShape3D` verin ve modelin içine oturacak şekilde büyütün. Merkezinin zemine değdiğinden emin olup sahneyi `player.tscn` olarak kaydedin.
+Her instance, kaynak sahnedeki yapı ve özellikleri miras alır. Ancak her birini **bağımsız olarak** değiştirebilirsin: zıplama kuvveti, ağırlık veya sahne tarafından sunulan herhangi bir özellik.
 
-![Oyuncu Düğümleri](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCa-pGfHQR3gppiHIwXry0Qz7OiG8c-40LiOrS48AbksghV22toYQm5FIQDwiQE7m9Aik01-Rq8oLabJdhuXWEDemb75jKiv9botaCErWOV9xpH9yea5Ter3w4L0AqRTisIU4ELxroQ8aIDl3811LFC9dYxDlv9HTBZ8rmRK7BWbGYlWcXQEatYSj2Aw/s1600/player_scene_nodes.webp)
+---
 
-![Oyuncu Collision](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiR-QpJ5_HI-pFVnVoNbyMUr_4zVqeeFIF2S6lVJPXg4DSaFyYgUb9s0NYK3rspgUsSC1UMNaVeKDj_oKTBcpplyg9mNMn5qv8_fveZ3JAYtvN2u1DVRmodSq1Q-h8sNhVqww2Tj4vUE8kcKeTNugyl7Fp8DK5uBVnnIY1UoRQfGmrBo3cTtVPdz0N8Nw/s320/player_coll_shape.webp)
+## Pratik: Starter Projeyi İnceleyelim
 
-### 3- Input Map Ayarları ve Kodlama
+Instancing'i pratikte görmek için Godot'nun hazırladığı örnek projeyi kullanacağız.
 
-Godot Project Settings -> Input Map menüsünden şu girdileri Yaratın ve Klavyeniz/Gamepadiniz için uygun okları, analogları atayın:
+🔗 Projeyi şu adresten indir: [instancing_starter.zip](https://docs.godotengine.org/en/stable/_downloads/instancing_starter.zip)
 
-- `move_left`, `move_right`, `move_forward` (ileri, W), `move_back` (geri, S), `jump`.
+Arşivi bilgisayarına çıkart. Ardından Godot'yu aç ve **Project Manager**'dan **Import** butonuna tıkla.
 
-Şimdi `Player`'a script’imizi ekleme vakti (Boş kalıp ‘Empty’ olarak açın).
-2D de olan `_process(delta)`'yi unutun, fiziksel hareket varsa Frame bağımsız stabil çalışan `_physics_process(delta)` kullanılır.
-Ayrıca bir objeyi döndürmek için Vector3’ün `.normalized()` ayarı ve objenin `basis`'i (temeli) kullanılır.
+![Import Butonu](/assets/images/instancing_import_button.webp)
+*Project Manager'daki Import butonu*
 
-![İnput Atamaları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjC4DR53H4q84GbLszhyow_rWsFN47A0v1kQn8zybA_ZKtg5ssSrBiJVFVo0eBAsjassJ0x9-KvnN3mX8dzm0hzePB_M64p83gLVm91mJBApLwn4wtYStzV1ldf9vrQ5iaAehNXQ6Z0LWAKZ9JOj5UtyuqRGOkhtfU8PGr75BKl7Pf7Te6297gbcecz1g/s320/input-mapping-completed.webp)
+Açılan pencerede çıkarttığın klasöre git ve `project.godot` dosyasına çift tıkla.
 
-![Gamepad İnput](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi54_qDIYSqZXktcSTLYfUqw0FCVNxO_ny5fge-9hwtn3lebte8HftNL1ByazRTESgX_dVxNbMX1qbMDtcM-GyAB9L_kc815a3iAcjl2AjJvmAm0CzvXWe5iewfKCk9uy_VwjPCDnWv2C5VJSg2XcF0SemZrnLnmrdviFDUDSr6bNbY3h-pgrjRS_dXvw/s320/joystick_axis_input.webp)
+![project.godot Dosyası Seçimi](/assets/images/instancing_import_project_file.webp)
+*project.godot dosyasını seç*
 
-Kodumuzun tüm hali şöyledir:
+Son olarak **Import & Edit** butonuna tıkla:
 
-```gdscript
-extends CharacterBody3D
+![Import & Edit Butonu](/assets/images/instancing_import_and_edit_button.webp)
+*Import & Edit ile proje açılır*
 
-@export var speed = 14 # Hızımız. (3D dünyada her bir birim 1 metredir!)
-@export var fall_acceleration = 75 # Yükseklikten düşme (yerçekimi) ivmesi.
+> ℹ️ Projenin daha eski bir Godot sürümünde açıldığına dair bir uyarı görürsen sorun değil. **OK** tıkla.
 
-var target_velocity = Vector3.ZERO # Her frame'de hızı hafızada tutmak için.
+Proje iki packed scene içeriyor: topun çarptığı duvarları içeren `main.tscn` ve `ball.tscn`. Main sahnesi otomatik açılmalı. Boş bir 3D sahne görüyorsan ekranın üst kısmındaki **2D** butonuna tıkla.
 
-func _physics_process(delta):
-    var direction = Vector3.ZERO
+![2D Ekranı Seç](/assets/images/instancing_2d_scene_select.webp)
+*3D yerine 2D görünümünü seç*
 
-    # Yönümüzü saptama (Z Ekseni Derinliktir. Z + ise Dışa (Kameraya - Geriye) gelir.)
-    if Input.is_action_pressed("move_right"):
-        direction.x += 1
+Sahne şöyle görünmelidir:
 
-    if Input.is_action_pressed("move_left"):
-        direction.x -= 1
+![Main Sahnesi](/assets/images/instancing_main_scene.webp)
+*main.tscn — topun zıplayacağı duvarlar hazır*
 
-    if Input.is_action_pressed("move_back"):
-        direction.z += 1
+---
 
-    if Input.is_action_pressed("move_forward"):
-        direction.z -= 1
+## Top Instance'ı Ekle
 
-    # Yön bulununca normalize ediyoruz ki çarpraz giderken ekstra hız almasın.
-    if direction != Vector3.ZERO:
-        direction = direction.normalized()
+Main node'a bir top ekleyelim.
 
-    # Pivotu yani dolaylı olarak modeli yön iskeletine baktırıyoruz!
-    $Pivot.basis = Basis.looking_at(direction)
+**Scene doku**'nda `Main` node'una tıklayarak seç. Ardından Scene doku'nun üst kısmındaki **zincir simgesi (link icon)** butonuna tıkla. Bu buton, seçili node'a bir sahne instance'ı eklemeyi sağlar.
 
-    # Hedef Hızımızı (Yer Zemin Hızı) hesaplayalım.
-    target_velocity.x = direction.x * speed
-    target_velocity.z = direction.z * speed
+![Sahne Bağlantı Butonu](/assets/images/instancing_scene_link_button.webp)
+*Zincir simgesi — bir sahneyi instance olarak ekleme butonu*
 
-    # Havadaysa Düşüş Hızı Hesabı
-    if not is_on_floor():
-        target_velocity.y = target_velocity.y - (fall_acceleration * delta)
+Açılan pencerede `ball` sahnesine çift tıkla:
 
-    # Nihai Hedef Hızımızı motora bildir, gerisini o halletsin.
-    velocity = target_velocity
-    move_and_slide()
-```
+![Instance Penceresi](/assets/images/instancing_instance_child_window.webp)
+*ball.tscn sahnesini instance olarak seçiyoruz*
 
-**Kod Açıklaması:**
-- `extends CharacterBody3D`: Bu scriptin fizik kurallarıyla hareket eden (yerçekimine uyan, duvara takılan) bir karaktere ait olduğunu belirtir.
-- `_physics_process(delta)`: 3D fizik hesaplamalarının yapıldığı yerdir. `_process` gibi PC hızına göre değil, motorun sabit fizik hızında (genelde saniyede 60 kez) çalışır.
-- `direction.x / direction.z`: 3D dünyada ileri/geri Z eksenidir, sağ/sol X eksenidir. Yukarı/aşağı ise Y ekseniyle (zıplama, düşme) kontrol edilir.
-- `$Pivot.basis`: 3D’de bir objenin baktığı yön, duruş açısı (rotasyonu) `basis` olarak geçer. Modeli taşıyan Pivot düğümümüzü…
-- `Basis.looking_at(direction)`: …bulduğumuz yöne doğru (`direction`) doğrudan anında baktırır (çevirir).
-- `if not is_on_floor():`: Karakterin altında yer/zemin yoksa (havadaysa)…
-- `target_velocity.y - (fall_acceleration * delta)`: Mevcut Y hızından, her saniye yerçekimi ivmesini çıkarır ki giderek hızlanan gerçekçi bir düşüş olsun.
-- `move_and_slide()`: CharacterBody3D’lerin en kritik fonksiyonudur. Hazırladığımız tüm yön, zıplama ve ivmeleri (`velocity`) alıp karakterin fizikli gerçek hareketini yapar, zeminde veya duvarda doğru kaymasını sağlar.
+Top viewport'un sol üst köşesinde belirir:
 
-Bu kadar! Yerçekiminden dolayı düştük mü (`is_on_floor()` false ise Y eksenim ivme hızında aşağı inmeye başlar) diye havada tarttık. Cisimleri kaydırarak duvara yapışmak yerine sürtünmesi için `move_and_slide` dedik. O bizim yerimize hesapladı.
+![Top Eklendi](/assets/images/instancing_ball_instanced.webp)
+*Top instance'ı sahneye eklendi*
 
-### 4- Kameranın Entegrasyonu
+Topa tıkla ve görünümün ortasına sürükle:
 
-Main sahnemize gidiyor ve Player sahnemizi Zincir butonuyla odaya dahil ediyoruz. Fakat Play tuşuna basarsanız hiçbir şey göremezsiniz. Çünkü 3B dünyada size her zaman çekim yapacak aktif bir `Camera3D` düğümü lazımdır. Yaratın.
-Omuz arkasından ve havadan izometrik (Retro rpg usulü) bir his vermek için Kamera sistemini şöyle kuruyoruz:
+![Top Ortalandı](/assets/images/instancing_ball_moved.webp)
+*Topu sahnenin ortasına taşıyoruz*
 
-1. Yine Pivot yapıyoruz: Main düğümüne `Marker3D` ekleyip (adı `CameraPivot`) Kamerayı onun altına `Camera3D` koyuyoruz.
-2. `Camera3D`'yi boşlukta Mavi okun üzerine getirip eksende geriye (`Z: 19`) çekiyoruz.
-3. Tepeden bakması için `CameraPivot`'a gidip kırmızı okundan aşağı `X: -45` derece büküyoruz (Rotate ediyoruz).
+**F5** (macOS'ta Cmd + B) ile oyunu çalıştır. Topun düştüğünü görmelisin!
 
-Perspektif yerine o eski Mario, Sonic usülü izometrik görünüm için de Camera3D seçiliyken `Projection` değerini `Orthogonal` yapıp, görüş alanının (Size) `19` olarak ayarlanmasını sağlayın. Hepsi bu! Artık etrafta sekiz yöne koşturabilen tatlı yeşil bir topuz var. Gelecek bölümde üzerine basıp ezebileceğimiz pis düşmanları yerleştireceğiz, görüşmek üzere!
+---
+
+## Birden Fazla Instance Oluştur
+
+Şimdi daha fazla top ekleyelim. Top hâlâ seçiliyken **Ctrl + D** (macOS'ta Cmd + D) kısayoluyla **duplicate (kopyala)** komutunu çalıştır. Yeni topu farklı bir konuma sürükle.
+
+![Top Kopyalandı](/assets/images/instancing_ball_duplicated.webp)
+*Ctrl+D ile top kopyalandı — yeni bir instance oluştu*
+
+Bu işlemi istediğin kadar tekrarlayarak birden fazla top ekleyebilirsin:
+
+![Birden Fazla Top](/assets/images/instancing_main_scene_with_balls.webp)
+*Sahneye birden fazla top instance'ı eklendi*
+
+Oyunu tekrar çalıştır. Her topun **birbirinden bağımsız** düştüğünü göreceksin. İşte instancing tam olarak budur: her biri şablon sahneden üretilmiş, ama birbirinden bağımsız çalışan kopyalar.
+
+---
+
+## Sahneleri ve Instance'ları Düzenlemek
+
+Instancing'in iki farklı düzenleme katmanı var:
+
+**1. Tek bir instance'ı değiştir:**
+Inspector'dan herhangi bir instance'ın özelliğini değiştirebilirsin — bu değişiklik yalnızca o instance'ı etkiler, diğerlerini etkilemez.
+
+**2. Tüm instance'ları aynı anda güncelle:**
+Kaynak sahneyi (`ball.tscn`) açıp orada bir değişiklik yaptığında, projedeki tüm Ball instance'ları otomatik olarak güncellenir.
+
+### Tüm Topların Zıplama Kuvvetini Artır
+
+FileSystem'de `ball.tscn` dosyasına çift tıklayarak aç:
+
+![ball.tscn Açıldı](/assets/images/instancing_ball_scene_open.webp)
+*ball.tscn dosyasını açıyoruz*
+
+Scene doku'nda **Ball** node'unu seç. Sağdaki Inspector'da **PhysicsMaterial** özelliğini bul ve üzerine tıklayarak genişlet:
+
+![PhysicsMaterial Genişletildi](/assets/images/instancing_physics_material_expand.webp)
+*PhysicsMaterial özelliğini genişletiyoruz*
+
+**Bounce** değerini `0.5` olarak ayarla (alana tıkla, `0.5` yaz, Enter'a bas):
+
+![Bounce Değeri Güncellendi](/assets/images/instancing_property_bounce_updated.webp)
+*Bounce değeri 0.5 olarak ayarlandı*
+
+Kaydet ve **F5** ile oyunu çalıştır. Tüm topların çok daha fazla zıpladığını göreceksin — çünkü kaynak sahnedeki değişiklik tüm instance'lara yansıdı.
+
+### Tek Bir Topu Farklılaştır
+
+Şimdi viewport üstündeki sekme çubuğundan **Main sahnesine** geri dön:
+
+![Sahne Sekmeleri](/assets/images/instancing_scene_tabs.webp)
+*Sekme çubuğundan Main sahnesine dönüyoruz*
+
+Instance'lardan birini seç ve Inspector'da **Gravity Scale** değerini `10` olarak ayarla:
+
+![Gravity Scale Değeri](/assets/images/instancing_property_gravity_scale.webp)
+*Tek bir instance'ın Gravity Scale değeri 10'a yükseltildi*
+
+Özelliğin yanında **gri bir "revert" butonu** belirir:
+
+![Revert Simgesi](/assets/images/instancing_property_revert_icon.webp)
+*Revert ikonu — bu özelliğin kaynak sahnedeki değerin üzerine yazıldığını gösterir*
+
+Bu ikon, instance'da **kaynak sahnedeki değerin üzerine yazıldığını** gösterir. Kaynak sahnede bu özelliği değiştirsen bile bu instance'taki değer korunur. Revert ikonuna tıklarsan değer, kaynak sahnedeki hâline geri döner.
+
+Oyunu yeniden çalıştır. Bu topun diğerlerinden çok daha hızlı düştüğünü göreceksin.
+
+> 💡 **Not:** PhysicsMaterial değerlerini tek bir instance için değiştirmek istersen, Inspector'da PhysicsMaterial'e sağ tıklayıp **Make Unique** seçeneğini kullanman gerekir. Kaynaklar (Resources), Godot'nun önemli bir konseptidir ve ilerleyen derslerde ele alacağız.
+
+---
+
+## Tasarım Dili Olarak Instancing
+
+Instance'lar ve sahneler, Godot'yu diğer motorlardan ayıran bir **tasarım dili** sunar. Godot sıfırdan bu konsept etrafında inşa edilmiştir.
+
+Godot ile oyun geliştirirken **MVC (Model-View-Controller)** veya **Entity-Relationship** gibi mimari kod kalıplarını bir kenara bırakmanı öneririz. Bunlar yerine şu soruyu sor: **"Oyuncunun göreceği elemanlar neler?"** Kodunu bu elemanlara göre yapılandır.
+
+Örneğin bir top-down shooter oyununu şöyle bölebilirsin:
+
+![Shooter Oyun Diyagramı](/assets/images/instancing_diagram_shooter.png)
+*Basit bir shooter oyunun sahne diyagramı — her kutu bir sahneye karşılık gelir*
+
+Bu tür diyagramı neredeyse her oyun türü için çıkarabilirsin. Oklarlar hangi sahnenin hangisini instance ettiğini gösterir.
+
+Daha karmaşık bir örnek — tonlarca varlık ve iç içe geçmiş elemanlara sahip açık dünya oyunu:
+
+![Açık Dünya Diyagramı](/assets/images/instancing_diagram_open_world.png)
+*Açık dünya oyunu sahne diyagramı — her eleman bir sahne, instance'lar hiyerarşiyi oluşturur*
+
+Bu yaklaşımın avantajı: **Sahne tabanlı tasarım geliştirmeyi hızlandırır.** Çoğu oyun bileşeni doğrudan bir sahneye karşılık geldiğinden, soyut mimari kodlara çok az ihtiyaç duyarsın. Oyun mantığına odaklanabilirsin.
+
+Godot editörü programcılar, tasarımcılar ve sanatçılar için eşit derecede erişilebilir olacak şekilde tasarlanmıştır. Tipik bir ekipte 2D/3D sanatçılar, seviye tasarımcıları, oyun tasarımcıları ve animatörler hepsi aynı editörde çalışabilir.
+
+---
+
+## Özet
+
+| Kavram | Açıklama |
+|---|---|
+| **Packed Scene (.tscn)** | Bir sahnenin paketlenmiş hâli; şablon işlevi görür |
+| **Instance** | Bir packed scene'den üretilen bağımsız kopya |
+| **Duplicate (Ctrl+D)** | Mevcut instance'ı kopyalayarak yeni instance üretir |
+| **Kaynak sahnede değişiklik** | Tüm instance'ları günceller |
+| **Instance'da değişiklik** | Yalnızca o instance'ı etkiler, revert ile geri alınabilir |
+
+Instancing ile şunları elde edersin:
+- Oyunu **yeniden kullanılabilir bileşenlere** bölme
+- Karmaşık sistemleri **yapılandırma ve kapsülleme**
+- Oyun projesinin yapısını **doğal biçimde düşünme** dili
+
+---
+
+## Sıradaki Adım
+
+Instancing kavramını kavradık. Bir sonraki bölümde **GDScript ile scripting**'e giriş yapacağız — node'lara nasıl davranış kazandırılır, bunu keşfedeceğiz! 🚀
+
+---
+
+*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/instancing.html) esas alınarak Türkçe olarak hazırlanmıştır.*

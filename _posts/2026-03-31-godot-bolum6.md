@@ -1,5 +1,5 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 6: Düşmanları Yaratmak ve Ana Sahne"
+title: "Godot Engine Eğitim Serisi - Bölüm 6: Godot'nun Tasarım Felsefesi: Motor Neden Böyle Çalışıyor?"
 date: 2026-03-31 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, düşman, rigidbody2d, path2d, timer]
@@ -7,155 +7,157 @@ permalink: /godot-egitim-serisi-bolum-6/
 published: true
 ---
 
-Oyunumuzu artık tam bir oyun yapacak ana bileşenlere geldik: Düşmanlardan kaçmak! Önce düşmanları yaratacak, ardından `Main` adı vereceğimiz bir sahnede düşmanlarımızı, oyuncuyu ve genel kuralları birleştireceğiz.
+Her oyun motoru farklıdır ve farklı ihtiyaçlara hitap eder. Sunulan özellikler kadar, motorun **nasıl tasarlandığı** da son derece önemlidir. Çünkü bu tasarım, iş akışını ve oyunun yapısını şekillendirir. Bu yazıda Godot'nun temel tasarım pillerini inceleyeceğiz — böylece motorun neden böyle çalıştığını anlayacak, kararlarının arkasındaki mantığı göreceksin.
 
-## 1. Düşman Sahnesi: RigidBody2D ve Özellikleri
+---
 
-Yeni bir sahne oluşturun. Kök düğüm tipi olarak `RigidBody2D` (Katı Cisim) seçin ve adını `Mob` yapın. Tıpkı Player sahnesindeki gibi çocukları ebeveynle gruplayın (kilit ikonu).
+## Nesne Yönelimli Tasarım ve Kompozisyon
 
-- RigidBody2D yerçekiminden etkilenir ancak uzaydaki düşmanlarımız için bunu istemiyoruz. Gravity Scale değerini 0 yapın.
-- Düşmanların birbirine çarpmasını istemediğimiz için Collision Mask içinden 1. katmanı kaldırın.
+Godot, esnek sahne sistemi ve Node hiyerarşisiyle **nesne yönelimli tasarımı** özünde benimser. Ancak katı programlama kalıplarından uzak durarak oyun yapını sezgisel biçimde oluşturmana olanak tanır.
 
-Sahneye eklenecek alt düğümler:
+### Sahne Kompozisyonu
 
-- **AnimatedSprite2D:** Görselimiz.
-- **CollisionShape2D:** Vurulma alanımız.
-- **VisibleOnScreenNotifier2D:** Ekrandan çıkışları yakalamak için.
+Godot'da sahneleri **birleştirebilir ya da iç içe geçirebilirsin** — bu, iç içe prefab'lara benzer bir yapıdır:
 
-## 2. Düşman Animasyonları ve Çarpışma
+- Bir `BlinkingLight` (yanıp sönen ışık) sahnesi oluştur
+- `BlinkingLight`'ı kullanan bir `BrokenLantern` (kırık fener) sahnesi oluştur
+- Sonra bu `BrokenLantern`'larla dolu bir şehir yarat
 
-`AnimatedSprite2D` Sprite Frames'ini yaratın, 3 adet animasyon oluşturun: `fly`, `swim`, `walk`. (Her biri üç saniye hızında çalışsın, 'Animation Speed' = 3). Sprite'ı çok az küçülterek Scale değerini `(0.75, 0.75)` yapın.
+Şimdi `BlinkingLight`'ın rengini değiştir ve kaydet — şehirdeki tüm `BrokenLantern`'lar anında güncellenir. Tek tek müdahale etmene gerek yok.
 
-Sonrasında CollisionShape2D için 'CapsuleShape2D' seçin, ancak kapsül dikeydir, düşmanlarımız yatay olduğu için Transform > Rotation kısmından `90` derece çevirin ve boyutu tam olarak düşmana oturtun. `mob.tscn` olarak kaydedin.
+![Godot Tasarım Örneği 1](/assets/images/engine_design_01.png)
+*Sahneler iç içe geçebilir; bir sahneyi değiştirmek, onu kullanan tüm sahneleri etkiler*
 
-![Collision Mask Ayarı](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjfOKbCqtGo4sTI2vd1Hh5LvVtZaDrTkNUJn0kEo18bNc4KOIwngiqTcmUk7uPy3rJWCxR7BOp2NEdxDb_cFZjwkSlNWp-_vn8l_9RnzxRjrhrvsZDdMlZWM6bO10ef27N5NBTQkRI6JtYHTgwxgb2U7j5iDTmTBJfomiO1r2M4kwT7QwFRzy9-3KNafg/s320/set_collision_mask.webp)
+### Sahnelerden Kalıtım (Inheritance)
 
-![Mob Animasyonları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHTNmDVHSG6Gd0girHieJLusoA_iJJcXJ8Fjm5bO-q8Ml-uMMA-_NprWRgdrnnGf4By0KQ1M8-Hz5_Blxijgwwq0HVtCzeOyyuzEftp6LhGUPy9T6Z67Yj8-3AVQk_yIrEU2nIzbzz9sCkq26ZN9-dSjHQ71bRvhk8rChyphenhyphenx7rIU5OiXtYy7QvEx1b9Ww/s320/mob_animations.webp)
+Godot'da herhangi bir sahneden **kalıtım** da alabilirsin. Bir Godot sahnesi şunlardan herhangi biri olabilir:
 
-## 3. Düşman Davranışı (Kod)
+- Bir silah
+- Bir karakter
+- Bir kapı
+- Bir seviye ya da seviyenin bir bölümü
 
-Düşmanımız rastgele üreyecek ve rastgele bir animasyon tipiyle ekranda süzülecek. `mob.gd` isimli bir script ekleyin.
+Bu yapı, saf kodda bir **sınıf (class)** gibi davranır — ama sahneni editörü kullanarak, sadece kodla ya da ikisini harmanlayarak tasarlama özgürlüğüne sahipsin.
 
-```gdscript
-extends RigidBody2D
+Örneğin `Character` adında bir temel karakter sahnesi oluşturup, ondan kalıtım alarak `Magician` (büyücü) sahnesi yapabilirsin. `Character` sahnesinde bir değişiklik yaptığında, `Magician` da otomatik olarak güncellenir.
 
-func _ready():
-    var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
-    $AnimatedSprite2D.animation = mob_types.pick_random() # Animasyonu rastgele seç
-    $AnimatedSprite2D.play()
-```
+![Godot Tasarım Örneği 2](/assets/images/engine_design_02.png)
+*Sahnelerden kalıtım almak, karakterler arasında ortak özellikleri kolayca paylaşmanı sağlar*
 
-**Kod Açıklaması:**
+### Node'lar Bileşen (Component) Değildir
 
-- `extends RigidBody2D`: Düşmanımızın fizikli bir cisim (`RigidBody2D`) özelliklerini taşıdığını gösterir.
-- `$AnimatedSprite2D.sprite_frames.get_animation_names()`: Düşmanların içindeki "fly, swim, walk" isimli animasyon isimlerini doğrudan Godot sisteminden çeker.
-- `var mob_types = Array(...)`: Çektiği o animasyon isimlerini `["fly", "swim", "walk"]` yazılımsal bir diziye (Array) dönüştürür.
-- `.pick_random()`: Bu nesne her yaratıldığında (`_ready`), tanımlanan 3 animasyondan rastgele herhangi birini seçer ve atar. Böylece her düşman birbirinden farklı görünür.
-- `play()`: Seçilen animasyonu oynatmaya başlar.
+Bazı motorlarda nesneler bileşenlerden oluşur. Godot'da ise node'lar **birbirinden bağımsız** çalışır. Fizik gövdesinin kullandığı çarpışma şekilleri (collision shapes) gibi bazı istisnalar olsa da, çoğu node birbirinden habersiz şekilde işlev görür.
 
-Ekranda gereksiz yer kaplamaması için, `VisibleOnScreenNotifier2D` düğümünün `screen_exited` (ekrandan çıktı) sinyalini `mob.gd` belgesine bağlayın ve içine alttaki kodu yazın:
+Örneğin `Sprite2D`, aynı zamanda bir `Node2D`, bir `CanvasItem` ve bir `Node`'dur. Üç üst sınıfının tüm özelliklerini ve yeteneklerini miras alır: dönüşümler (transforms), özel şekil çizimi, özel shader ile render etme gibi.
 
-```gdscript
-func _on_visible_on_screen_notifier_2d_screen_exited():
-    queue_free() # Düğümü güvenlice sahneden sil.
-```
+---
 
-**Kod Açıklaması:**
+## Her Şey Dahil Paket (All-Inclusive Package)
 
-- `_on_..._screen_exited()`: Düğüm (Mob) ekranın dışına çıktığında tetiklenen fonksiyondur.
-- `queue_free()`: İlgili nesneyi (düşmanı) Godot'un silinme kuyruğuna gönderir ve ilk fırsatta RAM'den siler. Bu işlem olmazsa, kenarlara kaçan düşmanlar oyun arka planında milyonlara ulaşıp cihazın hafızasını dondururdu.
+Godot, en yaygın ihtiyaçları karşılamak için **kendi araçlarını** sunmaya çalışır:
 
-## 4. Ana Sahneyi Kurmak
+- Kod editörü (scripting workspace)
+- Animasyon editörü
+- Tilemap editörü
+- Shader editörü
+- Hata ayıklayıcı ve profilleyici
+- Yerel ve uzak cihazlarda **hot-reload** (çalışırken yeniden yükleme)
 
-Farklı sahnelerde oluşturduğunuz objeleri tek bir ana kurguya oturtma zamanı. `Node` tipli yeni bir sahne oluşturup adını `Main` yapın.
+Bu araçların amacı, oyun geliştirmek için **eksiksiz bir paket** ve kesintisiz bir kullanıcı deneyimi sunmaktır.
 
-- `player.tscn` dosyasını zincir ("Instance Child Scene") butonuyla sahnenize çağırın.
-- 3 adet `Timer` yaratın: Adları `MobTimer` (0.5), `ScoreTimer` (1), `StartTimer` (2 saniye bekleme süresi, "One Shot" aktif olacak).
-- Oyuncunun başlayacağı noktayı belirlemek için 1 adet `Marker2D` ekleyin ve adını `StartPosition` (G:240, Y:450) yapın.
+Dışarıdan araç kullanmak istersen Godot'nun import eklentisi sistemi buna da izin verir. GDScript dilinin var olmasının da bir sebebi bu: Oyun geliştiricilerinin ve oyun tasarımcılarının ihtiyaçlarına göre tasarlanmış, motorla ve editörle sıkı sıkıya entegre bir dil.
 
-![Instance Scene](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiHdu-LEW8VIljlue3509LJST5TQwJRVblHa5enQWZtsMijL9HcWjyjED1AHxvGC34znsTxmiMs3cV3wYt5pW3zA26JAqAS_Iep23MYI1LLSEadpW2yHcO7vRq_HK2M47KwCnoF9k4TubHd7APZj7YtwVTmq6QfaRaL80cTD_DAZfBeYCyZCB5UZMlXyA/s1600/instance_scene.webp)
+GDScript ile ilgili bazı özellikler:
 
-## 5. Spawn Sistemi İçin Path2D
+- **Girinti tabanlı sözdizimi** — Python'a benzer, okunması kolay
+- **Tip tespiti** ve statik dil kalitesinde **otomatik tamamlama**
+- `Vector` ve `Color` gibi oyun geliştirmeye özel **yerleşik tipler**
 
-Düşmanların ekranın neresinden geleceğini belirlemek bazen çok kod gerektirir. Godot'un mucizevi düğümlerinden biri olan `Path2D` bu işi mükemmel yapar.
+> 💡 **Not:** GDExtension ile C, C++, Rust, D, Haxe veya Swift gibi derlenen dillerle yüksek performanslı kod yazabilirsin — motoru yeniden derlemeye gerek yok.
 
-Main düğümüne `Path2D` (`MobPath`) ekleyin ve ekranın hemen dış sınırlarını köşe noktalardan seçerek kare çizin. Yolun "saat yönünde" olmasına dikkat edin, böylece düşmanlar ekranın içine bakarak spawnlanacaktır. İçine de `PathFollow2D` (`MobSpawnLocation`) düğümü atın.
+Bir uyarı da ekleyelim: **3D çalışma alanı**, 2D'ye kıyasla daha az yerleşik araca sahip. Karmaşık karakter animasyonları veya arazi düzenleme gibi işler için harici programlara ya da eklentilere ihtiyaç duyabilirsin.
 
-![Path2D Butonları](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPupCBeOaVrquWYM0NMYxRwiquwByYaervAk_LVe2jB6DtL5eM0rqkWj49V6oMQvKJDdRDhnXLiEoMd-XINB2pUnaq65DsHbBIaT8ImDOswVVfm_9LbMxizm_JVAtAzPCVVU6k6EYH8NiqXXSaCEAqRV2TcplzgvXJtH1WBQyah5pQCEth6OFdHUH4dA/s320/path2d_buttons.webp)
+---
 
-![Path2D Çizimi](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPjIojZQtp7MBJM96YHC8sfq1vI2YgXY6LBpyIeR2HGRyFAxUHgQqmf0bXuSkkjZkqx10-qIjtO-oLs0wOZNQu0cqjPFAxD4omkP_4fICBujejPclcWHXfeNJr_rRLEIRkVLGK9_2BpoqbFoN5iWwmYDlXU2RfafGhxI6dOUnkusPY2suU9TUXvGr4ow/s320/draw_path2d.gif)
+## Açık Kaynak (Open Source)
 
-## 6. Ana Kod Dosyası
+Godot, **MIT lisansı** altında tamamen açık kaynaklı bir kod tabanına sahiptir. Bu şu anlama gelir:
 
-`Main` düğümüne `main.gd` scriptini atın.
+- Kaynak kodunu **ücretsiz indirebilir**, kullanabilir, değiştirebilir ve paylaşabilirsin
+- Lisans dosyası korunduğu sürece hiçbir kısıtlama yoktur
+- Godot ile birlikte gelen tüm teknolojiler (üçüncü taraf kütüphaneler dahil) bu açık kaynak lisansıyla yasal olarak uyumlu olmak zorundadır
 
-`@export var mob_scene: PackedScene` (Mob.tscn'yi inspector'dan bu değişkene sürükleyip bırakmayı kesinlikle unutmayın!)
+Bu yüzden Godot'nun büyük çoğunluğu topluluk katılımcıları tarafından sıfırdan geliştirilmiştir. Google AdMob veya FMOD gibi özel araçlar motora dahil edilmez; bunlar üçüncü taraf eklentiler olarak kullanılabilir.
 
-Şimdi `Player`'ın "hit" sinyalini ve üç Timer'ın "timeout" sinyallerini bu scripte bağlayın:
+Açık kaynak olmanın pratik bir avantajı daha var: **Hata ayıklama kolaylığı.** Godot, hatalar için stack trace (hata izi) ile birlikte mesaj yazdırır — hata motorun kendi içinden bile gelse. Kodun ne yaptığını her zaman takip edebilirsin.
 
-```gdscript
-extends Node
+> 💡 **Önemli Not:** MIT lisansı, **yaptığın işi hiçbir şekilde etkilemez.** Motora ya da Godot ile yaptığın şeylere herhangi bir hak iddiası yoktur. Kazandığın para tamamen senindir.
 
-@export var mob_scene: PackedScene
-var score
+---
 
-func game_over(): # Player "hit" olduğunda
-    $ScoreTimer.stop()
-    $MobTimer.stop()
+## Topluluk Odaklı (Community-Driven)
 
-func new_game():
-    score = 0
-    $Player.start($StartPosition.position)
-    $StartTimer.start()
+Godot, topluluğu tarafından, topluluk için ve tüm oyun yapımcıları için geliştirilir. Temel güncellemelere yön veren şey, kullanıcıların ihtiyaçları ve açık tartışmalardır.
 
-func _on_start_timer_timeout():
-    $MobTimer.start()
-    $ScoreTimer.start()
+Birkaç tam zamanlı çekirdek geliştirici olsa da, projenin binlerce katkıcısı bulunmaktadır. Gönüllü programcılar kendilerinin de ihtiyaç duyduğu özellikleri geliştirdiğinden, her büyük sürümde motorun farklı köşelerinde iyileştirmeler görürsün.
 
-func _on_score_timer_timeout():
-    score += 1
-```
+---
 
-**Kod Açıklaması:**
+## Godot Editörü Bir Godot Oyunudur
 
-- `@export var mob_scene: PackedScene`: Ana sahnemizde oluşturacağımız düşman nesnelerinin şablon dosyasını (`mob.tscn`) inspector panelinden sürüklemek için tanımlanan değişkendir.
-- `game_over()`: Oyuncu düşmana çarptığında (hit sinyali tetiklenince) çalışacak fonksiyondur. Skor artış döngüsünü (`ScoreTimer.stop()`) ve düşman yaratma döngüsünü (`MobTimer.stop()`) anında kapatır.
-- `new_game()`: Oyunu başlattığımızda skoru 0'lar, oyuncuyu başlangıç pozisyonuna taşır ve 2 saniyelik bekleme süresini (`StartTimer`) tetikler.
-- `_on_start_timer_timeout()`: 2 saniyelik hazırlık süresi bitince düşmanları (`MobTimer`) ve skor sayımını (`ScoreTimer`) otomatik başlatır.
-- `_on_score_timer_timeout()`: Skor sayacı her saniye sıfırlandığında (`timeout`) tetiklenir ve skoru 1 artırır (`score += 1`).
+Bu belki de Godot'nun en ilginç tasarım kararlarından biridir: **Godot editörünün kendisi, Godot motoruyla çalışır.**
 
-MobTimer için düşmanı yarattığımız kritik kodumuz:
+Editör, motorun kendi UI sistemini kullanır. Projeyi test ederken kod ve sahneleri **hot-reload** edebilir, hatta oyun kodunu editör içinde doğrudan çalıştırabilir.
 
-```gdscript
-func _on_mob_timer_timeout():
-    # 1. Yeni bir Mob (Düşman) Örneği Oluştur.
-    var mob = mob_scene.instantiate()
+Bu şu anlama gelir: Oyunların için kullandığın kodlar ve sahneler, editörü genişletmek için de kullanılabilir. **`@tool`** annotation'ını herhangi bir GDScript dosyasının başına eklersen, o kod editör içinde çalışır.
 
-    # 2. Yolda rastgele bir yer seç
-    var mob_spawn_location = $MobPath/MobSpawnLocation
-    mob_spawn_location.progress_ratio = randf()
+Bu sayede şunları yapabilirsin:
 
-    # 3. Yönü ayarla (dışarıya dik) ve biraz rastgelelik kat
-    var direction = mob_spawn_location.rotation + PI / 2
-    mob.position = mob_spawn_location.position
-    direction += randf_range(-PI / 4, PI / 4)
-    mob.rotation = direction
+- Import ve export eklentileri oluşturmak
+- Özel seviye editörleri gibi eklentiler geliştirmek
+- Projelerinde kullandığın node'lar ve API ile editör scriptleri yazmak
 
-    # 4. Hızı belirle (vektörü açıyla döndür)
-    var velocity = Vector2(randf_range(150.0, 250.0), 0.0)
-    mob.linear_velocity = velocity.rotated(direction)
+![RPG in a Box uygulaması](/assets/images/introduction_rpg_in_a_box.webp)
+*RPG in a Box, Godot ile yapılmış bir voxel RPG editörüdür — Godot'nun UI araçlarını node tabanlı programlama sistemi için kullanır*
 
-    # 5. Sahneye nesneyi çocuk olarak ekle
-    add_child(mob)
-```
+> ℹ️ **Teknik not:** Editörün kendisi C++ ile yazılmıştır ve statik olarak derlenir. Bu yüzden onu `project.godot` dosyası olan normal bir proje gibi içe aktaramazsın.
 
-**Kod Açıklaması:**
+---
 
-- `.instantiate()`: Şablon sahneden (`mob_scene`) bir klon üretir.
-- `.progress_ratio = randf()`: Saat yönünde çizdiğimiz Path2D yolu 0.0 ile 1.0 arasında bir değer alır. `randf()` 0 ile 1 arasında rastgele bir yer seçer ve düşmanı oraya koyar.
-- `direction = mob_spawn_location.rotation + PI / 2`: Yolun o anki çizgisine dik olarak nesneyi içeriye doğru tam 90 derecelik açıya döndürür.
-- `randf_range(-PI / 4, PI / 4)`: Dümdüz çıkmasın diye açıyı hafif sağa veya sola -45 ile +45 aralığında kaydırarak sürpriz katar.
-- `linear_velocity = velocity.rotated(direction)`: RigidBody2D objelerinin ilerleme hızına rastgele 150 ile 250 arasında bir kuvvet, hesaplanan açıda gönderilir.
-- `add_child(mob)`: Klonlanmış nesneyi `Main` sahnesinin bir çocuğu olarak ekler ve oyun akışına koyar.
+## Ayrı 2D ve 3D Motorları
 
-Eğer test etmek isterseniz hemen `_ready` fonksiyonuna `new_game()` fonksiyonunu çağırıp ekleyin ve F5'e basıp oyununuzun tadını çıkarın! Düşman yaratıp yok edebiliyorsunuz! Sıradaki ve son bölümümüz artık ana menü, skor ve arayüz detayları olacak.
+Godot, ayrı **2D ve 3D render motorları** sunar. 2D sahnelerinin temel birimi **pikseldir**. Motorlar ayrı olsa da şunları yapabilirsin:
+
+- 3D ortamda 2D render etmek
+- 2D ortamda 3D render etmek
+- 3D dünyanın üzerine 2D sprite ve arayüzler yerleştirmek
+
+![Godot Tasarım Örneği 3](/assets/images/engine_design_03.png)
+*2D ve 3D motorlar ayrı ama birlikte kullanılabilir — karışık projeler kolayca mümkün*
+
+Bu ayrımın en büyük avantajı: 2D projelerde gereksiz 3D hesaplama yükü olmaz; her ikisi de kendi alanında optimize çalışır.
+
+---
+
+## Özet: Godot'nun Temel Tasarım Pilleri
+
+| Tasarım Kararı | Ne Anlama Geliyor? |
+|---|---|
+| **Nesne yönelimli & kompozisyon** | Sahneler iç içe geçebilir, birbirinden kalıtım alabilir |
+| **Her şey dahil paket** | Editör, animasyon, shader, debugger — hepsi yerleşik |
+| **Açık kaynak (MIT)** | Tamamen ücretsiz, hiçbir kısıtlama yok |
+| **Topluluk odaklı** | Kullanıcı ihtiyaçları geliştirme yönünü belirler |
+| **Editör = Godot oyunu** | Editörü genişletmek için aynı araçları kullanırsın |
+| **Ayrı 2D/3D motorlar** | Her ikisi de kendi alanında optimize |
+
+---
+
+## Sıradaki Adım
+
+Godot'nun neden böyle tasarlandığını artık biliyorsun. Bu temel anlayış, ilerleyen bölümlerde node sistemi, sahne yapısı ve GDScript ile çalışırken pek çok "neden böyle?" sorusuna zaten cevap verecek.
+
+Bir sonraki bölümde Godot'yu kuruyoruz ve ilk projemizi oluşturuyoruz. Hazır ol!
+
+---
+
+*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/introduction/godot_design_philosophy.html) esas alınarak Türkçe olarak hazırlanmıştır.*
