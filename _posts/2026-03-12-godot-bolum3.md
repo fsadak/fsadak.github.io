@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 3: Godot'nun Temel Kavramları: Sahne (Scene), Node (Düğüm), Scene Tree (Sahne Ağacı) ve Sinyaller (Signals)"
-date: 2026-03-19 12:05:00 +0300
+date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, script, kodlama, başlangıç]
 permalink: /godot-egitim-serisi-bolum-3/
@@ -44,7 +44,7 @@ Godot'nun sahneleri son derece esnektir. Diğer oyun motorlarındaki hem **prefa
 
 ---
 
-## Node Nedir?
+## Node (Düğüm) Nedir?
 
 Bir sahne, bir ya da daha fazla **node**'dan oluşur. Node'lar, oyununun en küçük yapı taşlarıdır. Bunları bir ağaç yapısında (tree) düzenlersin.
 
