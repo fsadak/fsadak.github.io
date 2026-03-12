@@ -7,7 +7,7 @@ permalink: /godot-egitim-serisi-bolum-1/
 published: true
 ---
 
-Oyun geliştirmeye ilgi duyan ama nereden başlayacağını bilemeyen biri misin? Ya da "Bu benim için uygun mu?" diye kendini sorgulayan? O zaman bu yazı tam sana göre. Godot Engine'i tanıyacak; ne olduğunu, ne yapabildiğini ve öğrenmek için ne bilmen gerektiğini birlikte keşfedeceğiz.
+Herkese merhaba! Sıfırdan başlayarak profesyonel düzeyde oyunlar geliştirmeyi öğreneceğimiz Godot Engine eğitim serimizin ilk bölümüne hoş geldiniz. Bu yazıda ve eşlik eden videomuzda, Godot’un ne olduğuna, neler yapabildiğine ve neden son yılların en çok konuşulan oyun motoru haline geldiğine yakından bakacağız.
 
 ---
 
