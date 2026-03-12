@@ -18,7 +18,9 @@ jobs:
 
       - name: Bos Bir Commit At (Siteyi Gunceller)
         run: |
-          git config --global user.name "Siber Atolye Bot"
-          git config --global user.email "bot@goldenware.tr"
-          git commit --allow-empty -m "Sali/Persembe planlanmis yayin tetiklendi"
-          git push
+          run: |
+            git config --global user.name "Siber Atolye Bot"
+            git config --global user.email "bot@goldenware.tr"
+            git commit --allow-empty -m "Sali/Persembe planlanmis yayin tetiklendi"
+            git pull --rebase origin main
+            git push
