@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 6: Oyuncu Girdisini Dinlemek: Karakteri Klavyeyle Kontrol Edelim"
-date: 2026-03-17 12:05:00 +0300
+date: 2026-03-17 12:00:00 +0300
 categories: [Godot Eğitim Serisi, İpuçları]
 tags: [godot, project_organization, structure, gdignore]
 permalink: /godot-egitim-serisi-bolum-6/

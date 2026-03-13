@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 7: Sinyalleri Kullanmak: Node'lar Arası İletişim"
-date: 2026-03-18 12:05:00 +0300
+date: 2026-03-18 12:00:00 +0300
 categories: [Godot Eğitim Serisi, İpuçları]
 tags: [godot, autoload, singleton, globals, static]
 permalink: /godot-egitim-serisi-bolum-7/
