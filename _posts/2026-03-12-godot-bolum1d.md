@@ -3,7 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 4: Godot Editörüne İlk Bakış:
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, signals, sinyaller, gdscript, node]
-permalink: /godot-egitim-serisi-bolum-4/
+permalink: /godot-egitim-serisi-bolum-1d/
 published: true
 ---
 

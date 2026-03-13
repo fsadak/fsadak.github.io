@@ -3,7 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 3: Godot'nun Temel Kavramları: Sa
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, script, kodlama, başlangıç]
-permalink: /godot-egitim-serisi-bolum-3/
+permalink: /godot-egitim-serisi-bolum-1c/
 published: true
 ---
 
