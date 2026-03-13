@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 8: Sahne Örneklemesi (Instancing): Şablondan Nesne Üretmek"
-date: 2026-04-07 12:05:00 +0300
+date: 2026-03-14 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
 permalink: /godot-egitim-serisi-bolum-8/
