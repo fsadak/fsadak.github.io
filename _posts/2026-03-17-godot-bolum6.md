@@ -1,176 +1,152 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 6: Oyuncu Girdisini Dinlemek: Karakteri Klavyeyle Kontrol Edelim"
+title: "Godot Engine Eğitim Serisi - Bölüm 6: 2D Oyun Projesine Hazırlık ve Oyuncu Karakteri"
 date: 2026-03-17 12:00:00 +0300
-categories: [Godot Eğitim Serisi, İpuçları]
-tags: [godot, project_organization, structure, gdignore]
+categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+tags: [godot, gdscript, 2d, dodge-the-creeps, player]
 permalink: /godot-egitim-serisi-bolum-6/
 published: true
 ---
 
-Önceki bölümde Godot ikonu kendiliğinden çember çiziyordu. Ama bir oyunda kontrolü oyuncuya vermemiz gerekiyor. Bu bölümde `sprite_2d.gd` scriptimizi düzenleyerek ikonu **klavyeyle döndürüp hareket ettireceğiz**.
+Önceki bölümlerde Godot'nun temel yapı taşlarını öğrendiniz. Artık tüm bu bilgileri bir araya getirip "Dodge the Creeps!" adlı tam teşekküllü bir 2D oyun geliştirme zamanı! Bu oyunun temel mantığı oldukça basittir: Karakterinizi kontrol ederek rastgele yönlerden gelen düşmanlardan kaçmalı ve ekranda olabildiğince uzun süre hayatta kalarak skorunuzu artırmalısınız.
 
-![Girdiye Göre Hareket](/assets/images/scripting_first_script_moving_with_input.webp)
-*Bu bölümün sonunda ok tuşlarıyla ikonu yönlendiriyor olacaksın*
-
----
-
-## Godot'da Girdi İşlemenin İki Yolu
-
-Godot'da oyuncu girdisini işlemek için iki temel araç var:
-
-### 1. Yerleşik Girdi Callback'leri — `_unhandled_input()`
-`_process()` gibi sanal bir fonksiyondur; oyuncu bir tuşa bastığında Godot onu otomatik olarak çağırır. Her karede değil, **olay gerçekleştiğinde** tetiklenir. Örneğin zıplamak için Boşluk tuşuna basmak gibi her karede kontrol etmene gerek olmayan eylemler için idealdir.
-
-### 2. Input Singleton
-**Singleton**, scriptten global olarak erişilebilen bir nesnedir. Godot birkaç tane sunar. `Input` singleton, **her karede** girdi kontrolü yapmak için doğru araçtır.
-
-Bu bölümde oyuncunun dönmek veya hareket etmek isteyip istemediğini her karede kontrol etmemiz gerektiği için **Input singleton** kullanacağız.
+Bu ilk büyük adımımızda proje ayarlarını yapacak, oyuncu sahnesini inşa edecek ve hareket mekaniklerini kodlayacağız.
 
 ---
 
-## Dönme: Yön Kontrolü Ekle
+## Proje Kurulumu ve Ekran Ayarları
 
-Önce dönme hareketine oyuncu kontrolü ekleyelim. `_process()` fonksiyonundaki şu satırı:
+Öncelikle yeni bir Godot projesi oluşturun ve daha önce indirdiğiniz oyun varlıkları arşivindeki `art/` ve `fonts/` klasörlerini proje dizininizin (`res://`) içine sürükleyip bırakın.
 
-```gdscript
-rotation += angular_speed * delta
-```
+Oyunumuz dikey (portrait) modda oynanacak şekilde tasarlandığı için ekran boyutunu buna göre ayarlamanız gerekiyor:
 
-Aşağıdaki kodla değiştir:
+1. Menüden **Project > Project Settings** yolunu izleyin ve sol sütundan **Display > Window** sekmesini açın.
 
-```gdscript
-var direction = 0
-if Input.is_action_pressed("ui_left"):
-    direction = -1
-if Input.is_action_pressed("ui_right"):
-    direction = 1
+2. **Viewport Width** (Genişlik) değerini `480`, **Viewport Height** (Yükseklik) değerini ise `720` olarak ayarlayın.
+3. Aynı sayfada aşağı inerek **Stretch** (Ölçekleme) ayarlarını bulun. **Mode** ayarını `canvas_items`, **Aspect** ayarını ise `keep` yapın.
 
-rotation += angular_speed * direction * delta
-```
-
-### Bu Kod Ne Yapıyor?
-
-`direction` değişkeni, oyuncunun hangi yöne dönmek istediğini temsil eden bir çarpan:
-
-- `0` → sol veya sağ ok tuşuna basılmıyor
-- `1` → oyuncu sağa dönmek istiyor
-- `-1` → oyuncu sola dönmek istiyor
-
-Bu değerleri üretmek için **koşullu ifadeler (conditional statements)** ve `Input` kullanıyoruz.
-
-GDScript'te koşullu ifade `if` anahtar kelimesiyle başlar, kolon (`:`) ile biter. Koşul, bu ikisi arasındaki ifadedir.
-
-`Input.is_action_pressed()` metodu, bir **input action** adı alır ve o eylem basılıysa `true`, basılı değilse `false` döner.
-
-`"ui_left"` ve `"ui_right"`, her Godot projesinde varsayılan olarak tanımlı eylemlerdir. Sırasıyla klavyenin sol/sağ ok tuşlarına veya gamepad D-pad'in sol/sağ yönlerine basıldığında tetiklenirler.
-
-> 💡 **İpucu:** Projenin input eylemlerini `Project > Project Settings > Input Map` sekmesinden görüp düzenleyebilirsin.
-
-Son olarak `direction`'ı çarpan olarak kullanıyoruz:
-```gdscript
-rotation += angular_speed * direction * delta
-```
-
-`direction` sıfır olduğunda (tuş basılmıyorken) rotasyon değişmez. Sol veya sağ tuşa basıldığında ikona ilgili yönde dönme hızı eklenir.
+> 💡 **Bilgilendirme:** Bu stretch (ölçekleme) ayarları sayesinde oyun pencereniz farklı monitörlerde veya mobil cihazlarda yeniden boyutlandırıldığında oyun alanınızın orantısı bozulmadan tutarlı bir şekilde büyüyüp küçülecektir.
 
 ---
 
-## Önceki Hareketi Geçici Olarak Devre Dışı Bırak
+## Oyuncu Sahnesini (Player) İnşa Etmek
 
-Önceki bölümden kalan ve ikonu sürekli çember çizen satırları şimdilik **yorum satırına** çevirelim. GDScript'te yorum `#` ile başlar:
+Oyununuzun en önemli parçasını, yani oyuncu karakterini ayrı bir sahne olarak oluşturacağız. Böylece oyunun diğer parçaları hazır olmasa bile oyuncuyu bağımsız olarak test edebilirsiniz.
 
-```gdscript
-#var velocity = Vector2.UP.rotated(rotation) * speed
-#position += velocity * delta
-```
+1. **Scene > New Scene** ile yeni bir sahne oluşturun ve kök node olarak `Area2D` ekleyin. Node'un adını `Player` olarak değiştirin. Neden `Area2D`? Çünkü bu node, diğer nesnelerle (düşmanlarla) olan çarpışmaları ve üst üste gelmeleri algılamak için özel olarak tasarlanmıştır.
 
-Bu satırlar artık çalışmaz; ikon yalnızca döner, ilerlemez. Sahneyi çalıştırırsan **Sol** ve **Sağ** ok tuşlarıyla ikonun döndüğünü göreceksin.
+2. `Player` node'una bir `AnimatedSprite2D` çocuk node'u ekleyin. Bu node görseli ve animasyonları yönetecektir.
+3. Inspector panelinden **Animation > Sprite Frames** alanına tıklayıp **New SpriteFrames** seçeneğini işaretleyin. Açılan panelde `walk` ve `up` adında iki farklı animasyon oluşturun.
+4. `art/` klasöründeki görsellerden `playerGrey_walk1` ve `playerGrey_walk2` dosyalarını `walk` animasyonuna, `playerGrey_up1` ve `playerGrey_up2` dosyalarını ise `up` animasyonuna sürükleyin.
+5. Görseller oyun alanımız için biraz büyük kalacağından, Inspector'da `Node2D` altındaki **Scale** değerini `(0.5, 0.5)` yaparak karakteri yarı yarıya küçültün.
 
----
+### Çarpışma Şeklini Eklemek
 
-## Hareket: "Yukarı" Tuşuyla İlerle
+`Area2D` node'u, fiziksel sınırlarını bilmek için bir çarpışma şekline ihtiyaç duyar.
 
-Şimdi yorum satırlarını kaldır ve `var velocity` ile başlayan satırı şu kodla değiştir:
+1. `Player` node'una bir `CollisionShape2D` node'u ekleyin.
+2. Inspector'dan **Shape** özelliğini `CapsuleShape2D` olarak seçin.
 
-```gdscript
-var velocity = Vector2.ZERO
-if Input.is_action_pressed("ui_up"):
-    velocity = Vector2.UP.rotated(rotation) * speed
-```
-
-### Bu Kod Ne Yapıyor?
-
-- `Vector2.ZERO` — uzunluğu 0 olan, yani hiç hareket olmadığını temsil eden 2D vektör sabitidir
-- Oyuncu `"ui_up"` (yukarı ok tuşu) eylemine basarsa, hız değeri hesaplanarak ileri yön atanır
-- Tuşa basılmıyorsa hız sıfır kalır ve ikon hareket etmez
-
-Böylece ikon yalnızca **Yukarı ok** tuşuna basıldığında ilerler; basılmadığında yerinde durur.
+3. Kapsülü, ekrandaki sprite'ı (karakter görselini) tam olarak saracak şekilde boyutlandırın.
+4. Sahneyi `player.tscn` olarak kaydedin.
 
 ---
 
-## Tam Script
+## Girdi (Input) Haritasını Ayarlamak
 
-Tüm değişikliklerden sonra `sprite_2d.gd` dosyasının tam hâli:
+Karakteri klavye ile kontrol edebilmek için Godot'nun Input Map sistemini kullanacağız.
+
+1. **Project > Project Settings > Input Map** menüsünü açın.
+
+2. Üstteki çubuğa sırasıyla `move_right`, `move_left`, `move_up` ve `move_down` yazıp **Add** butonuna tıklayarak yeni eylemler oluşturun.
+3. Her bir eylemin yanındaki **"+"** ikonuna tıklayarak klavyenizdeki ok tuşlarını (veya dilerseniz W, A, S, D tuşlarını) bu eylemlere atayın.
+
+---
+
+## Oyuncuyu Kodlamak: Hareket ve Animasyon
+
+Sahne ve tuşlar hazır, şimdi onlara hayat verelim! `Player` node'una sağ tıklayıp bir Script ekleyin.
+
+### Değişkenler ve Hazırlık
+
+Scriptinizin en üst kısmına karakterin hızını ve ekran boyutunu tutacak değişkenleri tanımlayın:
 
 ```gdscript
-extends Sprite2D
+extends Area2D
 
-var speed = 400
-var angular_speed = PI
+@export var speed = 400
+var screen_size
+```
 
+> 💡 **Bilgilendirme:** `speed` değişkeninin başındaki `@export` anahtar kelimesi, bu değeri tıpkı yerleşik özellikler gibi sağdaki Inspector panelinde gösterir ve oradan kolayca değiştirmenize olanak tanır.
+
+Oyun başladığında ekran sınırlarını öğrenmek için `_ready()` fonksiyonunu kullanalım:
+
+```gdscript
+func _ready():
+	screen_size = get_viewport_rect().size
+```
+
+### Hareket Döngüsü
+
+Şimdi her karede çalışacak olan `_process(delta)` fonksiyonunu yazarak karakteri hareket ettireceğiz.
+
+```gdscript
 func _process(delta):
-    var direction = 0
-    if Input.is_action_pressed("ui_left"):
-        direction = -1
-    if Input.is_action_pressed("ui_right"):
-        direction = 1
+	var velocity = Vector2.ZERO # Varsayılan olarak oyuncu hareketsizdir
+	
+	if Input.is_action_pressed("move_right"):
+		velocity.x += 1
+	if Input.is_action_pressed("move_left"):
+		velocity.x -= 1
+	if Input.is_action_pressed("move_down"):
+		velocity.y += 1
+	if Input.is_action_pressed("move_up"):
+		velocity.y -= 1
 
-    rotation += angular_speed * direction * delta
+	if velocity.length() > 0:
+		velocity = velocity.normalized() * speed
+		$AnimatedSprite2D.play()
+	else:
+		$AnimatedSprite2D.stop()
 
-    var velocity = Vector2.ZERO
-    if Input.is_action_pressed("ui_up"):
-        velocity = Vector2.UP.rotated(rotation) * speed
-
-    position += velocity * delta
+	position += velocity * delta
+	position = position.clamp(Vector2.ZERO, screen_size)
 ```
 
-Sahneyi çalıştır:
-- **Sol / Sağ ok** → ikon döner
-- **Yukarı ok** → ikon baktığı yönde ilerler
+**Bu kodda ne yaptık?**
+* Tüm basılan tuşlara göre `velocity` (hız) vektörünü hesapladık.
+* Çapraz giderken (örneğin aynı anda sağa ve yukarı) karakterin %41 daha hızlı gitmesini önlemek için `velocity.normalized()` kullanarak vektörü 1 birime sabitledik ve hızımızla çarptık.
+* `position += velocity * delta` satırıyla saniyedeki kare hızından (FPS) bağımsız bir hareket sağladık.
+* En önemlisi, `clamp()` fonksiyonunu kullanarak karakterin pozisyonunun ekran sınırları dışına çıkmasını engelledik.
+
+### Animasyonları Yöne Göre Değiştirmek
+
+Karakterimiz hareket ediyor ancak animasyonları hep aynı yöne bakıyor. `_process()` fonksiyonunun en sonuna şu kod bloğunu ekleyin:
+
+```gdscript
+	if velocity.x != 0:
+		$AnimatedSprite2D.animation = "walk"
+		$AnimatedSprite2D.flip_v = false
+		$AnimatedSprite2D.flip_h = velocity.x < 0
+	elif velocity.y != 0:
+		$AnimatedSprite2D.animation = "up"
+		$AnimatedSprite2D.flip_v = velocity.y > 0
+```
+
+Bu kod sayesinde; karakter sağa veya sola giderken "walk" animasyonu çalışacak ve sola gidiyorsa `flip_h` ile yatayda ters çevrilecektir. Yukarı veya aşağı giderken ise "up" animasyonu çalışacak, aşağı gidiyorsa `flip_v` ile dikeyde ters dönecektir.
 
 ---
 
-## Özet
+## Bölüm Özeti
 
-Bu bölümde şunları öğrendik:
-
-| Kavram | Açıklama |
-|---|---|
-| `Input.is_action_pressed()` | Bir input eyleminin o an basılı olup olmadığını kontrol eder |
-| `"ui_left"`, `"ui_right"`, `"ui_up"` | Godot'da varsayılan klavye/gamepad eylemleri |
-| `if` koşullu ifade | GDScript'te karar verme yapısı |
-| `Vector2.ZERO` | Uzunluğu 0 olan, hareketsizliği temsil eden vektör |
-| Input singleton | Her karede global girdi kontrolü için kullanılan nesne |
-
----
-
-## GDScript Script'leri Hakkında Genel Özet
-
-Bu noktada birkaç adım geriye çekilip öğrendiklerimizi toparlayalım:
-
-- Godot'da her script bir **sınıfı (class)** temsil eder ve motorun yerleşik sınıflarından birini genişletir
-- Miras aldığın node türü, `rotation` ve `position` gibi özelliklere erişimini sağlar
-- Dosyanın üst kısmındaki değişkenler sınıfın **üye değişkenleridir (member variables)**
-- `_process()` — her kare çalışır, node'a sürekli güncelleme uygular
-- `_unhandled_input()` — tuş basımı gibi girdileri olay bazlı alır
-- **Input singleton** — `_process()` döngüsü içinde girdi kontrolü için kullanılır
+Harika bir iş çıkardınız! Bu bölümde;
+* Dikey bir oyun için ekran ve ölçekleme ayarlarını yapılandırdınız.
+* `Area2D`, `AnimatedSprite2D` ve `CollisionShape2D` kullanarak kendi oyuncu sahnenizi inşa ettiniz.
+* Godot'nun Input Map sistemini kullanarak kontrolleri bağladınız.
+* GDScript ile pürüzsüz bir 8 yönlü hareket kodu yazıp, ekrandan çıkmayı engelleyen matematiksel fonksiyonları (`normalized`, `clamp`) kullandınız.
 
 ---
 
 ## Sıradaki Adım
 
-Bir sonraki bölümde **sinyal (signal) sistemi** konusunu ele alacağız — node'ların birbirleriyle nasıl haberdar ettiğini ve scriptlere nasıl tetikleyici gönderdiğini göreceğiz. Bu, Godot'nun en güçlü özelliklerinden biri! 🚀
-
----
-
-*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/scripting_player_input.html) esas alınarak Türkçe olarak hazırlanmıştır.*
+Bir sonraki bölümde oyununuza asıl heyecanı katacak olan **Düşman Yapay Zekası ve Spawner (Oluşturucu)** sistemini kuracağız. Görüşmek üzere!

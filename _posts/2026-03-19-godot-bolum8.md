@@ -1,101 +1,104 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 8: İlk 2D Oyunun: Dodge the Creeps! — Seriye Giriş"
+title: "Godot Engine Eğitim Serisi - Bölüm 8: Skor, Yeniden Oynama ve Kullanıcı Arayüzü (HUD)"
 date: 2026-03-19 12:00:00 +0300
-categories: [Godot Eğitim Serisi, İpuçları]
-tags: [godot, troubleshooting, debug, export_issues]
+categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+tags: [godot, gdscript, 2d, dodge-the-creeps, hud, ui, ses]
 permalink: /godot-egitim-serisi-bolum-8/
 published: true
 ---
 
-Step by Step serisinde Godot'nun temel yapıtaşlarını öğrendik: node'lar, sahneler, script'ler, girdi ve sinyaller. Artık tüm bu bilgileri bir araya getirip **gerçek bir oyun** yapma zamanı!
-
-Bu yazı serisinde adım adım eksiksiz bir 2D oyun geliştireceğiz: **"Dodge the Creeps!"** (Yaratıklardan Kaç!)
-
-![Dodge the Creeps Oyununun Önizlemesi](/assets/images/dodge_preview.webp)
-*Serinin sonunda bu oyunu yapmış olacaksın — hem de sıfırdan!*
+Oyunumuz mekanik olarak çalışıyor ve oynanabilir durumda. Ancak skor göstergesi, oyun bittiğinde "Yeniden Oyna" seçeneği (Game Over mesajı) ve bir başlangıç butonu olmadan oyun tam bir deneyim sunmaz. Bu bölümde, HUD (Heads-Up Display) sahnesiyle kullanıcı arayüzünü oluşturacak, eski düşmanları temizleyerek yeniden oynama mantığını kuracak ve son olarak ses efektleriyle oyunumuza ruh katacağız.
 
 ---
 
-## Oyun Nedir?
+## HUD (Kullanıcı Arayüzü) Sahnesini Kurmak
 
-**Dodge the Creeps!** adı üzerinde, düşmanlardan kaçmaya dayalı basit ama eksiksiz bir 2D oyundur. Oyunun mekaniği şu şekilde:
+Arayüz elemanlarının oyun dünyasındaki nesnelerin (oyuncu veya düşmanlar) altında kalmaması için onları ayrı bir katmanda çizmemiz gerekir.
 
-- Karakterin sürekli farklı yönlerden gelen düşmanların (creep) arasında hareket eder
-- Hiçbir düşmana çarpmadan ne kadar süre hayatta kalabilirsin?
-- Hayatta kaldıkça **skor artar**
+1. Yeni bir sahne oluşturun, "Other Node" butonuna tıklayın ve kök node olarak `CanvasLayer` ekleyip adını `HUD` olarak değiştirin.
 
-Basit ama bağımlılık yapan bir döngü. Ve öğrenmek için mükemmel bir proje.
+2. `HUD` node'unun altına şu çocuk node'ları ekleyin:
+   * **ScoreLabel (Label):** Skoru gösterecek.
+   * **Message (Label):** "Game Over" veya "Get Ready!" gibi mesajları gösterecek.
+   * **StartButton (Button):** Oyunu başlatacak.
+   * **MessageTimer (Timer):** Mesajların ekranda ne kadar süre kalacağını yönetecek (Wait Time: 2, One Shot: On).
 
----
+### Özel Font ve Konumlandırma Ayarları
 
-## Bu Seride Ne Öğreneceksin?
+Varsayılan fontları daha şık bir fontla değiştireceğiz.
 
-Bu oyunu geliştirirken şunları öğreneceksin:
+1. `ScoreLabel` node'unu seçin, Inspector panelinden **Theme Overrides > Fonts** sekmesindeki "Load" seçeneği ile oyun varlıklarındaki `Xolonium-Regular.ttf` dosyasını yükleyin.
+2. Hemen altındaki **Theme Overrides > Font Sizes** değerini `64` olarak ayarlayın. (Aynı işlemi `Message` ve `StartButton` için de tekrarlayın).
 
-- Godot editörüyle **eksiksiz bir 2D oyun** oluşturmak
-- Basit bir oyun projesini **yapılandırmak**
-- Oyuncu karakterini hareket ettirmek ve **sprite'ını değiştirmek**
-- **Rastgele düşman** üretmek
-- **Skor saymak**
-- Ve daha fazlası...
+**Konumlandırma (Anchor Presets):**
 
----
-
-## Neden 2D ile Başlamalısın?
-
-Oyun geliştirmeye yeni başlıyorsan veya Godot'ya alışıyorsan, **2D ile başlamanı öneririz.** 3D oyunlar genellikle daha karmaşıktır; 2D'de hem Godot editörünü hem de oyun geliştirme prensiplerini kavramak çok daha kolaydır.
-
-Bu seriyi tamamladıktan sonra benzer bir oyunu 3D olarak yapma serisi de mevcut. Ama önce bu seriyi bitir!
+* **ScoreLabel:** Text alanına `0` yazın. Horizontal/Vertical Alignment ayarlarını **Center** yapın. Anchor Preset'i **Center Top** olarak seçin.
+* **Message:** Text alanına `Dodge the Creeps!` yazın. Alignment ayarlarını **Center** yapın. Autowrap Mode'u **Word** olarak ayarlayın (uzun metinlerin alt satıra inmesi için). Anchor Preset'i **Center** yapın.
+* **StartButton:** Text alanına `Start` yazın. Anchor Preset'i **Center Bottom** olarak seçin ve Y pozisyonunu biraz yukarı (örneğin `580`) taşıyın.
 
 ---
 
-## Kaynak Koda Nereden Ulaşabilirsin?
+## HUD Scripti ve Sinyaller
 
-Serinin tamamlanmış oyun koduna şuradan ulaşabilirsin:
+`HUD` node'una bir script ekleyin. Bu script, mesajları göstermek ve skoru güncellemekten sorumlu olacaktır.
 
-- 🔗 [Dodge the Creeps — GDScript kaynak kodu](https://github.com/godotengine/godot-demo-projects/tree/master/2d/dodge_the_creeps)
-- 🔗 [Dodge the Creeps — C# kaynak kodu](https://github.com/godotengine/godot-demo-projects/tree/master/2d/dodge_the_creeps_csharp)
+Öncelikle oyun başladığında butonun gizlenmesi ve ana sahneye haber verilmesi için kendi özel sinyalimizi tanımlamalıyız:
 
-Takılırsın, incele — ama önce kendi başına yazmayı dene!
+```gdscript
+signal start_game
+```
 
----
+Sonrasında şu üç temel fonksiyonu yazabilirsiniz:
 
-## Ön Koşullar
+* **`show_message(text)`:** `Message` etiketinin metnini günceller, görünür yapar ve `MessageTimer`'ı başlatır.
+* **`update_score(score)`:** `ScoreLabel`'ın metnini (`Text`) string formatında oyuncunun anlık skoruna eşitler.
+* **`show_game_over()`:** Bu fonksiyon, 2 saniye boyunca "Game Over" yazısını gösterir. Süre bitiminde `await get_tree().create_timer(1.0).timeout` komutunu kullanarak 1 saniyelik bir gecikme ekler ve ardından `StartButton`'ı tekrar görünür hale getirerek başlık ekranına ("Dodge the Creeps!") geri döner.
 
-Bu seri, **Step by Step serisini tamamlamış** başlangıç seviyesi geliştiriciler için hazırlanmıştır. Deneyimli bir programcıysan doğrudan başlayabilirsin, ancak Godot'ya yeniysen Step by Step serisini önce bitirmeni öneririz.
-
----
-
-## Oyun Varlıklarını İndir
-
-Oyun için gereken grafik ve ses dosyalarını hazırladık. Kodlamaya doğrudan geçebilmek için bu dosyaları önceden indirip hazır tutman gerekiyor:
-
-🔗 [dodge_the_creeps_2d_assets.zip](https://docs.godotengine.org/en/stable/_downloads/dodge_the_creeps_2d_assets.zip)
-
-Arşivi çıkart ve ilerleyen adımlarda projeye ekleyeceğiz.
+**Sinyalleri Bağlamak:** `StartButton`'ın `pressed` sinyalini HUD scriptinize bağlayarak içinde `start_game.emit()` çağrısını yapın ve butonu gizleyin. Aynı şekilde `MessageTimer`'ın `timeout` sinyalini bağlayarak süresi dolduğunda `Message` etiketini gizleyin.
 
 ---
 
-## Serinin İçeriği
+## Main Sahnesiyle Entegrasyon ve Yeniden Oynama (Replay)
 
-Bu yazı serisi şu bölümlerden oluşuyor:
+Arayüzümüz hazır olduğuna göre `main.tscn` sahnesini açıp `HUD` sahnenizi bir instance (örnek) olarak ana sahneye ekleyin.
 
-1. **Projeyi Kurma** — Godot projesini oluşturuyoruz ve varlıkları ekliyoruz
-2. **Oyuncu Sahnesi Oluşturma** — Karakterin sahnesini hazırlıyoruz
-3. **Oyuncuyu Kodlama** — Hareket ve animasyon scriptini yazıyoruz
-4. **Düşmanı Oluşturma** — Rastgele hareket eden düşman sahnesi
-5. **Ana Oyun Sahnesi** — Tüm parçaları bir araya getiriyoruz
-6. **Heads-Up Display (HUD)** — Skor ve arayüz
-7. **Son Rötuşlar** — Oyunu tamamlıyoruz
+1. `HUD` instance'ını seçin ve sağ paneldeki **Signals** sekmesinden yeni oluşturduğunuz `start_game` sinyalini, Main scriptinizdeki `new_game()` fonksiyonuna bağlayın.
 
-Her bölüm bir öncekinin üzerine inşa edilir. Adımları sırayla takip etmeni öneririz.
+2. Main scriptinizdeki `_ready()` fonksiyonunun içinde bulunan `new_game()` çağrısını silin. Böylece oyun siz "Start" butonuna basana kadar başlamayacaktır.
+3. `game_over()` fonksiyonunuzun içine `show_game_over()` çağrısını ekleyin ve `_on_score_timer_timeout()` içerisinde `update_score(score)` çağrısı yaparak skoru güncelleyin.
+
+### Eski Düşmanları Temizlemek (Grup Sistemi)
+
+Oyun bitip yeniden başlatıldığında, ekrandaki eski düşmanlar (mob'lar) kalmaya devam eder. Bunları tek bir komutla temizlemek için Godot'nun grup (group) sistemini kullanmalıyız.
+
+1. `mob.tscn` sahnesini açın, kök node'u seçip **Groups** sekmesinden `mobs` adında yeni bir grup oluşturup node'u bu gruba dahil edin.
+
+2. Main scriptindeki `new_game()` fonksiyonunun içine şu satırı ekleyin: 
+
+```gdscript
+get_tree().call_group("mobs", "queue_free")
+```
+
+Bu satır, "mobs" grubundaki tüm düşmanlara anında kendilerini silmelerini söyler ve temiz bir oyun alanı sunar.
 
 ---
 
-## Hazır mısın?
+## Son Dokunuşlar: Ses, Arka Plan ve Dışa Aktarma
 
-O zaman ilk adımla başlayalım: **Projeyi kurmak.** 🚀
+Oyun deneyimini tamamlamak için birkaç estetik dokunuş yapalım:
+
+* **Arka Plan Rengi:** `Main` sahnesine bir `ColorRect` node'u ekleyin ve sahne ağacında en üste taşıyarak (diğer node'ların arkasında çizilmesi için) Inspector'dan istediğiniz bir rengi seçin. Anchor ayarlarından **Full Rect**'i seçerek tüm ekranı kaplamasını sağlayın.
+* **Ses Efektleri ve Müzik:** `Main` sahnesine iki adet `AudioStreamPlayer` node'u ekleyip isimlerini `Music` ve `DeathSound` yapın. Oyun varlıklarındaki `House In a Forest Loop.ogg` dosyasını müziğe, `gameover.wav` dosyasını ölüm sesine atayın. `new_game()` çağrıldığında müziği başlatın, `game_over()` çağrıldığında müziği durdurup ölüm sesini oynatın.
+
+
+> 💡 **Bilgilendirme:** Müziğin kesintisiz çalması için Stream dosyanızın yanındaki oka tıklayıp "Make Unique" dedikten sonra **Loop** kutusunu işaretlemeyi unutmayın.
+
+* **Klavye Kısayolu:** Oyuna her seferinde fareyle tıklamak yerine "Enter" tuşuyla başlamak için; **Project Settings > Input Map** üzerinden `start_game` adında yeni bir eylem oluşturup Enter tuşunu atayın. Ardından `StartButton` node'unun Inspector panelindeki **Shortcut** özelliğine bu eylemi bağlayın.
 
 ---
 
-*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html) esas alınarak Türkçe olarak hazırlanmıştır.*
+## Tebrikler!
+
+2D eğitim serisini ve ilk oyununuzu tamamen bitirdiniz. Oyununuzu dışa aktarmak (Export) ve arkadaşlarınızla paylaşmak için projenizi çalıştırılabilir dosya (.exe, vb.) olarak ayarlayabilirsiniz.
+
+Bir sonraki rehberimizde 3D dünyanın kapılarını aralayacak ve "Squash the Creeps!" oyununa başlayacağız!

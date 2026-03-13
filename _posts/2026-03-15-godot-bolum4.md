@@ -1,153 +1,122 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 4: Godot'da Script Dilleri: GDScript, C# ve C++"
+title: "Godot Engine Eğitim Serisi - Bölüm 4: GDScript ile Oyun Mantığını Yazmak ve Oyuncu Girdileri"
 date: 2026-03-15 12:00:00 +0300
-categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
-tags: [godot, 3d, enemies, collision, spawning]
+categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+tags: [godot, 2d, gdscript]
 permalink: /godot-egitim-serisi-bolum-4/
 published: true
 ---
 
-Godot'da oyun mantığını kodlamak için birden fazla dil seçeneğin var. Bu bölümde mevcut script dillerine genel bir bakış atacak, her birinin avantajlarını ve dezavantajlarını inceleyeceğiz. Böylece projen için en doğru seçimi yapabilirsin.
+Önceki bölümlerde Godot'nun temel yapı taşlarını ve arayüzünü inceledik. Artık teoriden pratiğe geçme ve oyunlarınıza "hayat verme" zamanı! Bu kapsamlı rehberde, Godot'da hangi script dillerini kullanabileceğinizi öğrenecek, ilk script'inizi yazacak ve karakterinizi klavye ile nasıl kontrol edebileceğinizi adım adım keşfedeceksiniz.
 
 ---
 
-## Script Nedir? Node'a Nasıl Bağlanır?
+## Godot'da Script Dilleri: Hangisini Seçmelisiniz?
 
-Script'ler, bir node'a eklenen ve o node'un davranışını genişleten kod dosyalarıdır. Bu şu anlama gelir: **bir script, bağlandığı node'un tüm fonksiyonlarını ve özelliklerini miras alır.**
+Script'ler, bir node'a eklenen ve o node'un davranışını genişleten kod dosyalarıdır. Bir script, bağlandığı node'un tüm fonksiyonlarını ve özelliklerini miras alır. Godot'da oyun mantığını kodlamak için dört resmi dil seçeneğiniz bulunmaktadır: GDScript, C#, C ve C++.
 
-Somut bir örnek düşünelim: Oyuncunun gemisini takip eden bir `Camera2D` node'un var. `Camera2D`, varsayılan olarak üst node'unu takip eder. Şimdi oyuncu hasar aldığında kameranın sallanmasını (camera shake) istiyorsun. Bu özellik Godot'ya yerleşik olarak gelmez.
+> 💡 **Bilgilendirme:** Godot, tek bir projede birden fazla dil kullanmanıza olanak tanır. Hızlı yazılması gereken mantıklar için GDScript, maksimum performans gerektiren kısımlar için C++ kullanabilirsiniz.
 
-Çözüm: `Camera2D` node'una bir script ekleyip sallama davranışını kodlamak.
+* **GDScript:** Godot için özel olarak geliştirilmiş, sade ve öğrenmesi çok kolay bir dildir. Motorla sıkı bir editör entegrasyonu sunar ve harici bir kod editörü gerektirmez. Yeni başlıyorsanız kesinlikle GDScript ile başlamalısınız.
+* **C# (.NET):** Oyun sektöründe popüler olan bu dil, performans ve esneklik sunar ancak harici bir editör gerektirir ve daha çok deneyimli kullanıcılara önerilir.
+* **C / C++ (GDExtension):** Maksimum performans içindir, ancak öğrenme eğrisi oldukça zordur.
 
-![Kamera Sallama Efekti](/assets/images/scripting_camera_shake.gif)
-*Script ile Camera2D node'una eklenen kamera sallama efekti — Godot'da olmayan bir özelliği kendin ekleyebilirsin*
-
----
-
-## Mevcut Script Dilleri
-
-Godot dört resmi oyun programlama dili sunar:
-
-- **GDScript**
-- **C#** (.NET)
-- **C** ve **C++** (GDExtension aracılığıyla)
-
-Bunların yanında topluluk tarafından desteklenen diller de mevcut, ama resmi destek bu dörde ait.
-
-### Tek Projede Birden Fazla Dil Kullanabilirsin
-
-Godot, tek bir projede birden fazla dil kullanmanı destekler. Örneğin:
-
-- Hızlı yazılması gereken oyun mantığı için **GDScript**
-- Karmaşık algoritmalar ve maksimum performans için **C#** veya **C++**
-
-Ya da her şeyi GDScript veya C# ile yazabilirsin. Karar tamamen sana ait.
+Biz bu eğitim serimizde, oyun geliştiricilerinin ihtiyaçlarına tam uyum sağlayan ve yıldırım hızında çalışan **GDScript**'i kullanacağız.
 
 ---
 
-## Hangi Dili Seçmeliyim?
+## İlk Script'inizi Yazın: Godot İkonunu Canlandırıyoruz
 
-**Yeni başlıyorsan: GDScript ile başla.**
+Artık kod yazmaya başlayabiliriz! Amacımız, Godot ikonunu ekranda döndürmek ve hareket ettirmektir.
 
-GDScript, Godot ve oyun geliştiricilerinin ihtiyaçları için özel olarak tasarlandı. Hafif ve sade sözdizimi, Godot ile en sıkı entegrasyonu sunuyor.
+1. Yeni bir proje oluşturun ve kök node olarak `Sprite2D` ekleyin.
+2. FileSystem (Dosya Sistemi) panelinden `icon.svg` dosyasını Inspector (Denetçi) panelindeki **Texture** alanına sürükleyip bırakın.
+3. `Sprite2D` node'una sağ tıklayın ve **Attach Script** (Script Ekle) seçeneğini seçin.
+4. Açılan pencerede Template (Şablon) alanını **Object: Empty** olarak değiştirip **Create** (Oluştur) butonuna tıklayın.
 
-C# için VSCode veya Visual Studio gibi harici bir kod editörüne ihtiyaç duyulur. C# desteği artık olgunlaşmış olsa da GDScript'e kıyasla öğrenme kaynakları daha az. Bu yüzden **C# öncelikli olarak dili zaten bilen kullanıcılara önerilir.**
+Script dosyanızın en üstünde `extends Sprite2D` yazısını göreceksiniz. Bu, yazdığınız kodun `Sprite2D`'nin tüm özelliklerine erişebileceği anlamına gelir.
 
----
+### Oyun Döngüsü: _process() ve delta Kavramları
 
-## GDScript
+Bir karakteri hareket ettirmek için, oyun döngüsünde her kare (frame) pozisyonu güncellemeniz gerekir. Bunun için `Node` sınıfının `_process()` sanal fonksiyonunu kullanacağız.
 
-GDScript, Godot için özel olarak geliştirilmiş nesne yönelimli ve zorunlu (imperative) bir programlama dilidir.
+Script'inize şu değişkenleri ve fonksiyonu ekleyin:
 
-![GDScript Editörü](/assets/images/scripting_gdscript.webp)
-*Godot'nun yerleşik script editöründe GDScript kodu*
+```gdscript
+extends Sprite2D
 
-### Öne Çıkan Özellikleri
+var speed = 400
+var angular_speed = PI
 
-- **Sade sözdizimi** — kısa ve okunaklı dosyalar
-- **Yıldırım hızında derleme ve yükleme**
-- **Sıkı editör entegrasyonu** — node'lar, sinyaller ve sahne bağlamına göre kod tamamlama
-- **Yerleşik vektör ve dönüşüm tipleri** — oyunlarda kritik olan lineer cebir işlemleri için optimize edilmiş
-- **Çoklu thread desteği** — statik tipli diller kadar verimli
-- **Çöp toplayıcı (garbage collector) yok** — motor referansları sayarak belleği yönetir; gerektiğinde manuel kontrol de mümkün
-- **Kademeli tipleme (gradual typing)** — değişkenler varsayılan olarak dinamik tipli, ama güçlü tip kontrolü için tip ipuçları (type hints) eklenebilir
+func _process(delta):
+    rotation += angular_speed * delta
+```
 
-GDScript, kod bloklarını girintilerle yapılandırması açısından Python'a benzer görünür; ama pratikte farklı çalışır. Squirrel, Lua ve Python gibi dillerden ilham almıştır.
+> 💡 **Bilgilendirme:** `_process()` fonksiyonu Godot tarafından her karede otomatik olarak çağrılır. Parametre olarak aldığı `delta`, bir önceki kareden bu yana geçen süreyi (saniye cinsinden) temsil eder.
 
-> 💡 **"Neden doğrudan Python veya Lua kullanmıyoruz?"**
-> Godot, yıllar önce önce Python sonra Lua kullandı. Her ikisinin entegrasyonu büyük çaba gerektirdi ve ciddi kısıtlamalar yarattı — örneğin Python'da thread desteği büyük bir sorundu. Özel bir dil geliştirmek daha az iş yükü getiriyor ve oyun geliştiricilerinin ihtiyaçlarına tam uyum sağlıyor.
+> ⚠️ **Uyarı:** `delta` kullanmak oyun geliştirmede hayati öneme sahiptir. Hareketi saniyedeki kare hızından (FPS) bağımsız hâle getirir. Böylece oyununuz 30 FPS'de de 120 FPS'de de aynı hızda çalışır.
 
----
+Şimdi ileriye doğru hareket etmesini sağlayalım. Aynı fonksiyonun içine şu satırları ekleyin:
 
-## C# (.NET)
+```gdscript
+    var velocity = Vector2.UP.rotated(rotation) * speed
+    position += velocity * delta
+```
 
-C#, oyun geliştiricileri arasında popüler bir dil olduğundan Godot tarafından resmi olarak destekleniyor. Microsoft'un cömert bir bağışı sayesinde bu destek mümkün oldu.
-
-![C# Editörü](/assets/images/scripting_csharp.png)
-*Godot'da C# ile kod yazımı — harici bir editör gerektirir*
-
-### Özellikler
-
-- **Olgun ve esnek** bir dil — yazılmış tonlarca kütüphane mevcut
-- **Performans ve kullanım kolaylığı** arasında iyi bir denge
-- **.NET 8** desteği — teorik olarak herhangi bir üçüncü taraf .NET kütüphanesi ya da F#, Boo, ClojureCLR gibi CIL uyumlu diller kullanılabilir
-- Ancak resmi olarak desteklenen tek .NET seçeneği **C#**'tır
-
-### Dikkat Edilmesi Gerekenler
-
-- C# için **Godot'nun .NET sürümünü** indirmen gerekiyor (standart sürümde C# desteği yok)
-- **Çöp toplayıcı (garbage collector)** var — oyun geliştirmede dikkatli olunması gereken bir nokta
-- Godot 4 ile C# ile yazılmış projeler şu an için **web platformuna export edilemiyor**
-- Android ve iOS desteği Godot 4.2 itibarıyla mevcut, ancak deneysel aşamada
-
-> ℹ️ **Not:** GDScript kodu, derlenmiş C# veya C++ kadar hızlı çalışmaz. Ancak script kodu genellikle Godot'nun C++ içinde yazılmış hızlı fonksiyonlarını çağırır. Pek çok durumda GDScript, C# veya C++ ile yazılmış oyun mantığı arasında performans farkı önemsiz kalır.
+Bu kod sayesinde ikonunuz baktığı yöne doğru çember çizerek hareket edecektir. `Vector2.UP`, Godot'da yukarı yönünü temsil eden bir sabittir.
 
 ---
 
-## C++ (GDExtension)
+## Oyuncu Girdilerini (Input) Dinlemek
 
-GDExtension, Godot'yu yeniden derlemeden oyun kodunu C++ ile yazmanı sağlar.
+İkonun kendi kendine dönmesi güzel, ancak kontrolü oyuncuya vermemiz gerekiyor. Godot'da klavye veya fare girdilerini işlemek için iki temel yöntem vardır: `_unhandled_input()` (sadece tuşa basıldığında tetiklenir) ve `Input` singleton'ı (her karede sürekli kontrol sağlar).
 
-![C++ GDExtension](/assets/images/scripting_cpp.png)
-*GDExtension ile C++ kodu Godot'ya dahil edilebilir*
+Biz hareket mekaniği için `Input` singleton'ını kullanacağız. Dönme hareketini ok tuşlarına bağlamak için `_process()` fonksiyonunuzu şu şekilde güncelleyin:
 
-### Özellikler
+```gdscript
+func _process(delta):
+    var direction = 0
+    if Input.is_action_pressed("ui_left"):
+        direction = -1
+    if Input.is_action_pressed("ui_right"):
+        direction = 1
 
-- **En yüksek performans** seçeneği
-- Dahili C API Bridge sayesinde farklı derleyici sürümleri ve markalarıyla oluşturulan paylaşımlı kütüphaneler (shared libraries) kullanılabilir
-- GDExtension ile çalışırken kullanabileceğin tipler, fonksiyonlar ve özellikler Godot'nun asıl C++ API'sine yakından benziyor
+    rotation += angular_speed * direction * delta
+```
 
-Tüm oyunu C++ ile yazmak zorunda değilsin. Yoğun hesaplama gerektiren bölümleri C++ ile yazıp geri kalanı GDScript veya C# ile geliştirebilirsin.
+Bu kodda `direction` değişkeni, oyuncunun dönmek istediği yönü tutar. `Input.is_action_pressed()` metodu ise belirtilen tuşa o an basılıp basılmadığını kontrol eder. `"ui_left"` ve `"ui_right"`, Godot'da varsayılan olarak tanımlanmış sol ve sağ ok tuşlarını temsil eder.
 
----
+### İleri Gitme Kontrolünü Eklemek
 
-## Karşılaştırma Tablosu
+Son olarak, ikonun yalnızca yukarı ok tuşuna basıldığında ilerlemesini sağlayalım:
 
-| Özellik | GDScript | C# | C++ (GDExtension) |
-|---|---|---|---|
-| Öğrenme kolaylığı | ✅ Çok kolay | 🟡 Orta | ❌ Zor |
-| Performans | 🟡 İyi | ✅ Yüksek | ✅ En yüksek |
-| Editör entegrasyonu | ✅ Mükemmel | 🟡 İyi | 🟡 Orta |
-| Web export | ✅ Var | ❌ Yok (Godot 4) | 🟡 Sınırlı |
-| Harici editor gerekir mi? | ❌ Hayır | ✅ Evet | ✅ Evet |
-| Yeni başlayanlar için | ✅ Önerilir | 🟡 Deneyimlilere | ❌ İleri seviye |
+```gdscript
+    var velocity = Vector2.ZERO
+    if Input.is_action_pressed("ui_up"):
+        velocity = Vector2.UP.rotated(rotation) * speed
+
+    position += velocity * delta
+```
+
+> 💡 **Bilgilendirme:** `Vector2.ZERO`, uzunluğu 0 olan, yani karakterin tamamen hareketsiz olduğunu temsil eden bir vektör sabitidir. Oyuncu `"ui_up"` (yukarı ok) tuşuna bastığında karakter ileri fırlar, basmadığında ise `Vector2.ZERO` sayesinde yerinde durur.
+
+> 🔗 **Web Linki:** Kendi özel tuş atamalarınızı (örneğin W, A, S, D tuşlarını) yapmak isterseniz **Project > Project Settings > Input Map** menüsünü kullanabilirsiniz.
 
 ---
 
 ## Özet
 
-- Script'ler node'lara eklenir ve o node'un davranışını genişletir
-- **Yeni başlayanlar için GDScript** en iyi seçim — sade, hızlı ve Godot ile tam entegre
-- **C#** daha önce bu dili kullananlar için iyi bir seçenek — ama .NET Godot sürümü gerektirir
-- **C++/GDExtension** maksimum performans gereken durumlar için — ileri seviye kullanım
-- Tek projede birden fazla dil kullanılabilir
+Bu uzun ve doyurucu rehberde şunları başardınız:
+* GDScript'in avantajlarını öğrendiniz ve ilk script'inizi bir node'a bağladınız.
+* `_process()` fonksiyonu ve `delta` zamanı ile oyun döngüsünün nasıl çalıştığını kavradınız.
+* Input sistemi ile klavye kontrollerini oyununuza entegre ettiniz.
 
 ---
 
 ## Sıradaki Adım
 
-Dil tercihimizi yaptık: **GDScript**. Bir sonraki bölümde ilk script'imizi yazacak ve bir node'a nasıl davranış kazandırılacağını adım adım göreceğiz. 🚀
+Bir sonraki bölümde, Godot'nun en güçlü ve esnek sistemlerinden biri olan **Sinyallere (Signals)** ve node'ların birbiriyle nasıl iletişim kurduğuna odaklanacağız!
 
 ---
 
-*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/scripting_languages.html) esas alınarak Türkçe olarak hazırlanmıştır.*
+*Bu yazı, Godot Engine resmi dokümantasyonu esas alınarak Türkçe olarak hazırlanmıştır.*

@@ -1,231 +1,123 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 5: İlk Script'ini Yaz: Godot İkonunu Döndürelim"
+title: "Godot Engine Eğitim Serisi - Bölüm 5: Node'lar Arası İletişim: Sinyaller"
 date: 2026-03-16 12:00:00 +0300
-categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
-tags: [godot, 3d, mob, enemy, spawning, path3d, collision layers, squash]
+categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+tags: [godot, gdscript, kodlama, node, sinyaller, signals]
 permalink: /godot-egitim-serisi-bolum-5/
 published: true
 ---
 
-Artık teoriden pratiğe geçme zamanı! Bu bölümde ilk GDScript kodunu yazacak ve Godot ikonunu ekranda döndürüp hareket ettireceksin. Temel programlama bilgisine sahip olduğunu varsayıyoruz.
-
-![Dönen Godot İkonu](/assets/images/scripting_first_script_rotating_godot.webp)
-*Bu bölümün sonunda Godot ikonu böyle dönüyor olacak — hadi başlayalım!*
+Bu bölümde Godot'nun en güçlü özelliklerinden biri olan sinyal (signal) sistemini ele alacağız. Önceki yazılarımızda oluşturduğumuz temel hareket mekaniklerini bir adım öteye taşıyarak, farklı nesnelerin birbirleriyle nasıl haberleştiğini öğreneceksiniz.
 
 ---
 
-## Proje Kurulumu
+## Sinyal (Signal) Nedir?
 
-Yeni bir proje oluştur. Proje, Godot'nun toplulukta prototip yapmak için sık kullandığı **Godot ikonunu** (`icon.svg`) varsayılan olarak içerecek.
+Sinyaller, bir node'da belirli bir şey olduğunda yayılan mesajlardır. Diğer node'lar bu sinyale bağlanarak olay gerçekleştiğinde önceden belirlenmiş bir fonksiyonu çağırabilirler. Bu sistem, yazılım tasarım dünyasındaki Observer Pattern'ın Godot'daki karşılığıdır.
 
-![Godot İkonu](/assets/images/scripting_first_script_icon.svg)
-*Godot ikonu — bu bölümde bunu hareket ettireceğiz*
+Örneğin bir buton, tıklandığında `pressed` adlı bir sinyal yayar. Bu yapı sayesinde, oyun nesnelerinin birbirini doğrudan referans almadan tepki vermesini sağlayabilirsiniz. Sinyaller kod bağımlılığını (coupling) ciddi ölçüde azaltır ve projenizi çok daha esnek tutar.
 
-### Sprite2D Node'u Ekle
-
-İkonu oyunda görüntülemek için bir **Sprite2D** node'una ihtiyacımız var.
-
-Scene doku'nda **Other Node** butonuna tıkla:
-
-![Other Node Butonu](/assets/images/scripting_first_script_click_other_node.webp)
-*Scene doku'nda "Other Node" butonuna tıklıyoruz*
-
-Arama çubuğuna `Sprite2D` yaz, filtrele ve çift tıklayarak oluştur:
-
-![Sprite2D Ekleme](/assets/images/scripting_first_script_add_sprite_node.webp)
-*Sprite2D node'unu oluşturuyoruz*
-
-Scene sekmende şimdi yalnızca bir `Sprite2D` node'u görünmeli:
-
-![Scene Ağacı](/assets/images/scripting_first_script_scene_tree.webp)
-*Scene ağacında tek bir Sprite2D node'u var*
-
-### Texture Ata
-
-Sprite2D, görüntülemek için bir **texture'a** ihtiyaç duyar. Inspector'da `Texture` özelliğinin `<empty>` olduğunu göreceksin.
-
-FileSystem doku'ndan `icon.svg` dosyasını sürükleyip Inspector'daki **Texture** alanına bırak:
-
-![Texture Ayarı](/assets/images/scripting_first_script_setting_texture.webp)
-*icon.svg dosyasını Texture alanına sürükleyip bırakıyoruz*
-
-> 💡 **İpucu:** Görseli doğrudan viewport'a sürükleyip bırakarak da otomatik olarak Sprite2D oluşturabilirsin.
-
-Ardından ikonu viewport'ta tıklayıp oyun görünümünün ortasına sürükle:
-
-![Sprite Ortalama](/assets/images/scripting_first_script_centering_sprite.webp)
-*Godot ikonunu viewport'un ortasına taşıyoruz*
+> 💡 **Bilgilendirme:** Ekranda oyuncunun canını gösteren bir can çubuğunuz olduğunu hayal edin. Oyuncu hasar aldığında veya iyileştirme kullandığında çubuğun güncellenmesini istiyorsanız, Godot'da bunun için doğrudan sinyal sistemini kullanırsınız. Ayrıca Godot 4.0'dan itibaren sinyaller, birinci sınıf tip (first-class type) olarak tanımlanmıştır; bu da onları doğrudan metod argümanı olarak kullanabilmenizi sağlayarak kod yazarken otomatik tamamlama desteği sunar ve hataları azaltır.
 
 ---
 
-## Yeni Script Oluştur
+## Sahne Kurulumu
 
-Node'umuza script ekleyelim. Scene doku'nda `Sprite2D`'ye **sağ tıkla** ve **Attach Script** seçeneğini seç:
+Konuyu pratikte görmek için, önceki bölümlerde kodladığımız Godot ikonunu bir butona basarak durdurup harekete geçireceğiz. Bunun için hem bir `Button` node'unu hem de `sprite_2d.tscn` sahnenizi içeren yeni bir sahne oluşturmanız gerekiyor.
 
-![Script Ekleme Menüsü](/assets/images/scripting_first_script_attach_script.webp)
-*Sprite2D'ye sağ tıklayıp "Attach Script" seçiyoruz*
+1. **Scene > New Scene** menüsüne gidin ve **2D Scene** butonuna tıklayarak kök node olarak bir `Node2D` ekleyin.
+2. Alt sol kısımdaki FileSystem panelinden `sprite_2d.tscn` dosyasını bulup `Node2D`'nin üzerine sürükleyerek sahnenize instance (örnek) olarak ekleyin.
+3. Scene (Sahne) panelinde `Node2D`'ye sağ tıklayıp **Add Child Node** seçeneğini seçin ve bir `Button` node'u ekleyin.
+4. Eklediğiniz butonu seçip sağdaki Inspector (Denetçi) panelinden **Text** özelliğine `Toggle motion` yazın.
+5. Viewport (Görüntü Alanı) üzerinden butonu sürükleyerek sprite'a (ikon) yakın bir konuma getirin ve bu yeni sahneyi `node_2d.tscn` olarak kaydedin.
 
-**Attach Node Script** penceresi açılır:
+Oyununuzu **F6** tuşu ile çalıştırdığınızda buton ekranda görünecektir ancak henüz hiçbir işlevi yoktur.
 
-![Script Ayar Penceresi](/assets/images/scripting_first_script_attach_node_script.webp)
-*Script dili ve dosya yolunu burada ayarlıyoruz*
+---
 
-- **Template** alanını `Node: Default`'tan `Object: Empty`'ye değiştir — böylece temiz bir dosyayla başlarız
-- Diğer seçenekleri varsayılan hâlde bırak
-- **Create** butonuna tıkla
+## Editör Üzerinden Sinyal Bağlamak
 
-Script çalışma alanı açılır ve yeni `sprite_2d.gd` dosyan şu satırla başlar:
+Şimdi butonun `pressed` (tıklandı) sinyalini `Sprite2D` node'una bağlayacağız; böylece butona basıldığında ikonun hareketi duracak veya devam edecektir.
+
+1. `Button` node'unu seçin ve sağ panelde Inspector'ın hemen yanındaki **Signals** sekmesine tıklayın.
+2. Bu sekmede seçili node için kullanılabilir tüm sinyallerin listesini göreceksiniz; `pressed` sinyaline çift tıklayın.
+3. Karşınıza Node Connection (Node Bağlantısı) penceresi açılacaktır. Burada sinyali bağlayacağımız alıcı node olarak `Sprite2D`'yi seçin.
+
+> ⚠️ **Uyarı:** Sinyali alacak node'un, sinyal tetiklendiğinde çalıştıracağı bir alıcı metoda (receiver method) ihtiyacı vardır ve editör bunu sizin için otomatik olarak oluşturur. Kural gereği bu callback (geri çağırma) metodları `_on_node_adı_sinyal_adı` formatında adlandırılır, bu örneğimizde metodun adı `_on_button_pressed` olacaktır.
+
+**Connect** butonuna tıkladığınızda editör sizi otomatik olarak script çalışma alanına götürür ve sol kenarında yeşil bir bağlantı simgesi olan yeni fonksiyonunuzu görürsünüz. Bu fonksiyonun içeriğini aşağıdaki gibi güncelleyin:
 
 ```gdscript
-extends Sprite2D
+func _on_button_pressed():
+	set_process(not is_processing())
 ```
 
-Her GDScript dosyası örtük olarak bir **sınıftır (class)**. `extends` anahtar kelimesi bu scriptin hangi sınıfı miras aldığını belirtir. Burada `Sprite2D`'yi genişletiyoruz — yani scriptimiz, Sprite2D'nin tüm özellik ve fonksiyonlarına (Node2D, CanvasItem, Node dahil) erişebilecek.
-
-> 📝 **Not:** Inspector'da özelliklerin adları "Title Case" formatındadır (örneğin `Rotation Degrees`). GDScript'te ise aynı özellikler "snake_case" formatında yazılır (örneğin `rotation_degrees`). Inspector'da herhangi bir özelliğin üzerine fareyle geldiğinde açıklama ve kod tanımlayıcısını görebilirsin.
+Bu kodda yer alan `set_process()` fonksiyonu, node'un `_process()` döngüsünün çalışıp çalışmamasını kontrol eder. `is_processing()` ise bu işlemin aktif olup olmadığını (true veya false olarak) döndürür. Başındaki `not` ifadesi mevcut durumu tersine çevirerek, butona her tıkladığınızda ikonun hareketini durdurmanızı veya başlatmanızı sağlar.
 
 ---
 
-## Hello, World!
+## Kod ile Sinyal Bağlamak
 
-Script şu an hiçbir şey yapmıyor. Başlangıç olarak **Output** paneline `"Hello, world!"` yazdıralım.
+Sinyalleri editör üzerinden bağlamanın yanı sıra tamamen kod aracılığıyla dinamik olarak da bağlayabilirsiniz. Bu yöntem, özellikle oyun oynanırken kod içinden yeni bir node oluşturduğunuzda oldukça gereklidir.
 
-Scripte şu kodu ekle:
+Bunu deneyimlemek için sahnemize bir `Timer` (Zamanlayıcı) node'u ekleyelim:
+
+1. 2D çalışma alanına geri dönün, `Sprite2D` node'una sağ tıklayın ve bir `Timer` node'u ekleyin.
+2. `Timer` node'u seçiliyken Inspector panelinden **Autostart** özelliğini aktif hale getirin. Bu ayar sayesinde Timer, oyun başlar başlamaz otomatik olarak çalışmaya başlayacaktır.
+3. Şimdi `Sprite2D`'nin yanındaki script simgesine tıklayarak tekrar kod editörüne dönün. Bağlantıyı script içindeki `_ready()` fonksiyonunda kuracağız. `_ready()` fonksiyonu, ilgili node bellekte tamamen oluşturulduğunda motor tarafından sadece bir kez otomatik olarak çağrılır.
+
+Scriptinizi şu şekilde düzenleyin:
 
 ```gdscript
-extends Sprite2D
+func _ready():
+	var timer = get_node("Timer")
+	timer.timeout.connect(_on_timer_timeout)
 
-func _init():
-    print("Hello, world!")
+func _on_timer_timeout():
+	visible = not visible
 ```
 
-Kodu parçalayalım:
+Bu kodda `get_node("Timer")` komutu, mevcut node'un çocukları arasından "Timer" adındaki node'u bularak referans alır. `timer.timeout.connect(...)` satırı ise, Timer'ın `timeout` sinyali tetiklendiğinde `_on_timer_timeout` fonksiyonunun çalıştırılmasını sağlar.
 
-- `func` anahtar kelimesi yeni bir fonksiyon tanımlar
-- `_init` bu sınıfın **yapıcı fonksiyonunun (constructor)** özel adıdır
-- Motor, bir nesne ya da node bellekte oluşturulurken `_init()` fonksiyonunu otomatik olarak çağırır
-
-> ⚠️ **Dikkat:** GDScript **girinti tabanlı** bir dildir. `print()` satırının başındaki sekme (tab) zorunludur. Unutursan editör kırmızıyla vurgular ve "Indented block expected" hatası gösterir.
-
-Sahneyi `sprite_2d.tscn` olarak kaydet (henüz kaydetmediysen), ardından **F6** (macOS'ta Cmd + R) ile çalıştır. Alt paneldeki **Output** sekmesinin `"Hello, world!"` yazdığını göreceksin:
-
-![Hello World Çıktısı](/assets/images/scripting_first_script_print_hello_world.webp)
-*Output panelinde "Hello, world!" görünüyor*
-
-Şimdi `_init()` fonksiyonunu sil; yalnızca `extends Sprite2D` satırı kalsın.
+Oluşturduğumuz `_on_timer_timeout()` fonksiyonunun içindeki `visible` ise, node'un ekranda görünürlüğünü kontrol eden mantıksal (boolean) bir özelliktir. Sahneyi çalıştırdığınızda, kodla bağladığınız bu sinyal sayesinde ikonunuzun saniyede bir yanıp söndüğünü görebilirsiniz!
 
 ---
 
-## İkon Dönsün!
+## Kendi Özel Sinyallerinizi (Custom Signals) Oluşturmak
 
-Node'u hareket ettirme ve döndürme zamanı. Bunun için scripte **iki üye değişken (member variable)** ekleyeceğiz: piksel cinsinden hareket hızı ve radyan cinsinden açısal hız.
+Godot'nun sunduğu yerleşik sinyallerin yanı sıra, oyununuzun mantığına uygun kendi özel sinyallerinizi de tanımlayabilirsiniz.
 
-`extends Sprite2D` satırının hemen altına şunları ekle:
-
-```gdscript
-extends Sprite2D
-
-var speed = 400
-var angular_speed = PI
-```
-
-Üye değişkenler scriptin üst kısmında, `extends` satırlarından sonra ve fonksiyonlardan önce yer alır. Bu scripte sahip her node örneği, `speed` ve `angular_speed` özelliklerinin bağımsız kopyasını taşır.
-
-> 💡 **Not:** Godot'da açılar varsayılan olarak **radyan** cinsindendir. Derece cinsinden çalışmak istersen yerleşik fonksiyonlar ve özellikler de mevcut.
-
-### `_process()` Fonksiyonu
-
-İkonu hareket ettirmek için, oyun döngüsünde her kare (frame) pozisyonu ve rotasyonu güncellememiz gerekiyor. Bunun için `Node` sınıfının `_process()` sanal (virtual) fonksiyonunu kullanırız.
-
-`Node` sınıfını genişleten herhangi bir sınıfta (Sprite2D gibi) bu fonksiyonu tanımlarsan, Godot onu **her kare** çağırır. Fonksiyona `delta` adında bir argüman iletilir — bu, **bir önceki kareden bu yana geçen süreyi** (saniye cinsinden) temsil eder.
-
-> 🎮 **Delta neden önemli?** Oyunlar saniyede pek çok kare (genellikle 60 FPS) render eder. Kare render süreleri küçük değişkenlikler gösterebilir. `delta` değerini kullanmak, hareketi kare hızından bağımsız hâle getirir — böylece oyun 30 FPS'de de 120 FPS'de de aynı hızda çalışır.
-
-Scriptin altına şu fonksiyonu ekle:
+Örneğin oyuncunun canı sıfıra düştüğünde bir "Game Over" ekranı göstermek istediğinizi varsayalım. Bunun için scriptinizin en üst kısmına şu satırı ekleyerek kendi sinyalinizi tanımlayabilirsiniz:
 
 ```gdscript
-func _process(delta):
-    rotation += angular_speed * delta
+signal health_depleted
 ```
 
-- `rotation`, `Node2D`'den miras alınan bir özelliktir — node'un rotasyonunu radyan cinsinden kontrol eder
-- Her kare, `angular_speed * delta` kadar rotasyon ekliyoruz
+Oluşturduğunuz bu özel sinyaller tamamen yerleşik sinyaller gibi davranır; editörün Signals sekmesinde görünürler ve aynı yöntemlerle diğer node'lara bağlanabilirler. Sinyali oyun içinde tetiklemek (yaymak) istediğinizde ise `emit()` metodunu kullanmanız yeterlidir:
 
-> 💡 **İpucu:** Kod editöründe `position`, `rotation` veya `_process` gibi yerleşik bir özelliğe ya da fonksiyona **Ctrl + tıklayarak** (macOS'ta Cmd + tık) ilgili dokümantasyonu yeni sekmede açabilirsin.
+```gdscript
+health_depleted.emit()
+```
 
-Sahneyi çalıştır — Godot ikonunun yerinde döndüğünü göreceksin!
-
-![Yerinde Dönen İkon](/assets/images/scripting_first_script_godot_turning_in_place.webp)
-*Godot ikonu yerinde dönüyor — `_process()` fonksiyonu her kare çalışıyor*
+> 💡 **Bilgilendirme:** Dilerseniz sinyallerinize parametre/argüman da ekleyebilirsiniz. Örneğin `signal health_depleted(damage_amount)` şeklinde tanımladığınız bir sinyali, `health_depleted.emit(50)` şeklinde fırlatarak diğer node'lara veri gönderebilirsiniz.
 
 ---
 
-## İleriye Hareket!
+## Bölüm Özeti
 
-Şimdi node'un ileriye de hareket etmesini sağlayalım. `_process()` fonksiyonunun içine, mevcut satırla **aynı girintide** olmak üzere şu iki satırı ekle:
+Bu bölümde öğrendiğiniz temel yapı taşları şunlardır:
 
-```gdscript
-func _process(delta):
-    rotation += angular_speed * delta
-    var velocity = Vector2.UP.rotated(rotation) * speed
-    position += velocity * delta
-```
+* **Sinyal (Signal):** Belirli bir olay gerçekleştiğinde node tarafından yayılan mesajdır.
+* **connect():** Bir sinyali, tetiklendiğinde çalışacak bir callback fonksiyonuna bağlar.
+* **emit():** İlgili sinyali tetikler ve bağlı olan tüm fonksiyonların çağrılmasını sağlar.
+* **get_node():** Node ismine göre çocuk node'a script içerisinden referans almanızı sağlar.
 
-Yeni satırları inceleyelim:
-
-- `var velocity` — yerel bir değişken tanımlar; yalnızca bu fonksiyon içinde geçerlidir
-- `Vector2.UP` — yukarı yönünü gösteren bir 2D vektörü sabiti
-- `.rotated(rotation)` — bu vektörü mevcut rotasyon açısına göre döndürür; ikonun baktığı yönü verir
-- `* speed` — hız değeriyle çarparak ilerleme hızını belirler
-- `position += velocity * delta` — node'u her kare bu hız kadar ileri taşır
-
-> 📝 **Not:** `Vector2`, Godot'nun 2D vektörü temsil eden yerleşik tipidir. `position` de `Vector2` türündendir.
-
-Sahneyi çalıştır — Godot ikonunun çember çizerek döndüğünü göreceksin!
-
-![Çember Çizen İkon](/assets/images/scripting_first_script_rotating_godot.webp)
-*Godot ikonu artık çember çizerek hareket ediyor*
-
-> ⚠️ **Not:** Node'u bu şekilde hareket ettirmek duvarlarla veya zemine çarpışmayı hesaba katmaz. İlk 2D oyun bölümünde çarpışmaları da ele alacağız.
-
----
-
-## Tam Script
-
-Referans olması için `sprite_2d.gd` dosyasının tam hâli:
-
-```gdscript
-extends Sprite2D
-
-var speed = 400
-var angular_speed = PI
-
-func _process(delta):
-    rotation += angular_speed * delta
-    var velocity = Vector2.UP.rotated(rotation) * speed
-    position += velocity * delta
-```
-
----
-
-## Özet
-
-| Kavram | Açıklama |
-|---|---|
-| `extends` | Scriptin hangi node sınıfını genişlettiğini belirtir |
-| Üye değişken | Sınıfın üst kısmında tanımlanan, tüm örneklerde bulunan değişken |
-| `_process(delta)` | Her kare Godot tarafından çağrılan sanal fonksiyon |
-| `delta` | Bir önceki kareden bu yana geçen süre (saniye) |
-| `rotation` | Node2D'den miras alınan rotasyon özelliği (radyan) |
-| `position` | Node2D'den miras alınan konum özelliği (Vector2) |
-| `Vector2.UP` | Yukarı yönü gösteren sabit 2D vektör |
+Sinyaller; iki nesnenin çarpışması, oyuncunun bir alana girmesi veya bir animasyonun bitmesi gibi sayısız senaryoda en büyük yardımcınız olacaktır.
 
 ---
 
 ## Sıradaki Adım
 
-Node kendi kendine hareket ediyor. Bir sonraki bölümde **oyuncu girdisini dinleme** konusunu ele alacağız — klavye veya fare ile bu hareketi nasıl kontrol ederiz? 🎮
+Tebrikler, Godot Engine temellerini attığımız giriş serisini tamamladınız! Bir sonraki büyük adımımızda, şimdiye kadar öğrendiğiniz node'lar, sahneler, script'ler, girdiler ve sinyaller konularının hepsini bir araya getireceğiniz İlk 2D Oyununuzu (Dodge the Creeps!) geliştirmeye başlayacaksınız.
 
----
-
-*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/scripting_first_script.html) esas alınarak Türkçe olarak hazırlanmıştır.*
+Hazırsanız bir sonraki bölümde görüşmek üzere!

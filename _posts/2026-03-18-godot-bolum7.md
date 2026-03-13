@@ -1,324 +1,142 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 7: Sinyalleri Kullanmak: Node'lar Arası İletişim"
+title: "Godot Engine Eğitim Serisi - Bölüm 7: Düşman Yapay Zekası ve Spawner (Oluşturucu) Mekanizması"
 date: 2026-03-18 12:00:00 +0300
-categories: [Godot Eğitim Serisi, İpuçları]
-tags: [godot, autoload, singleton, globals, static]
+categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+tags: [godot, gdscript, 2d, dodge-the-creeps, mob, spawner, yapay-zeka]
 permalink: /godot-egitim-serisi-bolum-7/
 published: true
 ---
 
-Bu bölümde Godot'nun en güçlü özelliklerinden biri olan **sinyal (signal)** sistemini ele alacağız. Sinyaller, bir node'da belirli bir şey olduğunda yayılan mesajlardır — örneğin bir butona basılması gibi. Diğer node'lar bu sinyale bağlanarak olay gerçekleştiğinde bir fonksiyon çağırabilir.
-
-Sinyaller, Godot'nun yerleşik bir **delegasyon mekanizmasıdır** ve oyun nesnelerinin birbirini doğrudan referans almadan birbirine tepki vermesini sağlar. Bu yapı, kod bağımlılığını (coupling) azaltır ve kodunu esnek tutar.
-
-> 💡 **Örnek:** Ekranda oyuncunun canını gösteren bir can çubuğun var. Oyuncu hasar aldığında veya iyileştirme kullandığında çubuğun güncellenmesini istiyorsun. Godot'da bunun için sinyal sistemi kullanırsın.
-
-Godot 4.0'dan itibaren sinyaller, metodlar gibi **birinci sınıf tip (first-class type)** olarak tanımlandı. Bu, onları string olarak geçmek yerine doğrudan metod argümanı olarak iletebileceğin anlamına gelir; bu da daha iyi otomatik tamamlama ve daha az hata sağlar.
+Oyuncu karakterimizi başarıyla tamamladık. Şimdi, karakterimizin kaçması gereken düşmanları (mob) oluşturma ve bu düşmanları ekran kenarlarından oyun alanına sürecek (spawn edecek) mekanizmayı kurma zamanı! Düşmanların davranışı basit ancak etkili olacak: Ekranın kenarlarında rastgele konumlarda belirecek, rastgele bir yön seçecek ve düz bir çizgide ilerleyecekler.
 
 ---
 
-## Sahne Kurulumu
+## Düşman (Mob) Sahnesini İnşa Etmek
 
-Önceki bölümlerden Godot ikonunu butona basınca durdurup harekete geçireceğiz. Bunun için hem `Button` hem de `sprite_2d.tscn` sahnesini içeren yeni bir sahne oluşturacağız.
+Düşmanları tıpkı oyuncu gibi ayrı bir sahne olarak tasarlayacağız, böylece oyunda istediğimiz kadar bağımsız düşman üretebileceğiz.
 
-### Adım 1: Yeni Sahne Oluştur
+1. **Scene > New Scene** ile yeni bir sahne oluşturun ve kök node olarak `RigidBody2D` ekleyip adını `Mob` olarak değiştirin.
 
-`Scene > New Scene` menüsüne git.
+2. Bu node'un altına bir `AnimatedSprite2D`, bir `CollisionShape2D` ve bir `VisibleOnScreenNotifier2D` çocuk node'ları ekleyin.
+3. Düşmanların aşağı doğru düşmesini engellemek için, `Mob` node'unu seçin ve Inspector (Denetçi) panelindeki **Gravity Scale** değerini `0` olarak ayarlayın.
+4. Düşmanların birbirlerini itip yollarından çıkarmalarını engellemek için, yine Inspector panelindeki **Collision** grubunu genişletip **Mask** özelliğindeki 1 numaralı katmanın işaretini kaldırın.
 
-![Yeni Sahne Menüsü](/assets/images/signals_01_new_scene.webp)
-*Yeni sahne oluşturmak için Scene > New Scene*
 
-Scene doku'nda **2D Scene** butonuna tıkla. Bu, kök node olarak `Node2D` ekler.
+### Animasyonlar ve Çarpışma Şekli
 
-![2D Sahne Seçimi](/assets/images/signals_02_2d_scene.webp)
-*2D Scene butonu Node2D'yi kök node olarak ekler*
+1. `AnimatedSprite2D` node'u için `fly`, `swim` ve `walk` adında 3 farklı animasyon oluşturun ve her birinin **Animation Speed** değerini `3` olarak ayarlayın. Görseller oyun alanına göre büyük olacağı için, Inspector'dan **Scale** değerini `(0.75, 0.75)` yaparak mob boyutunu küçültün.
 
-### Adım 2: Sprite2D Sahnesini Instance Olarak Ekle
-
-FileSystem doku'nda `sprite_2d.tscn` dosyasını bul ve `Node2D`'nin üzerine sürükleyip bırak:
-
-![Sahneyi Sürükle Bırak](/assets/images/signals_03_dragging_scene.webp)
-*sprite_2d.tscn dosyasını Node2D'ye sürüklüyoruz*
-
-### Adım 3: Button Node'u Ekle
-
-Scene doku'nda `Node2D`'ye sağ tıkla ve **Add Child Node** seç:
-
-![Alt Node Ekle](/assets/images/signals_04_add_child_node.webp)
-*Node2D'ye sağ tıklayıp "Add Child Node" seçiyoruz*
-
-`Button` node'unu ara ve ekle:
-
-![Button Ekleme](/assets/images/signals_05_add_button.webp)
-*Button node'unu aratıp ekliyoruz*
-
-Buton varsayılan olarak küçük gelir. Viewport'ta **seçim aracının** aktif olduğundan emin ol:
-
-![Seçim Aracı](/assets/images/signals_07_select_tool.webp)
-*Seçim aracı aktif olmalı — yoksa handle'lar görünmez*
-
-Butonu büyütmek için sağ alt köşesindeki **handle'dan** sürükle. Ardından butonu sürükleyerek sprite'a yakın bir konuma getir:
-
-![Buton Taşıma](/assets/images/signals_06_drag_button.webp)
-*Butonu viewport'ta yeniden boyutlandırıp konumlandırıyoruz*
-
-Son olarak Inspector'da **Text** özelliğine `Toggle motion` yaz:
-
-![Buton Etiketi](/assets/images/signals_08_toggle_motion_text.webp)
-*Butonun Text özelliğine "Toggle motion" yazıyoruz*
-
-Sahne ağacı ve viewport şöyle görünmeli:
-
-![Sahne Kurulumu Tamamlandı](/assets/images/signals_09_scene_setup.webp)
-*Sahne hazır — Node2D altında Sprite2D instance'ı ve Button yan yana*
-
-Sahneyi `node_2d.tscn` olarak kaydet. **F6** ile çalıştırırsan buton görünür ama henüz bir şey yapmaz.
+2. Son olarak, `CollisionShape2D` node'una bir `CapsuleShape2D` ekleyin ve şekli görselle hizalamak için Inspector'dan **Rotation** (Döndürme) değerini 90 derece olarak ayarlayın.
+3. Sahnenizi `mob.tscn` olarak kaydetmeyi unutmayın.
 
 ---
 
-## Editörde Sinyal Bağlamak
+## Düşman Yapay Zekasını Kodlamak
 
-Button'ın `pressed` sinyalini Sprite2D'ye bağlayalım. Böylece butona basıldığında ikonun hareketi durur ya da devam eder.
-
-### Sinyal Doku'ndan Bağla
-
-**Button** node'unu seç. Sağ panelde Inspector'ın yanındaki **Signals** sekmesine tıkla:
-
-![Signals Sekmesi](/assets/images/signals_10_node_dock.webp)
-*Sağ panelde "Signals" sekmesini açıyoruz*
-
-Seçili node'da kullanılabilir sinyallerin listesi görünür. `pressed` sinyaline **çift tıkla**:
-
-![pressed Sinyali](/assets/images/signals_11_pressed_signals.webp)
-*"pressed" sinyaline çift tıklıyoruz*
-
-**Node Connection** penceresi açılır:
-
-![Sinyal Bağlantı Penceresi](/assets/images/signals_12_node_connection.webp)
-*Sinyali hangi node'a bağlayacağımızı seçiyoruz*
-
-Bağlantı penceresinde sinyali **Sprite2D** node'una bağlayacağız. Node, sinyali alacak bir **alıcı metod (receiver method)** gerektirir — editör bunu senin için otomatik oluşturur.
-
-Kural gereği bu callback metodlar `_on_node_adı_sinyal_adı` şeklinde adlandırılır. Burada `_on_button_pressed` olacak.
-
-> 💡 **İleri Mod:** Pencerenin sağ altındaki **Advanced** butonuyla gelişmiş bağlantı moduna geçebilirsin. Bu mod; herhangi bir node'a ve yerleşik fonksiyona bağlanmana, callback'e argüman eklemeye ve çeşitli seçenekleri ayarlamana olanak tanır.
-
-![Gelişmiş Bağlantı Penceresi](/assets/images/signals_advanced_connection_window.webp)
-*Gelişmiş bağlantı penceresi — daha fazla seçenek sunar*
-
-**Connect** butonuna tıkla. Script çalışma alanına geçersin ve sol kenarda **bağlantı simgesi** olan yeni metodu görürsün:
-
-![Bağlantı Simgesi](/assets/images/signals_13_signals_connection_icon.webp)
-*Sol kenardaki simge sinyalin bağlı olduğunu gösterir*
-
-Simgeye tıklarsan bağlantı hakkında bilgi veren bir pencere açılır:
-
-![Bağlantı Bilgisi](/assets/images/signals_14_signals_connection_info.webp)
-*Sinyal bağlantısının detaylarını gösteren pencere*
-
-### Callback Fonksiyonu Yaz
-
-Oluşturulan metodun içindeki `pass` satırını şu kodla değiştir:
-
-```gdscript
-func _on_button_pressed():
-    set_process(not is_processing())
-```
-
-- `set_process()` — node'un `_process()` fonksiyonunun çalışıp çalışmamasını kontrol eder
-- `is_processing()` — işleme aktifse `true`, değilse `false` döner
-- `not` — değeri tersine çevirir
-
-Bu fonksiyon, butona her basıldığında ikonun hareket edip etmemesini değiştirecek.
-
-### `_process()` Fonksiyonunu Güncelle
-
-Klavye girdisini kaldırıp ikonu tekrar otomatik hareket ettirelim. `_process()` fonksiyonunu şu hâle getir:
-
-```gdscript
-func _process(delta):
-    rotation += angular_speed * delta
-    var velocity = Vector2.UP.rotated(rotation) * speed
-    position += velocity * delta
-```
-
-Tam `sprite_2d.gd` kodu şöyle olmalı:
-
-```gdscript
-extends Sprite2D
-
-var speed = 400
-var angular_speed = PI
-
-func _process(delta):
-    rotation += angular_speed * delta
-    var velocity = Vector2.UP.rotated(rotation) * speed
-    position += velocity * delta
-
-func _on_button_pressed():
-    set_process(not is_processing())
-```
-
-**F6** ile sahneyi çalıştır ve butona tıkla — ikon durur ve tekrar tıklayınca hareket etmeye başlar!
-
----
-
-## Kodla Sinyal Bağlamak
-
-Sinyalleri editörde bağlamanın yanı sıra **kodla da bağlayabilirsin**. Bu, script içinde dinamik olarak node oluşturduğunda veya sahne instance'ladığında gereklidir.
-
-Bunu göstermek için `Timer` node'unu kullanalım. Timer, beceri bekleme süreleri, silah yeniden yükleme gibi işlemler için kullanışlıdır.
-
-### Timer Node'u Ekle
-
-2D çalışma alanına dön (Ctrl + F1 veya üstten "2D" butonuna tıkla). Scene doku'nda `Sprite2D`'ye sağ tıkla ve **Timer** node'u ekle:
-
-![Timer Eklenmiş Sahne Ağacı](/assets/images/signals_15_scene_tree.webp)
-*Sprite2D'nin altına Timer node'u ekledik*
-
-Timer node'u seçiliyken Inspector'da **Autostart** özelliğini etkinleştir:
-
-![Timer Autostart](/assets/images/signals_18_timer_autostart.webp)
-*Autostart açıldığında Timer, sahne başlar başlamaz otomatik çalışır*
-
-### Script'e Dön
-
-Sprite2D'nin yanındaki **script simgesine** tıkla:
-
-![Script Simgesi](/assets/images/signals_16_click_script.webp)
-*Script simgesine tıklayarak kod editörüne geçiyoruz*
-
-### `_ready()` ile Bağlantıyı Kur
-
-Kodla sinyal bağlamak için iki adım gerekiyor:
-
-1. Sprite2D'den Timer'a referans al
-2. Timer'ın `timeout` sinyalinde `connect()` metodunu çağır
-
-Bunları `_ready()` fonksiyonunda yapacağız. `_ready()`, bir node tamamen bellekte oluşturulduğunda motor tarafından otomatik çağrılır:
+Düşmanlarımıza biraz çeşitlilik katalım. `Mob` node'una bir script ekleyin ve `_ready()` fonksiyonunu aşağıdaki gibi düzenleyerek her düşmanın ekrana farklı bir animasyonla gelmesini sağlayın:
 
 ```gdscript
 func _ready():
-    var timer = get_node("Timer")
-    timer.timeout.connect(_on_timer_timeout)
+	var mob_types = $AnimatedSprite2D.sprite_frames.get_animation_names()
+	$AnimatedSprite2D.animation = mob_types[randi() % mob_types.size()]
+	$AnimatedSprite2D.play()
 ```
 
-- `get_node("Timer")` — mevcut node'un çocukları arasında "Timer" adındaki node'u bulur
-- `timer.timeout.connect(...)` — Timer'ın `timeout` sinyali tetiklendiğinde `_on_timer_timeout` fonksiyonunu çağırır
-
-> 📝 **Not:** Eğer Timer'ı editörde "BlinkingTimer" olarak yeniden adlandırdıysan, çağrıyı `get_node("BlinkingTimer")` şeklinde güncellemelisin.
-
-### Callback Fonksiyonu Ekle
-
-Scriptin altına şu fonksiyonu ekle:
-
-```gdscript
-func _on_timer_timeout():
-    visible = not visible
-```
-
-- `visible` — node'un görünürlüğünü kontrol eden boolean özellik
-- `visible = not visible` — her çağrıda görünürlüğü tersine çevirir (görünür ↔ görünmez)
-
-Sahneyi çalıştırırsan ikon saniyede bir yanıp sönecek!
+> 💡 **Bellek Yönetimi (Çöp Toplama):** Düşmanlar ekranın dışına çıktığında onları silmemiz gerekir, aksi takdirde bellekte biriken düzinelerce görünmez düşman oyununuzu yavaşlatır. Bunun için `VisibleOnScreenNotifier2D` node'unun `screen_exited` sinyalini `Mob` scriptinize bağlayın ve oluşan fonksiyonun içine `queue_free()` komutunu yazın. Bu kod, ekrandan çıkan düşmanı karenin sonunda bellekten güvenlice silecektir.
 
 ---
 
-## Tam Script
+## Ana Oyun Sahnesi ve Spawner (Oluşturucu)
+
+Düşman sahnesi hazır olduğuna göre, onları oyuna dahil edecek `Main` (Ana) sahneyi kurabiliriz.
+
+1. Yeni bir sahne oluşturun, kök node olarak `Node` ekleyin ve adını `Main` yapın. (Bu node oyun mantığını yönetecek bir konteyner olduğu için `Node2D` yerine basit bir `Node` kullanıyoruz).
+2. Scene panelindeki zincir (Instance) simgesine tıklayarak `player.tscn` sahnenizi bu ana sahneye ekleyin.
+3. Oyunun akışını kontrol etmek için `Main` node'unun altına 3 adet `Timer` (`MobTimer`, `ScoreTimer`, `StartTimer`) ve oyuncunun başlangıç konumu için bir `Marker2D` (`StartPosition`) ekleyin.
+4. `MobTimer`'ın bekleme süresini (Wait Time) `0.5`, `ScoreTimer`'ı `1` ve `StartTimer`'ı `2` saniye (One Shot aktif) olarak ayarlayın.
+
+### Düşman Spawn Yolunu Çizmek
+
+Düşmanların ekranın rastgele kenarlarından çıkmasını sağlamak için bir yol çizmemiz gerekiyor.
+
+1. `Main` node'una bir `Path2D` çocuğu ekleyin ve adını `MobPath` yapın.
+2. Üstteki **Add Point** ikonunu seçerek ve **Grid Snap** özelliğini açarak ekranın sınırlarını saat yönünde çevreleyen 4 noktalı bir dikdörtgen yol çizin. İşlemi bitirmek için **Close Curve** butonuna tıklayın.
+
+3. Çizdiğiniz bu yolun üzerinde rastgele bir konum seçebilmek için `MobPath` node'unun altına bir `PathFollow2D` çocuğu ekleyin ve adını `MobSpawnLocation` olarak belirleyin.
+
+---
+
+## Spawner Kodunu Yazmak ve Oyunu Birleştirmek
+
+Şimdi `Main` node'una bir script ekleyin. En üste şu değişkenleri tanımlayın:
 
 ```gdscript
-extends Sprite2D
+extends Node
 
-var speed = 400
-var angular_speed = PI
+@export var mob_scene: PackedScene
+var score
+```
 
-func _ready():
-    var timer = get_node("Timer")
-    timer.timeout.connect(_on_timer_timeout)
+> 💡 **Bilgilendirme:** `@export` değişkeni sayesinde `mob.tscn` dosyanızı sürükleyip doğrudan Inspector panelindeki **Mob Scene** alanına bırakabilirsiniz.
 
-func _process(delta):
-    rotation += angular_speed * delta
-    var velocity = Vector2.UP.rotated(rotation) * speed
-    position += velocity * delta
+### Rastgele Düşman Üretimi (Spawn)
 
-func _on_button_pressed():
-    set_process(not is_processing())
+`MobTimer` node'unun `timeout` sinyalini `Main` scriptine bağlayın ve oluşan fonksiyonu şu şekilde doldurun:
 
-func _on_timer_timeout():
-    visible = not visible
+
+```gdscript
+func _on_mob_timer_timeout():
+	# Yeni bir mob instance'ı oluşturun.
+	var mob = mob_scene.instantiate()
+
+	# PathFollow2D üzerinde rastgele bir nokta seçin (0.0 ile 1.0 arası).
+	var mob_spawn_location = get_node("MobPath/MobSpawnLocation")
+	mob_spawn_location.progress_ratio = randf()
+
+	# Düşmanın yönünü yola dik (içe bakacak) şekilde ayarlayın.
+	var direction = mob_spawn_location.rotation + PI / 2
+
+	# Düşmanın konumunu seçilen rastgele konuma eşitleyin.
+	mob.position = mob_spawn_location.position
+
+	# Yönüne biraz rastgelelik (±45 derece) katın.
+	direction += randf_range(-PI / 4, PI / 4)
+	mob.rotation = direction
+
+	# Düşmana rastgele bir hız (150 ile 250 arası) verin.
+	var velocity = Vector2(randf_range(150.0, 250.0), 0.0)
+	mob.linear_velocity = velocity.rotated(direction)
+
+	# Mob'u Ana sahneye ekleyin.
+	add_child(mob)
+```
+
+Bu kod sayesinde her yarım saniyede bir, ekranın kenarından rastgele bir noktada, rastgele bir hızla ve oyuncunun bulunduğu alana doğru hareket eden bir düşman yaratılacaktır.
+
+### Çarpışma ve Oyun Sonu (Game Over)
+
+Son olarak oyuncu ile düşmanların etkileşimini bağlamalıyız. `Player` instance'ını seçin ve sağdaki sinyaller bölümünden, önceki bölümde oluşturduğumuz `hit` sinyalini bulun. Bunu `Main` scriptindeki yeni bir `game_over` fonksiyonuna bağlayın.
+
+Bu fonksiyonun içinde skor timer'ını ve mob timer'ını durdurarak oyun döngüsünü sonlandırabilirsiniz:
+
+```gdscript
+func game_over():
+	$ScoreTimer.stop()
+	$MobTimer.stop()
 ```
 
 ---
 
-## Özel Sinyal Tanımlamak
+## Bölüm Özeti
 
-Godot'nun yerleşik sinyallerinin yanı sıra **kendi sinyallerini** de tanımlayabilirsin.
-
-![Özel Sinyal Örneği](/assets/images/signals_17_custom_signal.webp)
-*Editörde özel bir sinyal nasıl görünür*
-
-Örneğin oyuncunun canı sıfıra düştüğünde "game over" ekranı göstermek istediğini varsay. Bunun için `health_depleted` adında bir sinyal tanımlayabilirsin:
-
-```gdscript
-extends Node2D
-
-signal health_depleted
-
-var health = 10
-```
-
-Özel sinyaller yerleşik sinyaller gibi davranır; Signals sekmesinde görünürler ve aynı şekilde bağlanabilirler.
-
-Sinyali tetiklemek için `emit()` metodunu çağır:
-
-```gdscript
-func take_damage(amount):
-    health -= amount
-    if health <= 0:
-        health_depleted.emit()
-```
-
-Sinyaller isteğe bağlı olarak **argüman** da alabilir:
-
-```gdscript
-signal health_changed(old_value, new_value)
-
-func take_damage(amount):
-    var old_health = health
-    health -= amount
-    health_changed.emit(old_health, health)
-```
-
----
-
-## Özet
-
-| Kavram | Açıklama |
-|---|---|
-| **Sinyal** | Belirli bir olay gerçekleştiğinde node tarafından yayılan mesaj |
-| **connect()** | Bir sinyali bir callback fonksiyonuna bağlar |
-| **emit()** | Sinyali tetikler, bağlı fonksiyonları çağırır |
-| **_ready()** | Node tamamen oluşturulduğunda otomatik çağrılan fonksiyon |
-| **set_process()** | `_process()` döngüsünü açıp kapatır |
-| **is_processing()** | `_process()` aktifse `true` döner |
-| **visible** | Node'un görünürlüğünü kontrol eden boolean özellik |
-| **get_node()** | İsme göre çocuk node'a referans alır |
-
-Sinyallerin kullanım alanları çok geniş:
-- Bir node'un oyun dünyasına girmesi veya çıkması
-- İki nesne arasındaki çarpışma
-- Bir karakterin belirli bir alana girmesi
-- Arayüz elemanının boyut değişimi
-- Oyun mantığına özgü özel olaylar
+Harika bir iş çıkardınız! Bu uzun ve teknik bölümde;
+* `RigidBody2D` kullanarak yerçekiminden etkilenmeyen ve kendi kendini söküp atabilen akıllı bir düşman sahnesi tasarladınız.
+* `Path2D` ve `PathFollow2D` ile oyun ekranını çevreleyen dinamik bir oluşturucu (spawner) hattı çektiniz.
+* Matematiksel fonksiyonlar (`randf`, `PI`, vektör rotasyonları) kullanarak düşmanların rastgele hız ve açılarda oyun alanına girmesini sağladınız.
+* Oyuncunun `hit` sinyalini alarak oyunu durdurma mantığını kurdunuz.
 
 ---
 
 ## Sıradaki Adım
 
-Step by Step serisi burada tamamlandı! 🎉 Artık Godot'nun temel yapıtaşlarını — node'lar, sahneler, script'ler, girdi ve sinyaller — öğrendin.
-
-Bir sonraki büyük adım: **İlk 2D Oyunun** — tüm öğrendiklerini gerçek bir oyun projesinde bir araya getireceğiz! 🚀
-
----
-
-*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/signals.html) esas alınarak Türkçe olarak hazırlanmıştır.*
+Oyununuz artık oynanabilir ve sizi zorlayabilir durumda! Bir sonraki bölümde bu heyecanı taçlandıracak olan **Kullanıcı Arayüzü (HUD), Sesler ve Oyunu Dışa Aktarma** aşamasına geçeceğiz. Görüşmek üzere!
