@@ -203,6 +203,10 @@ Bu bölümde şunları yaptık:
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='iC5vizYDzeY' %}
+
 ## Sıradaki Adım
 
 İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsın? Bu, Godot'nun en güçlü özelliklerinden biri.

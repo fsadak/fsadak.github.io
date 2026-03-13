@@ -216,6 +216,11 @@ Instancing ile şunları elde edersin:
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='kaoyo0wIJS0' %}
+
+
 ## Sıradaki Adım
 
 Instancing kavramını kavradık. Bir sonraki bölümde **GDScript ile scripting**'e giriş yapacağız — node'lara nasıl davranış kazandırılır, bunu keşfedeceğiz! 🚀
