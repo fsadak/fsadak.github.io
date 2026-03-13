@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 9: Godot'da Script Dilleri: GDScript, C# ve C++"
-date: 2026-04-09 12:05:00 +0300
+title: "Godot Engine Eğitim Serisi - Bölüm 4: Godot'da Script Dilleri: GDScript, C# ve C++"
+date: 2026-03-15 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, enemies, collision, spawning]
-permalink: /godot-egitim-serisi-bolum-9/
+permalink: /godot-egitim-serisi-bolum-4/
 published: true
 ---
 

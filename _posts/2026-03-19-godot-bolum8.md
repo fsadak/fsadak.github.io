@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 13: İlk 2D Oyunun: Dodge the Creeps! — Seriye Giriş"
-date: 2026-04-23 12:05:00 +0300
+title: "Godot Engine Eğitim Serisi - Bölüm 8: İlk 2D Oyunun: Dodge the Creeps! — Seriye Giriş"
+date: 2026-03-19 12:05:00 +0300
 categories: [Godot Eğitim Serisi, İpuçları]
 tags: [godot, troubleshooting, debug, export_issues]
-permalink: /godot-egitim-serisi-bolum-13/
+permalink: /godot-egitim-serisi-bolum-8/
 published: true
 ---
 

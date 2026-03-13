@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 14: Dodge the Creeps! — Bölüm 1: Projeyi Kuralım"
-date: 2026-04-28 12:05:00 +0300
+title: "Godot Engine Eğitim Serisi - Bölüm 9: Dodge the Creeps! — Bölüm 1: Projeyi Kuralım"
+date: 2026-03-20 12:05:00 +0300
 categories: [Godot Eğitim Serisi, İpuçları]
 tags: [godot, troubleshooting, debug, export_issues]
-permalink: /godot-egitim-serisi-bolum-14/
+permalink: /godot-egitim-serisi-bolum-9/
 published: true
 ---
 

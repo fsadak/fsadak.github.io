@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 10: İlk Script'ini Yaz: Godot İkonunu Döndürelim"
-date: 2026-04-14 12:05:00 +0300
+title: "Godot Engine Eğitim Serisi - Bölüm 5: İlk Script'ini Yaz: Godot İkonunu Döndürelim"
+date: 2026-03-16 12:05:00 +0300
 categories: [Godot Eğitim Serisi, 3D Oyun Geliştirme]
 tags: [godot, 3d, mob, enemy, spawning, path3d, collision layers, squash]
-permalink: /godot-egitim-serisi-bolum-10/
+permalink: /godot-egitim-serisi-bolum-5/
 published: true
 ---
 
