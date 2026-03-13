@@ -209,7 +209,7 @@ Bu bölümde şunları yaptık:
 
 ## Sıradaki Adım
 
-İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsın? Bu, Godot'nun en güçlü özelliklerinden biri.
+İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsınız? Bu, Godot'nun en güçlü özelliklerinden biri.
 
 ---
 
