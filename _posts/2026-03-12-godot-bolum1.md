@@ -470,7 +470,7 @@ Belirli oyun türlerine (RPG, platform, bulmaca) özel eğitimler için: [Tutori
 
 ## Konuyla ilgili Youtube videosu aşağıdadır...
 
-{% include embed/youtube.html id='DhBRf5KU_hM' %}
+{% include embed/youtube.html id='0-rDQcxnWuc' %}
 
 ## Sıradaki Adım
 

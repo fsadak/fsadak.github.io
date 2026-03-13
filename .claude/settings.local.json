@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(__NEW_LINE_b1055c8f05a08a96__ echo \"=== FILE 1_1 ===\")",
-      "Bash(__NEW_LINE_5b74ad30398be02e__ echo \"=== FILE 1_3 ===\")"
+      "Bash(__NEW_LINE_5b74ad30398be02e__ echo \"=== FILE 1_3 ===\")",
+      "Bash(python generate_presentation.py:*)"
     ]
   }
 }
