@@ -134,6 +134,10 @@ Bu tamamen normal. Bu kavramlar asıl anlamını **pratik yaparken** kazanıyor.
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='DhBRf5KU_hM' %}
+
 ## Sıradaki Adım
 
 Temel kavramlara genel bir bakış attık. Bir sonraki bölümde Godot'yu bilgisayarına kuracak ve editörü ilk kez açacağız. İşin heyecan verici kısmına yaklaşıyoruz!

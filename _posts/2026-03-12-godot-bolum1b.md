@@ -7,7 +7,7 @@ permalink: /godot-egitim-serisi-bolum-1_2/
 published: true
 ---
 
-Godot'ya adım attığında karşına çıkan ilk sorulardan biri şu olur: **"Hangi dili öğrenmeliyim?"** Bu yazıda Godot'da kullanabileceğin dillere kısaca değinecek ve özellikle yeni başlayanlar için neden GDScript'in doğru seçim olduğunu açıklayacağız.
+Godot'ya adım attığınızda karşına çıkan ilk sorulardan biri şu olur: **"Hangi dili öğrenmeliyim?"** Bu yazıda Godot'da kullanabileceğiniz dillere kısaca değinecek ve özellikle yeni başlayanlar için neden GDScript'in doğru seçim olduğunu açıklayacağız.
 
 ---
 
@@ -18,19 +18,19 @@ Godot'da iki ana programlama diliyle oyun yazabilirsin:
 - **GDScript** — Godot'ya özgü, öğrenmesi kolay bir script dili
 - **C#** — Oyun sektöründe yaygın kullanılan, genel amaçlı bir dil
 
-Her iki dil de Godot tarafından resmi olarak destekleniyor. Peki hangisiyle başlamalısın?
+Her iki dil de Godot tarafından resmi olarak destekleniyor. Peki hangisiyle başlamalısınız?
 
 ---
 
 ## Yeni Başlayanlar İçin: GDScript
 
-Eğer programlamaya yeni başlıyorsan **GDScript** ile başlamanı kesinlikle öneririz. Bunun birkaç önemli nedeni var:
+Eğer programlamaya yeni başlıyorsanız **GDScript** ile başlamanızı kesinlikle öneririm. Bunun birkaç önemli nedeni var:
 
 ### 1. Godot için Tasarlandı
-GDScript, doğrudan Godot'nun ihtiyaçlarına göre tasarlanmış bir dildir. Godot'nun yapısına o kadar sıkı entegre ki, motoru kullanırken her adımda doğal hissettiriyor. Gereksiz karmaşıklık yok; sadece ihtiyacın olan şeyler var.
+GDScript, doğrudan Godot'nun ihtiyaçlarına göre tasarlanmış bir dildir. Godot'nun yapısına o kadar sıkı entegre ki, motoru kullanırken her adımda doğal hissettiriyor. Gereksiz karmaşıklık yok; sadece ihtiyacınız olan şeyler var.
 
 ### 2. Sözdizimi Sade ve Okunabilir
-GDScript, Python'a benzer bir sözdizimine sahip. Süslü parantez ormanına girmen gerekmiyor. Bir kodu okuduğunda ne yaptığını kolayca anlayabiliyorsun.
+GDScript, Python'a benzer bir sözdizimine sahip. Süslü parantez ormanına girmeniz gerekmiyor. Bir kodu okuduğunuzda ne yaptığını kolayca anlayabiliyorsunuz.
 
 ```gdscript
 # Bu kadar sade:
@@ -39,31 +39,29 @@ func _ready():
 ```
 
 ### 3. Öğrenme Hızı Yüksek
-C# gibi genel amaçlı dillerle kıyaslandığında GDScript çok daha hızlı öğrenilir. Oyun geliştirmenin teknik kısımlarıyla boğuşmak yerine, oyun yapmaya odaklanabilirsin.
+C# gibi genel amaçlı dillerle kıyaslandığında GDScript çok daha hızlı öğrenilir. Oyun geliştirmenin teknik kısımlarıyla boğuşmak yerine, oyun yapmaya odaklanabilirsiniz.
 
 ---
 
 ## C# Ne Zaman Tercih Edilmeli?
 
-C# daha büyük ve karmaşık projelerde, ya da daha önce Unity gibi bir motorda C# kullandıysan iyi bir seçim olabilir. Ayrıca performans kritik sistemler yazacaksan da C# avantaj sağlayabilir.
+C# daha büyük ve karmaşık projelerde, ya da daha önce Unity gibi bir motorda C# kullandıysan iyi bir seçim olabilir. Ayrıca performans kritik sistemler yazacaksanız da C# avantaj sağlayabilir.
 
-Ama başlangıç için? GDScript ile git. Sonradan C#'a geçmek istersen, zaten kazandığın programlama mantığı büyük ölçüde geçerli olacak.
+Ama başlangıç için? GDScript ile gidin. Sonradan C#'a geçmek isterseniz, zaten kazandığınız programlama mantığı büyük ölçüde geçerli olacak.
 
 ---
 
 ## Bir Dil Öğrenmek = Hepsine Kapı Açmak
 
-Önemli bir nokta: Programlama dilleri birbirinden sandığından çok daha az farklıdır. Birini gerçekten öğrendiğinde, diğerlerine geçmek çok daha hızlı olur. GDScript'le attığın her adım, ileride farklı diller öğrenmeni de kolaylaştıracak.
+Önemli bir nokta: Programlama dilleri birbirinden sandığınızdan çok daha az farklıdır. Birini gerçekten öğrendiğinizde, diğerlerine geçmek çok daha hızlı olur. GDScript'le attığınız her adım, ileride farklı diller öğrenmenizi de kolaylaştıracak.
 
-> 💡 Bir programcının birden fazla dil bilmesi son derece normaldir — hatta beklenirdir.
+> Bir programcının birden fazla dil bilmesi son derece normaldir — hatta beklenendir.
 
 ---
 
 ## Peki Ben Nasıl İlerlemeliyim?
 
-Bu eğitim serisinde biz **GDScript** kullanacağız. Daha önce hiç kod yazmadıysan yukarıda bahsettiğimiz uygulamayı incelemenizi öneririz — temel kavramları orada pekiştirdikten sonra buraya dönüp Godot projesi oluşturmaya başlayabiliriz.
-
-Zaten biraz programlama geçmişin varsa? O zaman doğrudan devam edebiliriz. GDScript'i pratikte öğrenmek için en iyi yol, bir şeyler yapmaya başlamaktır.
+Bu eğitim serisinde biz **GDScript** kullanacağız. Zaten biraz programlama geçmişiniz varsa? O zaman doğrudan devam edebiliriz. GDScript'i pratikte öğrenmek için en iyi yol, bir şeyler yapmaya başlamaktır.
 
 ---
 
@@ -75,13 +73,13 @@ Zaten biraz programlama geçmişin varsa? O zaman doğrudan devam edebiliriz. GD
 
 ---
 
-Konuyla ilgili Youtube videosu aşağıdadır...
+## Konuyla ilgili Youtube videosu aşağıdadır...
 
 {% include embed/youtube.html id='DhBRf5KU_hM' %}
 
 ## Sıradaki Adım
 
-Bir sonraki bölümde Godot'nun temel yapı taşlarını — **sahne (scene)** ve **düğüm (node)** sistemini — tanıyacağız. Godot'nun çalışma mantığını kavramak, ileride yazacağın her kod satırını çok daha anlamlı kılacak.
+Bir sonraki bölümde Godot'nun temel yapı taşlarını — **sahne (scene)** ve **düğüm (node)** sistemini — tanıyacağız. Godot'nun çalışma mantığını kavramak, ileride yazacağınız her kod satırını çok daha anlamlı kılacak.
 
 Görüşmek üzere...
 

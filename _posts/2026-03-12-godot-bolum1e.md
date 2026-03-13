@@ -128,6 +128,10 @@ Bu tür içerikler için Godot topluluğunun hazırladığı [Tutorials and Reso
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='DhBRf5KU_hM' %}
+
 ## Sıradaki Adım
 
 Artık Godot'nun ne olduğunu, temel kavramlarını, editörünü ve nasıl öğrenmeye devam edeceğini biliyorsun. **Giriş serisi burada tamamlandı!**

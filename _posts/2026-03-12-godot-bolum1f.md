@@ -152,6 +152,10 @@ Bu ayrımın en büyük avantajı: 2D projelerde gereksiz 3D hesaplama yükü ol
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='DhBRf5KU_hM' %}
+
 ## Sıradaki Adım
 
 Godot'nun neden böyle tasarlandığını artık biliyorsun. Bu temel anlayış, ilerleyen bölümlerde node sistemi, sahne yapısı ve GDScript ile çalışırken pek çok "neden böyle?" sorusuna zaten cevap verecek.

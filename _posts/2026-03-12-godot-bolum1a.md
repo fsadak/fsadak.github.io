@@ -124,7 +124,7 @@ Godot çok sayıda özelliğe sahip zengin bir motordur. Bu özelliklerden en iy
 
 ---
 
-Konuyla ilgili Youtube videosu aşağıdadır...
+## Konuyla ilgili Youtube videosu aşağıdadır...
 
 {% include embed/youtube.html id='DhBRf5KU_hM' %}
 
