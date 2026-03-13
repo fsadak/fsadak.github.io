@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 7: Node'lar ve Sahneler: İlk Sahneyi Oluşturalım"
-date: 2026-03-19 12:05:00 +0300
+date: 2026-03-13 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, hud, canvaslayer, ui, ses]
 permalink: /godot-egitim-serisi-bolum-7/
@@ -26,7 +26,7 @@ Tüm node'ların şu ortak özellikleri vardır:
 ![Node Türleri Listesi](/assets/images/nodes_and_scenes_nodes.webp)
 *Godot'nun sunduğu node türlerinden bazıları — liste oldukça uzun!*
 
-Bu son özellik çok önemli: Node'lar bir araya gelerek **ağaç (tree)** yapısı oluşturur. Farklı görevlere sahip node'ları birleştirerek karmaşık davranışlar elde edebilirsin.
+Bu son özellik çok önemli: Node'lar bir araya gelerek **ağaç (tree)** yapısı oluşturur. Farklı görevlere sahip node'ları birleştirerek karmaşık davranışlar elde edebilirsiniz.
 
 Örneğin oynatılabilir bir karakter şu node'lardan oluşabilir:
 
@@ -42,15 +42,15 @@ Bu son özellik çok önemli: Node'lar bir araya gelerek **ağaç (tree)** yapı
 
 ## Sahne Nedir?
 
-Node'ları bir ağaç yapısında düzenlediğinde — tıpkı yukarıdaki karakter örneğinde olduğu gibi — buna **sahne (scene)** denir.
+Node'ları bir ağaç yapısında düzenlediğinizde — tıpkı yukarıdaki karakter örneğinde olduğu gibi — buna **sahne (scene)** denir.
 
-Bir sahne kaydedildiğinde editörde yeni bir node türü gibi davranır. Başka bir node'un alt öğesi olarak ekleyebilirsin; editörde iç yapısı gizlenerek tek bir node olarak görünür.
+Bir sahne kaydedildiğinde editörde yeni bir node türü gibi davranır. Başka bir node'un alt öğesi olarak ekleyebilirsiniz; editörde iç yapısı gizlenerek tek bir node olarak görünür.
 
 Sahneler şu ek özelliklere sahiptir:
 
 - Her zaman **tek bir kök node'u (root node)** vardır
 - Yerel diske **kaydedilebilir** ve sonradan yüklenebilir
-- **İstediğin kadar örnek (instance)** oluşturabilirsin — Character sahneninden on farklı karakter yaratabilirsin
+- **İstediğin kadar örnek (instance)** oluşturabilirsiniz — Character sahneninden on farklı karakter yaratabilirsiniz
 
 ![3D Sahne Örneği](/assets/images/nodes_and_scenes_3d_scene_example.webp)
 *Sahneler iç içe geçerek büyük ve karmaşık oyun dünyaları oluşturur*
@@ -63,14 +63,14 @@ Godot editörü özünde bir **sahne editörüdür**. 2D, 3D ve kullanıcı aray
 
 Yeterince teori! Şimdi pratiğe geçelim ve ilk sahnemizi birlikte oluşturalım.
 
-> 💡 Bunun için önce yeni bir Godot projesi oluşturman gerekiyor. Projeyi açtıktan sonra aşağıdaki adımları takip edebilirsin.
+> Bunun için önce yeni bir Godot projesi oluşturmanız gerekiyor. Projeyi açtıktan sonra aşağıdaki adımları takip edebilirsiniz.
 
 ### Adım 1: Boş Editörü Tanı
 
-Projeyi açtığında boş bir editörle karşılaşırsın. Sol taraftaki **Scene doku** kök node hızlıca eklemek için birkaç seçenek sunar:
+Projeyi açtığınızda boş bir editörle karşılaşırsınız. Sol taraftaki **Scene doku** kök node hızlıca eklemek için birkaç seçenek sunar:
 
 ![Boş Editör Görünümü](/assets/images/nodes_and_scenes_01_empty_editor.webp)
-*Yeni projeyi açtığında seni boş bir editör karşılar*
+*Yeni projeyi açtığınızda sizi boş bir editör karşılar*
 
 ![Scene Doku Seçenekleri](/assets/images/nodes_and_scenes_02_scene_dock.webp)
 *Scene doku — kök node eklemek için hızlı seçenekler sunar*
@@ -88,19 +88,19 @@ Bu presetler sadece kolaylık için var; zorunlu değil.
 
 Sahneye bir **Label** node'u ekleyeceğiz. Label'ın görevi ekrana metin çizmektir.
 
-Scene doku'daki **"Add Child Node"** butonuna ya da **"Other Node"** seçeneğine tıkla. **Create New Node** penceresi açılır:
+Scene doku'daki **"Add Child Node"** butonuna ya da **"Other Node"** seçeneğine tıklayın. **Create New Node** penceresi açılır:
 
 ![Node Oluşturma Penceresi](/assets/images/nodes_and_scenes_03_create_node_window.webp)
-*Create New Node penceresi — yüzlerce node türü arasından seçim yapabilirsin*
+*Create New Node penceresi — yüzlerce node türü arasından seçim yapabilirsiniz*
 
-Arama kutusuna `Label` yaz, listede filtrele. **Label** node'una tıkla ve pencerenin altındaki **Create** butonuna bas.
+Arama kutusuna `Label` yazıp, listede filtreleyin. **Label** node'una tıklayın ve pencerenin altındaki **Create** butonuna basın.
 
 ![Label Node Seçimi](/assets/images/nodes_and_scenes_04_create_label_window.webp)
 *Label node'unu seçip Create'e tıklıyoruz*
 
 ### Adım 3: Sahneyi İncele
 
-Label node'u eklediğinde birkaç şey aynı anda gerçekleşir:
+Label node'u eklediğinizde birkaç şey aynı anda gerçekleşir:
 
 - Editör **2D çalışma alanına** geçer (çünkü Label bir 2D node'udur)
 - Label, viewport'un sol üst köşesinde **seçili olarak** belirir
@@ -112,18 +112,18 @@ Label node'u eklediğinde birkaç şey aynı anda gerçekleşir:
 
 ### Adım 4: Text Özelliğini Değiştir
 
-Şimdi Label'ın **Text** özelliğini değiştireceğiz. Sağdaki **Inspector doku**'na git, `Text` alanını bul ve içine `Hello World` yaz.
+Şimdi Label'ın **Text** özelliğini değiştireceğiz. Sağdaki **Inspector doku**'na git, `Text` alanını bulun ve içine `Hello World` yazın.
 
-Yazdıkça metnin viewport'ta belirdiğini göreceksin.
+Yazdıkça metnin viewport'ta belirdiğini göreceksiniz.
 
 ![Label Text Özelliği](/assets/images/nodes_and_scenes_06_label_text.webp)
 *Inspector'da Text özelliğine "Hello World" yazıyoruz*
 
-> 💡 **İpucu:** Inspector'da listelenen herhangi bir özelliği bu şekilde düzenleyebilirsin. Text sadece başlangıç için iyi bir örnek.
+> **İpucu:** Inspector'da listelenen herhangi bir özelliği bu şekilde düzenleyebilirsiniz. Text sadece başlangıç için iyi bir örnek.
 
 ### Adım 5: Label'ı Ortaya Taşı
 
-Araç çubuğundan **taşıma (move) aracını** seçerek Label'ı viewport'ta istediğin yere sürükleyebilirsin. Onu görünür dikdörtgenin ortasına taşı.
+Araç çubuğundan **taşıma (move) aracını** seçerek Label'ı viewport'ta istediğiniz yere sürükleyebilirsiniz. Onu görünür dikdörtgenin ortasına taşıyın.
 
 ![Taşıma Aracı](/assets/images/nodes_and_scenes_07_move_tool.webp)
 *Taşıma aracıyla Label'ı viewport'un ortasına konumlandırıyoruz*
@@ -139,19 +139,19 @@ Editörde sahne bu şekilde görünmeli:
 
 Her şey hazır! Sahneyi çalıştırma zamanı.
 
-Ekranın sağ üst köşesindeki **Run Current Scene** butonuna tıkla ya da **F6** tuşuna bas (macOS'ta Cmd + R).
+Ekranın sağ üst köşesindeki **Run Current Scene** butonuna tıklayın ya da **F6** tuşuna basın.
 
 ![Sahne Çalıştırma Butonu](/assets/images/nodes_and_scenes_09_play_scene_button.webp)
 *"Run Current Scene" butonu — sahneyi test etmek için kullanılır*
 
-Çalıştırmadan önce sahneyi kaydetmen gerektiğini söyleyen bir pencere açılacak. **Save** butonuna tıkla ve dosyayı `label.tscn` olarak kaydet.
+Çalıştırmadan önce sahneyi kaydetmeniz gerektiğini söyleyen bir pencere açılacak. **Save** butonuna tıklayın ve dosyayı `label.tscn` olarak kaydedin.
 
 ![Sahneyi Kaydetme Penceresi](/assets/images/nodes_and_scenes_10_save_scene_as.webp)
 *Sahneyi kaydetmeden çalıştıramazsın — `label.tscn` olarak kaydediyoruz*
 
-> 📁 **Not:** Godot'nun dosya diyaloğu yalnızca proje klasörü içine kaydetmene izin verir. Üstteki `res://` yolu projenin kök dizinini temsil eder ve "resource path" (kaynak yolu) anlamına gelir.
+> **Not:** Godot'nun dosya diyaloğu yalnızca proje klasörü içine kaydetmenize izin verir. Üstteki `res://` yolu projenin kök dizinini temsil eder ve "resource path" (kaynak yolu) anlamına gelir.
 
-Uygulama yeni bir pencerede açılır ve ekranda `Hello World` metnini göstermelidir. Pencereyi kapat ya da **F8** (macOS'ta Cmd + .) tuşuna basarak çalışan sahneden çık.
+Uygulama yeni bir pencerede açılır ve ekranda `Hello World` metnini göstermelidir. Pencereyi kapatın ya da **F8** tuşuna basarak çalışan sahneden çıkın.
 
 ![Çalışan Sahnenin Sonucu](/assets/images/nodes_and_scenes_11_final_result.webp)
 *İlk Godot sahnesi başarıyla çalışıyor — "Hello World!" ekranda görünüyor 🎉*
@@ -160,26 +160,26 @@ Uygulama yeni bir pencerede açılır ve ekranda `Hello World` metnini gösterme
 
 ## Ana Sahneyi Ayarla
 
-Test için **Run Current Scene** butonunu kullandık. Yanındaki **Run Project** butonu ise projenin **ana sahnesini** ayarlayıp çalıştırmanı sağlar. Bunun için **F5** (macOS'ta Cmd + B) kısayolunu da kullanabilirsin.
+Test için **Run Current Scene** butonunu kullandık. Yanındaki **Run Project** butonu ise projenin **ana sahnesini** ayarlayıp çalıştırmanızı sağlar. Bunun için **F5** kısayolunu da kullanabilirsiniz.
 
 ![Run Project Butonu](/assets/images/nodes_and_scenes_12_play_button.webp)
 *"Run Project" butonu — projenin ana sahnesini başlatır*
 
-> ⚠️ **Dikkat:** "Run Current Scene" ile "Run Project" farklı şeylerdir. Beklenmedik bir davranışla karşılaşırsan hangi butona bastığını kontrol et.
+> **Dikkat:** "Run Current Scene" ile "Run Project" farklı şeylerdir. Beklenmedik bir davranışla karşılaşırsanız hangi butona bastığınızı kontrol edin.
 
-Butona ilk kez tıkladığında ana sahneyi seçmeni isteyen bir pencere açılır:
+Butona ilk kez tıkladığınızda ana sahneyi seçmenizi isteyen bir pencere açılır:
 
 ![Ana Sahne Seçim Popup'ı](/assets/images/nodes_and_scenes_13_main_scene_popup.webp)
 *Ana sahne ilk kez ayarlanıyor*
 
-**Select** butonuna tıkla ve açılan dosya diyaloğunda `label.tscn` dosyasına çift tıkla:
+**Select** butonuna tıklayın ve açılan dosya diyaloğunda `label.tscn` dosyasına çift tıklayın:
 
 ![Ana Sahne Dosya Seçimi](/assets/images/nodes_and_scenes_14_select_main_scene.webp)
 *`label.tscn` dosyasını ana sahne olarak seçiyoruz*
 
-Artık projeyi her çalıştırdığında Godot bu sahneyi başlangıç noktası olarak kullanacak.
+Artık projeyi her çalıştırdığınızda Godot bu sahneyi başlangıç noktası olarak kullanacak.
 
-> 📝 **Not:** Ana sahnenin yolu `project.godot` dosyasına kaydedilir. Bu dosyayı doğrudan düzenleyebilir ya da `Project > Project Settings` menüsünden değiştirebilirsin.
+> **Not:** Ana sahnenin yolu `project.godot` dosyasına kaydedilir. Bu dosyayı doğrudan düzenleyebilir ya da `Project > Project Settings` menüsünden değiştirebilirsiniz.
 
 ---
 
@@ -205,7 +205,7 @@ Bu bölümde şunları yaptık:
 
 ## Sıradaki Adım
 
-İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsın? Bu, Godot'nun en güçlü özelliklerinden biri. 🚀
+İlk sahnemizi başarıyla oluşturduk! Bir sonraki bölümde **sahne örneklemesi (scene instancing)** konusunu ele alacağız — bir sahneyi birden fazla kez nasıl kullanırsın? Bu, Godot'nun en güçlü özelliklerinden biri.
 
 ---
 

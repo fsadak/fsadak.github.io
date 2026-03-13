@@ -13,7 +13,7 @@ published: true
 
 ## Packed Scene Nedir?
 
-Projeyi istediğin kadar sahneye bölebilirsin. Her sahne `.tscn` uzantılı bir dosyaya kaydedilir — bu, "text scene" (metin sahne) anlamına gelir. Önceki bölümde oluşturduğumuz `label.tscn` bunun bir örneğiydi.
+Projeyi istediğiniz kadar sahneye bölebilirsiniz. Her sahne `.tscn` uzantılı bir dosyaya kaydedilir. Önceki bölümde oluşturduğumuz `label.tscn` bunun bir örneğiydi.
 
 Bu dosyalara **Packed Scene** denir, çünkü sahnenin içeriğine dair tüm bilgiyi paketlenmiş hâlde saklarlar.
 
@@ -21,7 +21,7 @@ Bu dosyalara **Packed Scene** denir, çünkü sahnenin içeriğine dair tüm bil
 
 ## Instancing Nedir?
 
-Bir sahneyi kaydettikten sonra, onu bir **şablon (blueprint)** gibi kullanabilirsin: başka sahnelerde istediğin kadar çoğaltabilirsin. Bu işleme **instancing (örnekleme)**, üretilen her kopyaya ise **instance (örnek)** denir.
+Bir sahneyi kaydettikten sonra, onu bir **şablon (blueprint)** gibi kullanabilirsiniz: başka sahnelerde istediğiniz kadar çoğaltabilirsiniz. Bu işleme **instancing (örnekleme)**, üretilen her kopyaya ise **instance (örnek)** denir.
 
 Somutlaştırmak için bir örnek düşünelim: **Top (Ball) sahnesi.**
 
@@ -33,7 +33,7 @@ Bu sahne şu node'lardan oluşuyor:
 ![Top Sahnesi Yapısı](/assets/images/instancing_ball_scene.webp)
 *ball.tscn — bir topu temsil eden sahne. Kök node RigidBody2D.*
 
-Bu sahneyi kaydettikten sonra başka sahnelere defalarca ekleyebilirsin. Her instance editörde tek bir node gibi görünür; iç yapısı gizlenir. Her kopya benzersiz bir isme sahip olur.
+Bu sahneyi kaydettikten sonra başka sahnelere defalarca ekleyebilirsiniz. Her instance editörde tek bir node gibi görünür; iç yapısı gizlenir. Her kopya benzersiz bir isme sahip olur.
 
 ![Birden Fazla Top Instance'ı](/assets/images/instancing_ball_instances_example.webp)
 *Aynı ball.tscn sahnesinden üretilen birden fazla instance — her biri bağımsız davranır*
