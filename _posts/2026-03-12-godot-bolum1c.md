@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 3: Godot'nun Temel Kavramları: Sahne (Scene), Node (Düğüm), Scene Tree (Sahne Ağacı) ve Sinyaller (Signals)"
+title: "Godot Engine Eğitim Serisi - Bölüm 1.3: Godot'nun Temel Kavramları: Sahne (Scene), Node (Düğüm), Scene Tree (Sahne Ağacı) ve Sinyaller (Signals)"
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, script, kodlama, başlangıç]
-permalink: /godot-egitim-serisi-bolum-1c/
+permalink: /godot-egitim-serisi-bolum-1_3/
 published: true
 ---
 

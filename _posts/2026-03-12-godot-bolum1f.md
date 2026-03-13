@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 6: Godot'nun Tasarım Felsefesi: Motor Neden Böyle Çalışıyor?"
+title: "Godot Engine Eğitim Serisi - Bölüm 1.6: Godot'nun Tasarım Felsefesi: Motor Neden Böyle Çalışıyor?"
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, düşman, rigidbody2d, path2d, timer]
-permalink: /godot-egitim-serisi-bolum-1f/
+permalink: /godot-egitim-serisi-bolum-1_6/
 published: true
 ---
 

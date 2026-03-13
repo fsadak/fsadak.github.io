@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 2: GDScript ile Kod Yazmayı Öğrenmek"
+title: "Godot Engine Eğitim Serisi - Bölüm 1.2: GDScript ile Kod Yazmayı Öğrenmek"
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, node, scene, düğüm, sahne]
-permalink: /godot-egitim-serisi-bolum-1b/
+permalink: /godot-egitim-serisi-bolum-1_2/
 published: true
 ---
 

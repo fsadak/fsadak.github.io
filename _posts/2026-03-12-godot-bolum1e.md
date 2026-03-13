@@ -1,9 +1,9 @@
 ---
-title: "Godot Engine Eğitim Serisi - Bölüm 5: Godot'da Yeni Şeyler Nasıl Öğrenilir? Kaynaklar ve Topluluk"
+title: "Godot Engine Eğitim Serisi - Bölüm 1.5: Godot'da Yeni Şeyler Nasıl Öğrenilir? Kaynaklar ve Topluluk"
 date: 2026-03-12 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, oyuncu, animasyon, input]
-permalink: /godot-egitim-serisi-bolum-1e/
+permalink: /godot-egitim-serisi-bolum-1_5/
 published: true
 ---
 
