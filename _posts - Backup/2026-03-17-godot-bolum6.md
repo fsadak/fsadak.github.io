@@ -1,0 +1,176 @@
+---
+title: "Godot Engine Eğitim Serisi - Bölüm 6: Oyuncu Girdisini Dinlemek: Karakteri Klavyeyle Kontrol Edelim"
+date: 2026-03-17 12:00:00 +0300
+categories: [Godot Eğitim Serisi, İpuçları]
+tags: [godot, project_organization, structure, gdignore]
+permalink: /godot-egitim-serisi-bolum-6/
+published: true
+---
+
+Önceki bölümde Godot ikonu kendiliğinden çember çiziyordu. Ama bir oyunda kontrolü oyuncuya vermemiz gerekiyor. Bu bölümde `sprite_2d.gd` scriptimizi düzenleyerek ikonu **klavyeyle döndürüp hareket ettireceğiz**.
+
+![Girdiye Göre Hareket](/assets/images/scripting_first_script_moving_with_input.webp)
+*Bu bölümün sonunda ok tuşlarıyla ikonu yönlendiriyor olacaksın*
+
+---
+
+## Godot'da Girdi İşlemenin İki Yolu
+
+Godot'da oyuncu girdisini işlemek için iki temel araç var:
+
+### 1. Yerleşik Girdi Callback'leri — `_unhandled_input()`
+`_process()` gibi sanal bir fonksiyondur; oyuncu bir tuşa bastığında Godot onu otomatik olarak çağırır. Her karede değil, **olay gerçekleştiğinde** tetiklenir. Örneğin zıplamak için Boşluk tuşuna basmak gibi her karede kontrol etmene gerek olmayan eylemler için idealdir.
+
+### 2. Input Singleton
+**Singleton**, scriptten global olarak erişilebilen bir nesnedir. Godot birkaç tane sunar. `Input` singleton, **her karede** girdi kontrolü yapmak için doğru araçtır.
+
+Bu bölümde oyuncunun dönmek veya hareket etmek isteyip istemediğini her karede kontrol etmemiz gerektiği için **Input singleton** kullanacağız.
+
+---
+
+## Dönme: Yön Kontrolü Ekle
+
+Önce dönme hareketine oyuncu kontrolü ekleyelim. `_process()` fonksiyonundaki şu satırı:
+
+```gdscript
+rotation += angular_speed * delta
+```
+
+Aşağıdaki kodla değiştir:
+
+```gdscript
+var direction = 0
+if Input.is_action_pressed("ui_left"):
+    direction = -1
+if Input.is_action_pressed("ui_right"):
+    direction = 1
+
+rotation += angular_speed * direction * delta
+```
+
+### Bu Kod Ne Yapıyor?
+
+`direction` değişkeni, oyuncunun hangi yöne dönmek istediğini temsil eden bir çarpan:
+
+- `0` → sol veya sağ ok tuşuna basılmıyor
+- `1` → oyuncu sağa dönmek istiyor
+- `-1` → oyuncu sola dönmek istiyor
+
+Bu değerleri üretmek için **koşullu ifadeler (conditional statements)** ve `Input` kullanıyoruz.
+
+GDScript'te koşullu ifade `if` anahtar kelimesiyle başlar, kolon (`:`) ile biter. Koşul, bu ikisi arasındaki ifadedir.
+
+`Input.is_action_pressed()` metodu, bir **input action** adı alır ve o eylem basılıysa `true`, basılı değilse `false` döner.
+
+`"ui_left"` ve `"ui_right"`, her Godot projesinde varsayılan olarak tanımlı eylemlerdir. Sırasıyla klavyenin sol/sağ ok tuşlarına veya gamepad D-pad'in sol/sağ yönlerine basıldığında tetiklenirler.
+
+> 💡 **İpucu:** Projenin input eylemlerini `Project > Project Settings > Input Map` sekmesinden görüp düzenleyebilirsin.
+
+Son olarak `direction`'ı çarpan olarak kullanıyoruz:
+```gdscript
+rotation += angular_speed * direction * delta
+```
+
+`direction` sıfır olduğunda (tuş basılmıyorken) rotasyon değişmez. Sol veya sağ tuşa basıldığında ikona ilgili yönde dönme hızı eklenir.
+
+---
+
+## Önceki Hareketi Geçici Olarak Devre Dışı Bırak
+
+Önceki bölümden kalan ve ikonu sürekli çember çizen satırları şimdilik **yorum satırına** çevirelim. GDScript'te yorum `#` ile başlar:
+
+```gdscript
+#var velocity = Vector2.UP.rotated(rotation) * speed
+#position += velocity * delta
+```
+
+Bu satırlar artık çalışmaz; ikon yalnızca döner, ilerlemez. Sahneyi çalıştırırsan **Sol** ve **Sağ** ok tuşlarıyla ikonun döndüğünü göreceksin.
+
+---
+
+## Hareket: "Yukarı" Tuşuyla İlerle
+
+Şimdi yorum satırlarını kaldır ve `var velocity` ile başlayan satırı şu kodla değiştir:
+
+```gdscript
+var velocity = Vector2.ZERO
+if Input.is_action_pressed("ui_up"):
+    velocity = Vector2.UP.rotated(rotation) * speed
+```
+
+### Bu Kod Ne Yapıyor?
+
+- `Vector2.ZERO` — uzunluğu 0 olan, yani hiç hareket olmadığını temsil eden 2D vektör sabitidir
+- Oyuncu `"ui_up"` (yukarı ok tuşu) eylemine basarsa, hız değeri hesaplanarak ileri yön atanır
+- Tuşa basılmıyorsa hız sıfır kalır ve ikon hareket etmez
+
+Böylece ikon yalnızca **Yukarı ok** tuşuna basıldığında ilerler; basılmadığında yerinde durur.
+
+---
+
+## Tam Script
+
+Tüm değişikliklerden sonra `sprite_2d.gd` dosyasının tam hâli:
+
+```gdscript
+extends Sprite2D
+
+var speed = 400
+var angular_speed = PI
+
+func _process(delta):
+    var direction = 0
+    if Input.is_action_pressed("ui_left"):
+        direction = -1
+    if Input.is_action_pressed("ui_right"):
+        direction = 1
+
+    rotation += angular_speed * direction * delta
+
+    var velocity = Vector2.ZERO
+    if Input.is_action_pressed("ui_up"):
+        velocity = Vector2.UP.rotated(rotation) * speed
+
+    position += velocity * delta
+```
+
+Sahneyi çalıştır:
+- **Sol / Sağ ok** → ikon döner
+- **Yukarı ok** → ikon baktığı yönde ilerler
+
+---
+
+## Özet
+
+Bu bölümde şunları öğrendik:
+
+| Kavram | Açıklama |
+|---|---|
+| `Input.is_action_pressed()` | Bir input eyleminin o an basılı olup olmadığını kontrol eder |
+| `"ui_left"`, `"ui_right"`, `"ui_up"` | Godot'da varsayılan klavye/gamepad eylemleri |
+| `if` koşullu ifade | GDScript'te karar verme yapısı |
+| `Vector2.ZERO` | Uzunluğu 0 olan, hareketsizliği temsil eden vektör |
+| Input singleton | Her karede global girdi kontrolü için kullanılan nesne |
+
+---
+
+## GDScript Script'leri Hakkında Genel Özet
+
+Bu noktada birkaç adım geriye çekilip öğrendiklerimizi toparlayalım:
+
+- Godot'da her script bir **sınıfı (class)** temsil eder ve motorun yerleşik sınıflarından birini genişletir
+- Miras aldığın node türü, `rotation` ve `position` gibi özelliklere erişimini sağlar
+- Dosyanın üst kısmındaki değişkenler sınıfın **üye değişkenleridir (member variables)**
+- `_process()` — her kare çalışır, node'a sürekli güncelleme uygular
+- `_unhandled_input()` — tuş basımı gibi girdileri olay bazlı alır
+- **Input singleton** — `_process()` döngüsü içinde girdi kontrolü için kullanılır
+
+---
+
+## Sıradaki Adım
+
+Bir sonraki bölümde **sinyal (signal) sistemi** konusunu ele alacağız — node'ların birbirleriyle nasıl haberdar ettiğini ve scriptlere nasıl tetikleyici gönderdiğini göreceğiz. Bu, Godot'nun en güçlü özelliklerinden biri! 🚀
+
+---
+
+*Bu yazı, [Godot Engine resmi dokümantasyonu](https://docs.godotengine.org/en/stable/getting_started/step_by_step/scripting_player_input.html) esas alınarak Türkçe olarak hazırlanmıştır.*
