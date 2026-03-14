@@ -119,7 +119,7 @@ comments:
   # Giscus options › https://giscus.app
   giscus:
     repo: fsadak/fsadak.github.io # <gh-username>/<repo>
-    repo_id: "R_kgDORd7WTg
+    repo_id: R_kgDORd7WTg
     category: General
     category_id: DIC_kwDORd7WTs4C4WAT
     mapping: url # optional, default to 'pathname'
