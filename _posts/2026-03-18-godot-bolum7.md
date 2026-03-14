@@ -42,6 +42,17 @@ func _ready():
 	$AnimatedSprite2D.play()
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `func _ready():`: Düşman sahneye ilk eklendiğinde (spamlandığında) sadece bir kere otomatik çalışan açılış animasyonumuzdur. 
+*   `var mob_types = $AnimatedSprite2D.sprite_frames.get_animation_names()`: Animasyon oynatıcı düğümümüzün (`$AnimatedSprite2D`) içine giriyoruz, onun sahip olduğu görsel kareler listesine (`sprite_frames`) bakıyoruz ve buradaki tüm animasyonların isimlerini (`get_animation_names()`) getirip `mob_types` (düşman tipleri) adlı bir değişkene liste halinde kaydediyoruz. Hatırlarsan az önce 'fly', 'swim' ve 'walk' isimlerinde üç animasyon oluşturmuştuk. Burası ["fly", "swim", "walk"] şeklinde bir liste veriyor.
+*   `$AnimatedSprite2D.animation = mob_types[randi() % mob_types.size()]`: Bu karmaşık görünen satır aslında basit bir kura çekimidir.
+    *   `randi()`: Bize rastgele devasa bir tam sayı üretir (örneğin 1234567).
+    *   `mob_types.size()`: Listemizin uzunluğunu verir (örneğin 3 animasyonumuz olduğu için cevap 3).
+    *   `%`: Matematikte "modülüs" işlemidir. Bir sayının diğerine bölümünden kalanı verir. Bir sayıyı 3'e bölersek kalan ya 0, ya 1 ya da 2 olabilir. Yani `randi() % 3` her zaman rastgele 0, 1 veya 2 sayılarından birini verir.
+    *   `mob_types[...]`: Listeden bu sayılara karşılık gelen elemanı seçeriz (0.'cı 'fly', 1.'ci 'swim', 2.'ci 'walk'). Seçilen bu rastgele ismi, düşmanın oynatılacak `.animation` özelliği olarak ayarlarız. Böylece her eklenen düşman farklı bir kılığa sahip olur.
+*   `$AnimatedSprite2D.play()`: Ve son olarak seçilen bu animasyon tipini çalıştırarak oynatmaya başlarız.
+
+
 > 💡 **Bellek Yönetimi (Çöp Toplama):** Düşmanlar ekranın dışına çıktığında onları silmemiz gerekir, aksi takdirde bellekte biriken düzinelerce görünmez düşman oyununuzu yavaşlatır. Bunun için `VisibleOnScreenNotifier2D` node'unun `screen_exited` sinyalini `Mob` scriptinize bağlayın ve oluşan fonksiyonun içine `queue_free()` komutunu yazın. Bu kod, ekrandan çıkan düşmanı karenin sonunda bellekten güvenlice silecektir.
 
 ---
@@ -77,6 +88,12 @@ extends Node
 var score
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `extends Node`: Bu kod dosyasının, oyunun tüm yönetimini elinde tutan `Main` adındaki kök Node'a bağlı olduğunu belirtiyoruz.
+*   `@export var mob_scene: PackedScene`: Dışarıdan (`@export`) müdahaleye açık `mob_scene` (düşman sahnesi) adında bir değişken tanımlıyoruz. Yanına eklediğimiz `: PackedScene` uyarısı, bunun sıradan bir sayı veya yazı değil, paketlenmiş eksiksiz bir Godot Sahnesi (`.tscn` dosyası) olması gerektiğini belirtiyor. Editörde bu kutuya az önce kaydettiğimiz `mob.tscn` dosyasını sürükleyip bırakacağız.
+*   `var score`: Oyuncunun puanını tutacağımız değişkenimiz.
+
+
 > 💡 **Bilgilendirme:** `@export` değişkeni sayesinde `mob.tscn` dosyanızı sürükleyip doğrudan Inspector panelindeki **Mob Scene** alanına bırakabilirsiniz.
 
 ### Rastgele Düşman Üretimi (Spawn)
@@ -111,6 +128,20 @@ func _on_mob_timer_timeout():
 	add_child(mob)
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `func _on_mob_timer_timeout():`: Oyunumuzdaki `MobTimer`'ın süresi (örneğin yarım saniye) dolduğunda çağrılan, düşman üretme fonksiyonumuzdur.
+*   `var mob = mob_scene.instantiate()`: Editörden sürükleyip verdiğimiz düşman şablonunu (`mob_scene`) kalıp olarak kullanıp yeni, canlı bir kopya (instance) üretiriz (`.instantiate()`) ve o an `mob` olarak adlandırırız. Düşman var, ama henüz ekranın neresinden gireceği veya hızı belli değil.
+*   `var mob_spawn_location = get_node("MobPath/MobSpawnLocation")`: Ekrana çizdiğimiz yolu ve üzerinde ilerleyen çocuğu bul.
+*   `mob_spawn_location.progress_ratio = randf()`: Bu yolun üzerinde rastgele bir ilerleme sağla. `progress_ratio` yolun neresinde olduğunu gösterir, 0 başı 1 sonudur. `randf()` fonksiyonu bize 0 ile 1 arasında rastgele küsüratlı bir sayı verir (örnek: 0.73). Piyonu yolun üzerinde rastgele bir kaydırma işlemidir. Kenar başlangıç konumu belirlendi.
+*   `var direction = mob_spawn_location.rotation + PI / 2`: Yolda hareket eden aracın şu anki baktığı açıyı alır (`.rotation`), üzerine matematiksel olarak çeyrek tur yani 90 derece (`PI / 2`) ekler. Böylece yola paralel bakan yönü kırıp, tam oyun ekranının tam ortasına (içeri) bakması sağlanır.
+*   `mob.position = mob_spawn_location.position`: Ürettiğimiz düşmanın (`mob`) pozisyonunu, yolu üzerinde rastgele duran piyonun tam o anki merkez pozisyonuna taşırız ki ekranda oradan çıksın.
+*   `direction += randf_range(-PI / 4, PI / 4)`: Yönümüz ekrana dümdüz (90 derece) bakıyordu. Buna `randf_range` (rastgele aralık) diyerek ufak bir sapma ekleriz. -45 derece (`-PI / 4`) ile +45 derece (`PI / 4`) arasında bir sapma ile, sadece dümdüz aşağı değil, hafif çarpraz da gitmesi sağlanır. Eğlence katar.
+*   `mob.rotation = direction`: Kesinleşmiş bu rastgele sapmalı yeni yönümüzü, düşmanın asıl bakış açısına (`.rotation`) uyguluyoruz.
+*   `var velocity = Vector2(randf_range(150.0, 250.0), 0.0)`: Karakterin x eksenindeki itme hızını rastgele minimum 150 ile maksimum 250 arasında bir yer olarak belirliyoruz. (`Vector2` içine sırasıyla x ve y hızı alır).
+*   `mob.linear_velocity = velocity.rotated(direction)`: Bu sadece ileri (x ekseni) olan itme gücünü, az önce karar verdiğimiz asıl şaşırtmalı yöne doğru çeviriyoruz (`.rotated()`) ve düşmanın fiziksel lineer hızına (`linear_velocity`) atıyoruz. Araba artık hareket ediyor.
+*   `add_child(mob)`: Hızı, yönü ve rastgele konumu hesaplanan bu düşmanı asıl ana sahnemize (`Main`) bir çocuk olarak ekleyerek canlandırıyoruz ve görünür kılıyoruz.
+
+
 Bu kod sayesinde her yarım saniyede bir, ekranın kenarından rastgele bir noktada, rastgele bir hızla ve oyuncunun bulunduğu alana doğru hareket eden bir düşman yaratılacaktır.
 
 ### Çarpışma ve Oyun Sonu (Game Over)
@@ -124,6 +155,12 @@ func game_over():
 	$ScoreTimer.stop()
 	$MobTimer.stop()
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `func game_over():`: Kendi hazırladığımız, oyun bitirme fonksiyonudur. Oyuncunun (Player) `.hit` sinyali buraya bağlıdır, yani oyuncu bir düşmana çarptığı an bu fonksiyon tetiklenir.
+*   `$ScoreTimer.stop()`: Oyuna eklediğimiz skor sayacının timer (zamanlayıcı) düğümünü bularak tamamen durdurmasını söyleriz (`.stop()`). Böylece skor artışı biter.
+*   `$MobTimer.stop()`: Yukarıdaki `_on_mob_timer_timeout` fonksiyonunu çağıran düşman doğurma (spawn) zamanlayıcısını bularak işlevden çıkarır, yani yeni düşman gelmesini tamamen durdururuz. Oyun sona erer.
+
 
 ---
 

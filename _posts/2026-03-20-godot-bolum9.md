@@ -98,6 +98,25 @@ func _physics_process(delta):
     move_and_slide()
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `extends CharacterBody3D`: 3D dünyada fiziksel etkileşimlere girebilen (duvarlara çarpan) bir karakter gövdesi düğümü kullandığımızı belirtir.
+*   `@export var speed = 14`: Editörden (Inspector'dan) değiştirilebilir, hareket hızımızı 14 olarak ayarlayan değişken.
+*   `@export var fall_acceleration = 75`: Yine editörden değiştirilebilen, yerçekiminin (aşağı düşüşün) ivme hızını belirleyen değişken.
+*   `var target_velocity = Vector3.ZERO`: Hedef hızımızı tutan değişken. X (sağ/sol), Y (yukarı/aşağı) ve Z (ileri/geri) olmak üzere üç değeri de 0 olarak başlatıyoruz.
+*   `func _physics_process(delta):`: 3D fizikle ilgili her türlü hareket ve çarpışma kontrolünü, oyunun o anki kare hızından (`delta`) bağımsız ve sabit adımlarla yapmamızı sağlayan ana motor fonksiyonumuzdur.
+*   `var direction = Vector3.ZERO`: Her yeni karede (çalışmada) oyuncunun gitmek istediği yönü geçici olarak sıfırlar.
+*   `if Input.is_action_pressed("move_right"):` vb.: Oyuncunun klavyesini dinliyoruz. 2D bölümünden farklı olarak burada yukarı/aşağı gitmek Y değil, kameradan uzaklaşıp yakınlaşmak, yani Z eksenidir. Z ekseni derine doğru gittiği için, `move_forward` (ileri git) dendiğinde yönün Z eksenini küçültürüz (`-1`), `move_back` ile Z eksenini büyütürüz (`+1`). Sağa sola gitmek ise yine eskisi gibi X eksenidir.
+*   `if direction != Vector3.ZERO:`: Eğer oyuncu bir tuşa basıp yön değiştirdiyse...
+*   `direction = direction.normalized()`: Çapraz giderken çok hızlı gitmesini kes, hızı 1 birime sabitle.
+*   `$Pivot.basis = Basis.looking_at(direction)`: Bu satır, karakterin modelini döndürmek içindir. Node3D altındaki "Pivot" objemizi buluruz. `Basis` yapısı 3D dünyadaki çevirmeleri yönetir. `.looking_at(direction)` diyerek, o an yürünen yöne doğru bu objenin yüzünü döndürürüz. (Artık oyuncu sağa giderken modeli de sağa dönmüş olur).
+*   `if not is_on_floor():`: Godot'nun müthiş kolaylıklarından biri. "Eğer karakter zeminde (floor) `değilse`" (yani havadaysa/düşüyorsa) demek.
+*   `target_velocity.y = target_velocity.y - (fall_acceleration * delta)`: Hedef hızımızın Y (yukarı/aşağı) değerine, belirlediğimiz düşüş ivmesini (`75`) zamanla (`delta`) çarparak çıkart (`-`). Yani karakteri sürekli yere doğru çek.
+*   `target_velocity.x = direction.x * speed`: Gitmek istediğimiz (basılan) X yönünü, son süratimizle (`14`) çarparak asıl yatay hedef hızımıza (`x`) yaz.
+*   `target_velocity.z = direction.z * speed`: Gitmek istediğimiz derinlik (Z) yönünü hızımızla çarpıp hedef derinlik hızına (`z`) yaz. 
+*   `velocity = target_velocity`: Matematiksel tüm hesaplamalar (yerçekimi + sağ/sol + ileri/geri yönler) bitti. Kendi hesapladığımız bu hedef hızı, CharacterBody3D'nin asıl motoruna (`velocity`) teslim et.
+*   `move_and_slide()`: Nihayet tüm bu hız bilgilerini alarak, 3D dünyadaki duvarları ve engelleri hesaba katarak karakteri pürüzsüzce kaydırarak hareket ettir (duvara takılmadan yanından kayıp gitmesini sağlar).
+
+
 **Bu kodda neler yaptık?**
 * 3D ortamda yer düzlemi X ve Z eksenlerinden oluşur (Y ekseni yukarı/aşağıdır). Hareketleri bu eksenlerde hesapladık.
 * `$Pivot.basis = Basis.looking_at(direction)` ile 3D modelimizin (Pivot üzerinden) her zaman gittiği yöne doğru bakmasını sağladık.

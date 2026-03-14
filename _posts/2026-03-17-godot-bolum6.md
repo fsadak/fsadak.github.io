@@ -77,7 +77,11 @@ extends Area2D
 var screen_size
 ```
 
-> 💡 **Bilgilendirme:** `speed` değişkeninin başındaki `@export` anahtar kelimesi, bu değeri tıpkı yerleşik özellikler gibi sağdaki Inspector panelinde gösterir ve oradan kolayca değiştirmenize olanak tanır.
+**Kodun Satır Satır Açıklaması:**
+*   `extends Area2D`: Bu kod dosyasının sahnemizin kökü olan `Area2D` node'u için yazıldığını belirtir. Fiziksel örtüşmeleri (çarpışmaları) yakalayacağımız asıl yapı taşı budur.
+*   `@export var speed = 400`: `speed` (hız) adında bir değişken tanımlar ve saniyede 400 piksel gitmesi için değerini `400` yapar. Başındaki `@export` anahtar kelimesi, bu değişkeni Godot editörünün sağ tarafındaki "Inspector" paneline taşır. Böylece oyunu test ederken kodu açmadan hızı kolayca değiştirip deneyebilirsiniz.
+*   `var screen_size`: Ekranın çözünürlük bilgisini hafızada tutmak için oluşturduğumuz başıboş bir değişkendir. Oyun motoru çalışınca ekran boyutunu öğrenip bu kutunun içine koyacağız.
+
 
 Oyun başladığında ekran sınırlarını öğrenmek için `_ready()` fonksiyonunu kullanalım:
 
@@ -85,6 +89,11 @@ Oyun başladığında ekran sınırlarını öğrenmek için `_ready()` fonksiyo
 func _ready():
 	screen_size = get_viewport_rect().size
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `func _ready():`: Script (yani oyuncu karakterimiz) oyuna ilk eklendiğinde Godot tarafından bir kere çağrılan açılış/hazırlık fonksiyonumuzdur.
+*   `screen_size = get_viewport_rect().size`: `get_viewport_rect()` kodu, oyunun oynandığı asıl pencerenin (viewport) dikdörtgen boyutlarını getirir. `.size` diyerek bunun sadece x (genişlik) ve y (yükseklik) değerlerini alırız ve bunu yukarıda boş olarak oluşturduğumuz `screen_size` adlı değişkenin içine kaydederiz. Artık oyun ekranının ne kadar büyük olduğunu biliyoruz.
+
 
 ### Hareket Döngüsü
 
@@ -113,6 +122,19 @@ func _process(delta):
 	position = position.clamp(Vector2.ZERO, screen_size)
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `func _process(delta):`: Oyun boyunca sürekli çalışan ana döngü fonksiyonumuz. Hareket gibi sürekli tekrarlanması gereken eylemler burada yapılır.
+*   `var velocity = Vector2.ZERO # Varsayılan olarak oyuncu hareketsizdir`: Karakterimizin baktığı yönü ve miktarını belirten hız (velocity) değişkenini başta sıfırlıyoruz. Hiçbir tuşa basılmıyorsa karakter durur.
+*   `if Input.is_action_pressed("move_right"):` ve sonrası: Eğer kullanıcı "move_right" (bizim atadığımız sağ ok tuşu) tuşuna basılı tutuyorsa `velocity`'nin x (yatay) eksenini `1` artır (sağa git); "move_left" (sol ok) tuşuna basıyorsa x eksenini `1` azalt (sola git) diyoruz. Aynı mantıkla aşağı "move_down" basılınca y (dikey) eksenini `1` artırır, yukarı "move_up" basılınca y eksenini `1` azaltır.
+*   `if velocity.length() > 0:`: "Eğer hız vektörünün uzunluğu sıfırdan büyükse" yani oyuncu herhangi bir tuşa basıp harekete geçtiyse bu bloğa girer.
+*   `velocity = velocity.normalized() * speed`: `normalized()` çarpraz (hem üst hem sağ) gidildiğinde oyuncunun düz gitmesine göre 1.4 kat daha hızlı gitmesi hatasını düzeltir. Yönü bozmadan uzunluğu 1'e eşitler. Ardından bunu kalıcı hızımız olan `speed` (400) ile çarparız.
+*   `$AnimatedSprite2D.play()`: Karakter hareket ettiğine göre, ona eklediğimiz `AnimatedSprite2D` animasyon oynatıcısını çalıştır (`play()`) diyoruz ki yürüme taklidi yapsın.
+*   `else:`: Yukarıdaki "eğer karakter hızlandıysa" durumunun tersidir. "Hayır, hiç hızı yoksa / duruyorsa" bu bloğa girer.
+*   `$AnimatedSprite2D.stop()`: Karakter durduğu için oynayan animasyonu durdurur.
+*   `position += velocity * delta`: Oyuncunun şu anki bulunduğu konuma (`position`), ulaştığımız nihai hızı (`velocity`) geçen zamanla (`delta`) çarparak ekleriz.
+*   `position = position.clamp(Vector2.ZERO, screen_size)`: Bu son derece kritik bir satırdır. Karakterin `position`'ını alır ve onu iki değer arasına hapseder (`clamp`). İlk değer `Vector2.ZERO` yani x:0, y:0 olan ekranın en sol-üst köşesi. İkinci değer en başta belirlediğimiz `screen_size` değişkeni, yani ekranın en sağ-alt köşesi. Böylece oyuncu sınırlar dışına çıkamaz.
+
+
 **Bu kodda ne yaptık?**
 * Tüm basılan tuşlara göre `velocity` (hız) vektörünü hesapladık.
 * Çapraz giderken (örneğin aynı anda sağa ve yukarı) karakterin %41 daha hızlı gitmesini önlemek için `velocity.normalized()` kullanarak vektörü 1 birime sabitledik ve hızımızla çarptık.
@@ -132,6 +154,16 @@ Karakterimiz hareket ediyor ancak animasyonları hep aynı yöne bakıyor. `_pro
 		$AnimatedSprite2D.animation = "up"
 		$AnimatedSprite2D.flip_v = velocity.y > 0
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `if velocity.x != 0:`: Eğer x (yatay) ekseninde bir hız varsa `(!= 0)` sıfıra eşit değilse, yani oyuncu sağa ya da sola gidiyorsa.
+*   `$AnimatedSprite2D.animation = "walk"`: Animasyon oynatıcıya yukarıda tasarladığımız "walk" yani yan yürüyüş animasyonuna geçmesini söyler.
+*   `$AnimatedSprite2D.flip_v = false`: Animasyonun dikey (vertical) olarak ters dönmemesi / düz olması gerektiğini kesinleştirir. 
+*   `$AnimatedSprite2D.flip_h = velocity.x < 0`: Animasyon sağ tarafa doğru bakarak çizilmiştir. Eğer karakter `velocity.x < 0` ise yani hızı sıfırın altında (eksiye/sola) doğru gidiyorsa `flip_h` yatay çevirme (horizontal) değerini `true` yaparız. Sağa gidiyorsa (hızı pozitifse) bu şart sağlanmaz ve `false` dönerek görseli çevirmez. 
+*   `elif velocity.y != 0:`: Eğer yatayda hareket yoksa ama dikeyde (y ekseni) hareket varsa bu sefer bu bloğa girer.
+*   `$AnimatedSprite2D.animation = "up"`: Karakter yukarı veya aşağı gittiği için onu arkasından gördüğümüz "up" isimli animasyona geçer.
+*   `$AnimatedSprite2D.flip_v = velocity.y > 0`: Dikeydeki animasyonlarımızın ikisi de yukarı doğru yürüyecek şekilde çizilmiş halde. Eğer oyuncu aşağıya doğru gidiyorsa (`velocity.y > 0` şartı "aşağı" gidişi temsil eder ve `true` döndürür) animasyonu `flip_v` ile dikeyde takla attırarak ters (aşağı) bakmasını sağlar.
+
 
 Bu kod sayesinde; karakter sağa veya sola giderken "walk" animasyonu çalışacak ve sola gidiyorsa `flip_h` ile yatayda ters çevrilecektir. Yukarı veya aşağı giderken ise "up" animasyonu çalışacak, aşağı gidiyorsa `flip_v` ile dikeyde ters dönecektir.
 

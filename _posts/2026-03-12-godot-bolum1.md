@@ -73,6 +73,15 @@ func _physics_process(delta):
     move_and_slide()
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `extends CharacterBody2D`: Bu kodun, 2D dünyada hareket edebilen ve fiziksel çarpışmalara tepki verebilen bir karakter (CharacterBody2D) için tasarlandığını belirtir. Karakterin tüm özelliklerine erişim sağlar.
+*   `const SPEED = 200.0`: Karakterin hareket hızını belirten sabit bir değerdir. `const` (constant) bunun oyun boyunca değişmeyeceğini ifade eder. `200.0` piksel/saniye cinsinden bir hızı temsil eder.
+*   `func _physics_process(delta):`: Godot'nun yerleşik fonksiyonlarından biridir. Oyunun fiziğiyle ilgili işlemler burada çalıştırılır. Saniyede sabit hızda (genellikle 60 kez) otomatik olarak çağrılır. `delta` değeri, son çalışmadan bu yana geçen süreyi ifade eder.
+*   `var direction = Input.get_axis("ui_left", "ui_right")`: Oyuncunun klavyeden sola ("ui_left") veya sağa ("ui_right") basıp basmadığını kontrol eder. Sola basılırsa `-1`, sağa basılırsa `1`, hiçbir şeye basılmıyorsa `0` değerini döndürür. Bu değeri geçici olarak `direction` değişkenine atıyoruz.
+*   `velocity.x = direction * SPEED`: Karakterin yatay (x ekseni) hareket hızını belirleriz. Oyuncunun yönünü (yön değeri olan 1, 0 ya da -1) bizim az önce belirlediğimiz sabit hız olan `SPEED` (200) ile çarparız. Sağa basılırsa 200hızla, sola basılırsa -200 hızla karakter hareket etmeye çalışacaktır.
+*   `move_and_slide()`: CharacterBody2D düğünümün en önemli metodudur. Yukarıda hesapladığımız hızı (velocity) uygulayarak karakteri fiziksel dünyada hareket ettirir. Karakter bir duvara denk gelirse de düzgün bir şekilde kayarak ilerlemeyi sağlar. İçerideki tüm engellerin ve zeminlerin üzerinden kolayca geçmeyi sağlayan yerleşik bir komuttur.
+
+
 ### C#
 
 Oyun sektöründe yaygın olarak kullanılan, daha büyük ve karmaşık projelere uygun bir dildir. Daha önce Unity gibi bir motor kullandıysanız C# size tanıdık gelecektir. Performans odaklı kritik sistemler yazacaksanız da avantaj sağlayabilir.
@@ -178,6 +187,13 @@ func _ready():
 func _on_button_pressed():
     get_tree().change_scene_to_file("res://game.tscn")
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `func _ready():`: Sahne ilk yüklendiğinde (veya eklendiğinde) Godot tarafından bir kez otomatik çalıştırılan bir fonksiyondur. Oyun başladığında yapılması gereken hazırlıkları buraya yazarız.
+*   `$Button.pressed.connect(_on_button_pressed)`: Sahne içindeki adı `Button` olan node'u bulur. Bu butona ait `pressed` (tıklandığında) sinyalini alır ve aşağıdaki `_on_button_pressed` adlı fonksiyonu çalıştıracak şekilde bağlar. Artık butona tıklandığında aşağıdaki kod çalışacaktır.
+*   `func _on_button_pressed():`: Kendi yazdığımız bir fonksiyondur. Yukarıda butona tıklanınca burasının çalışmasını söyledik. 
+*   `get_tree().change_scene_to_file("res://game.tscn")`: Sahne yöneticisine (`get_tree()`) ulaşır ve oyunun sahnesini `"res://game.tscn"` konumundaki diğer bir dosya ile değiştirir. Tipik bir "Oyuna Başla" veya "Sonraki Bölüm" işlemidir.
+
 
 Yerleşik sinyal örnekleri:
 

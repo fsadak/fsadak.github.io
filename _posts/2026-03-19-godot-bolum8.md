@@ -48,6 +48,11 @@ Varsayılan fontları daha şık bir fontla değiştireceğiz.
 signal start_game
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `signal`: Godot'ya yeni bir sinyal tanımladığımızı belirtir.
+*   `start_game`: Bu bizim özel sinyalimize verdiğimiz isimdir. Adından da anlaşılabileceği gibi "oyunu başlat" emrini ifade edecek. Arayüzde (HUD) START butonuna basıldığında bu sinyali yayacağız (emit) ve ana oyun sahnesi (Main) bu sinyali duyduğu anda kargaşayı, düşmanları vs. sıfırlayıp pırıl pırıl yeni bir oyun başlatacak.
+
+
 Sonrasında şu üç temel fonksiyonu yazabilirsiniz:
 
 * **`show_message(text)`:** `Message` etiketinin metnini günceller, görünür yapar ve `MessageTimer`'ı başlatır.
@@ -79,7 +84,11 @@ Oyun bitip yeniden başlatıldığında, ekrandaki eski düşmanlar (mob'lar) ka
 get_tree().call_group("mobs", "queue_free")
 ```
 
-Bu satır, "mobs" grubundaki tüm düşmanlara anında kendilerini silmelerini söyler ve temiz bir oyun alanı sunar.
+**Kodun Satır Satır Açıklaması:**
+*   `get_tree()`: Tüm oyun ağacını yani sahnedeki her şeyi kapsayan ana yöneticiye ulaşırız.
+*   `.call_group(...)`: "Bir gruba ait olan herkesi bul ve onlara şu komutu ver / çağır" anlamına gelir.
+*   `"mobs"`: İlk parametre aradığımız grubun adıdır. Hatırlarsan az önce düşmanları "mobs" (kalabalıklar/yaratıklar) grubuna dahil etmiştik.
+*   `"queue_free"`: İkinci parametre ise gruptaki node'lara gönderilen emirdir. `queue_free`, Godot'da "kendini yavaşça bellekten sil ve yok ol" demektir. Yani oyun alanındaki 10 tane düşman varsa, bu tek satır kod hepsini bulur ve aynı anda "yok olun" emri vererek ekranı yeni oyun için tertemiz yapar.
 
 ---
 

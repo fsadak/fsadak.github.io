@@ -52,6 +52,14 @@ func _process(delta):
     rotation += angular_speed * delta
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `extends Sprite2D`: Bu kod dosyasının bir görsel öğe olan `Sprite2D` node'una ait olduğunu ve onun özellikleriyle çalışacağını belirtir.
+*   `var speed = 400`: `speed` (hız) adında bir değişken oluşturur ve değerine 400 atarız. Bu karakterin saniyede kaç piksel ileri gideceğini belirler.
+*   `var angular_speed = PI`: `angular_speed` (dönme hızı) adında bir değişken oluşturur. Değer olarak matematiksel `PI` (yaklaşık 3.14) atanır. Godot'da dönüşler radyan cinsinden heaplandığından `PI` saniyede yarım tur (180 derece) dönmek anlamına gelir.
+*   `func _process(delta):`: Oyun açık olduğu sürece her bir karede (frame) Godot tarafından otomatik çalıştırılan özel bir fonksiyondur. Saniyede 60 kez çalışabilir.
+*   `rotation += angular_speed * delta`: Nesnenin geçerli açısını (`rotation`) sürekli güncelleriz. Sabit belirlediğimiz dönme hızını (`angular_speed`) geçen süreyle (`delta`) çarparak ekleriz. `delta` ile çarpmamız oyun hızından (FPS) bağımsız akıcı bir dönüş sağlar.
+
+
 > 💡 **Bilgilendirme:** `_process()` fonksiyonu Godot tarafından her karede otomatik olarak çağrılır. Parametre olarak aldığı `delta`, bir önceki kareden bu yana geçen süreyi (saniye cinsinden) temsil eder.
 
 > ⚠️ **Uyarı:** `delta` kullanmak oyun geliştirmede hayati öneme sahiptir. Hareketi saniyedeki kare hızından (FPS) bağımsız hâle getirir. Böylece oyununuz 30 FPS'de de 120 FPS'de de aynı hızda çalışır.
@@ -62,6 +70,14 @@ func _process(delta):
     var velocity = Vector2.UP.rotated(rotation) * speed
     position += velocity * delta
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `var velocity = Vector2.UP.rotated(rotation) * speed`: Karakterin hareket yönünü ve ne kadar hızlı gideceğini (velocity) hesapladığımız satırdır.
+    *   `Vector2.UP`: Godot için yukarı doğru dümdüz bakan bir ok (yön) gösterir. (Sıfır açısında yukarı demektir)
+    *   `.rotated(rotation)`: Bu oku, karakterin şu anki dönük olduğu açı kadar (`rotation`) eğmeye yarar. Yani karakter nereye bakıyorsa yön bilgisini o tarafa çevirir.
+    *   `* speed`: Ortaya çıkan bu yön bilgisini az önce belirlediğimiz hız (400) ile çarparak nihai hareket gücünü buluruz. Artık `velocity` (hız) hesaplanmıştır.
+*   `position += velocity * delta`: Karakterimizin oyun dünyasındaki son konumunu (`position`) güncelliyoruz. Az önce hesapladığımız hızı (`velocity`), zaman telafisi (`delta`) ile çarparak mevcut konuma ekleriz. Böylece karakterimiz saniyesi saniyesine baktığı yöne doğru ilerler.
+
 
 Bu kod sayesinde ikonunuz baktığı yöne doğru çember çizerek hareket edecektir. `Vector2.UP`, Godot'da yukarı yönünü temsil eden bir sabittir.
 
@@ -84,7 +100,15 @@ func _process(delta):
     rotation += angular_speed * direction * delta
 ```
 
-Bu kodda `direction` değişkeni, oyuncunun dönmek istediği yönü tutar. `Input.is_action_pressed()` metodu ise belirtilen tuşa o an basılıp basılmadığını kontrol eder. `"ui_left"` ve `"ui_right"`, Godot'da varsayılan olarak tanımlanmış sol ve sağ ok tuşlarını temsil eder.
+**Kodun Satır Satır Açıklaması:**
+*   `func _process(delta):`: Her karede çalışan motorumuz. Animasyon ve girdi işlemleri buralarda yapılır.
+*   `var direction = 0`: Karakterin hangi yöne döneceğini tutmak için geçici bir `direction` (yön) değişkeni yaratıyoruz ve varsayılan olarak `0` (dönme) veriyoruz.
+*   `if Input.is_action_pressed("ui_left"):`: Oyun motoruna "Oyuncu şu an klavyedeki sol ok tuşuna ('ui_left') basıyor mu?" diye sorarız. `if` (eğer) şart sağlıyorsa, bir alt satıra geçer.
+*   `direction = -1`: Klavyede sola basıldığı için yön değerini `-1` yaparız ki karakter saat yönünün tersine dönsün.
+*   `if Input.is_action_pressed("ui_right"):`: Benzer şekilde sağ ok tuşuna ('ui_right') basılıp basılmadığını kontrol eder.
+*   `direction = 1`: Eğer klavyede sağa basılıyorsa, yönü `1` yaparız ki karakter saat yönünde dönsün.
+*   `rotation += angular_speed * direction * delta`: Yukarıdaki işlemlerin nihai sonucudur. Eğer her iki tuşa da basmıyorsak `direction` `0` kalır, böylece dönüş hesabının sonucu `0` olur ve karakter dönmez. Basıyorsak `+/-1` ile çarpılarak sağa veya sola doğru belirlenen hızda akıcı bir şekilde döner.
+
 
 ### İleri Gitme Kontrolünü Eklemek
 
@@ -98,9 +122,16 @@ Son olarak, ikonun yalnızca yukarı ok tuşuna basıldığında ilerlemesini sa
     position += velocity * delta
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `var velocity = Vector2.ZERO`: `velocity` (hız vektörü) değişkenini sıfırlayarak işe başlıyoruz. `Vector2.ZERO` hızın yatayda ve dikeyde sıfır olması, yani hareket olmadığı anlamına gelir. Eğer bir tuşa basılmazsa karakter olduğu yerde duracaktır.
+*   `if Input.is_action_pressed("ui_up"):`: "Oyuncu şu an klavyede yukarı ok tuşuna ('ui_up') basılı tutuyor mu?" diye kontrol ederiz. Basmıyorsa bu `if` bloğu atlanır.
+*   `velocity = Vector2.UP.rotated(rotation) * speed`: Eğer oyuncu ileri (yukarı ok) basıyorsa, karakterin baktığı açıyı alır (`rotated(rotation)`) ve gidiş gücünü (`speed`) uygulayarak `velocity` büyüklüğünü belirleririz.
+*   `position += velocity * delta`: En sonda ise karakterimizin yeni konumunu (`position`), varsa yeni hızı (`velocity`) ile güncelleriz. Eğer tuşa basılmadıysa hız sıfır olduğu için karakter hareket etmeyecektir.
+
+
 > 💡 **Bilgilendirme:** `Vector2.ZERO`, uzunluğu 0 olan, yani karakterin tamamen hareketsiz olduğunu temsil eden bir vektör sabitidir. Oyuncu `"ui_up"` (yukarı ok) tuşuna bastığında karakter ileri fırlar, basmadığında ise `Vector2.ZERO` sayesinde yerinde durur.
 
-> 🔗 **Web Linki:** Kendi özel tuş atamalarınızı (örneğin W, A, S, D tuşlarını) yapmak isterseniz **Project > Project Settings > Input Map** menüsünü kullanabilirsiniz.
+> 💡 **Bilgilendirme:** Kendi özel tuş atamalarınızı (örneğin W, A, S, D tuşlarını) yapmak isterseniz **Project > Project Settings > Input Map** menüsünü kullanabilirsiniz.
 
 ---
 

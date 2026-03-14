@@ -52,7 +52,13 @@ func _on_button_pressed():
 	set_process(not is_processing())
 ```
 
-Bu kodda yer alan `set_process()` fonksiyonu, node'un `_process()` döngüsünün çalışıp çalışmamasını kontrol eder. `is_processing()` ise bu işlemin aktif olup olmadığını (true veya false olarak) döndürür. Başındaki `not` ifadesi mevcut durumu tersine çevirerek, butona her tıkladığınızda ikonun hareketini durdurmanızı veya başlatmanızı sağlar.
+**Kodun Satır Satır Açıklaması:**
+*   `func _on_button_pressed():`: Sahneye eklediğimiz Buton'a basıldığında (pressed sinyali geldiğinde) otomatik olarak çalışacak olan özel fonksiyonumuz. "on_button_pressed" kelimesi, "butona basıldığında çalışır" anlamında bir isimlendirme kuralıdır.
+*   `set_process(...)`: Node'un `_process(delta)` döngüsünün çalışıp çalışmayacağını kontrol eder. İçine `true` (doğru/çalış) veya `false` (yanlış/dur) değeri gönderilir.
+*   `is_processing()`: Node'un şu anda `_process()` döngüsünü çalıştırıp çalıştırmadığını sorarız.
+*   `not`: Kendinden sonra gelen mantıksal durumu tersine çeviren bir anahtar kelimedir (İngilizce'de "değil" anlamına gelir). `is_processing()` evet (true) diyorsa hayır (false) yapar, hayır diyorsa evet yapar.
+*   *Özetle bu satır:* Düğmenin her tıklandığında motorun `_process` döngüsünü mevcut durumun tersine ayarlayarak (çalışıyorsa durdurup, duruyorsa çalıştırarak) ikonun dönme ve ilerleme hareketini "Aç/Kapa (Toggle)" mantığıyla kontrol eder.
+
 
 ---
 
@@ -77,9 +83,13 @@ func _on_timer_timeout():
 	visible = not visible
 ```
 
-Bu kodda `get_node("Timer")` komutu, mevcut node'un çocukları arasından "Timer" adındaki node'u bularak referans alır. `timer.timeout.connect(...)` satırı ise, Timer'ın `timeout` sinyali tetiklendiğinde `_on_timer_timeout` fonksiyonunun çalıştırılmasını sağlar.
-
-Oluşturduğumuz `_on_timer_timeout()` fonksiyonunun içindeki `visible` ise, node'un ekranda görünürlüğünü kontrol eden mantıksal (boolean) bir özelliktir. Sahneyi çalıştırdığınızda, kodla bağladığınız bu sinyal sayesinde ikonunuzun saniyede bir yanıp söndüğünü görebilirsiniz!
+**Kodun Satır Satır Açıklaması:**
+*   `func _ready():`: Script ilk çalıştığında, sadece bir defaya mahsus hazırlık yapmak üzere oyun motoru tarafından otomatik olarak çağrılır.
+*   `var timer = get_node("Timer")`: Scriptimizin bağlı olduğu nesnenin (Sprite2D'nin) alt nesnesi (çocuğu) olan `Timer` düğümünü ismine göre buluruz ve `timer` adlı değişkene kaydederiz.
+*   `timer.timeout.connect(...)`: Bulduğumuz bu Timer'ın her süresi dolduğunda yayacağı `timeout` sinyalini, parantez içindeki fonksiyonu çalıştıracak şekilde bağlarız.
+*   `_on_timer_timeout`: Sinyal geldiğinde çalışacak olan kendi oluşturduğumuz fonksiyonun adıdır.
+*   `func _on_timer_timeout():`: Timer süresi dolduğunda (örneğimizde saniyede 1 kez) çalışacak olan fonksiyon bloğumuz.
+*   `visible = not visible`: Tıpkı yukarıdaki buton örneğindeki kapama açma (toggle) mantığıdır. Karakterin görünürlüğünü (`visible`), şu anki durumunun tam tersi (`not visible`) olacak şekilde değiştiririz. Ekranda açıksa gizlenir, gizliyse açılır ve karakter sürekli yanıp sönüyormuş gibi bir animasyon ortaya çıkar.
 
 ---
 
@@ -93,11 +103,21 @@ Godot'nun sunduğu yerleşik sinyallerin yanı sıra, oyununuzun mantığına uy
 signal health_depleted
 ```
 
+**Kodun Satır Satır Açıklaması:**
+*   `signal`: Godot'ya yeni, özel bir sinyal tanımlamak istediğimizi bildirdiğimiz anahtar kelimedir. Script içinde en üste (değişkenlerden bile önce) yazılır.
+*   `health_depleted`: Bizim uydurduğumuz özel sinyalin adıdır (İngilizce "can tükendi" anlamında). Artık bu sinyali ihtiyacımız olduğunda kodun herhangi bir yerinde tetikleyebiliriz.
+
+
 Oluşturduğunuz bu özel sinyaller tamamen yerleşik sinyaller gibi davranır; editörün Signals sekmesinde görünürler ve aynı yöntemlerle diğer node'lara bağlanabilirler. Sinyali oyun içinde tetiklemek (yaymak) istediğinizde ise `emit()` metodunu kullanmanız yeterlidir:
 
 ```gdscript
 health_depleted.emit()
 ```
+
+**Kodun Satır Satır Açıklaması:**
+*   `health_depleted`: Yukarıda kendi oluşturduğumuz `health_depleted` isimli özel sinyalimiz.
+*   `.emit()`: "Yayınla / Gönder" anlamındadır. Kendi yazdığımız özel bir sinyali, tetiklemek (çalıştırmak) istediğimiz anda bu komutu kullanırız. Örneğimizde "Can tükendi sinyalini yay!" diyoruz. Sinyali duyan herkes (örneğin can barları, oyun bitiş ekranı, müzik yöneticisi vb.) kendi içindeki bağladığı fonksiyonları çalıştıracaktır.
+
 
 > 💡 **Bilgilendirme:** Dilerseniz sinyallerinize parametre/argüman da ekleyebilirsiniz. Örneğin `signal health_depleted(damage_amount)` şeklinde tanımladığınız bir sinyali, `health_depleted.emit(50)` şeklinde fırlatarak diğer node'lara veri gönderebilirsiniz.
 
