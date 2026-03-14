@@ -28,13 +28,23 @@ Arayüz elemanlarının oyun dünyasındaki nesnelerin (oyuncu veya düşmanlar)
 Varsayılan fontları daha şık bir fontla değiştireceğiz.
 
 1. `ScoreLabel` node'unu seçin, Inspector panelinden **Theme Overrides > Fonts** sekmesindeki "Load" seçeneği ile oyun varlıklarındaki `Xolonium-Regular.ttf` dosyasını yükleyin.
+
+![Font Yükleme](/assets/images/custom_font_load_font.webp)
+*Theme Overrides > Fonts altından özel fontu yüklüyoruz*
+
 2. Hemen altındaki **Theme Overrides > Font Sizes** değerini `64` olarak ayarlayın. (Aynı işlemi `Message` ve `StartButton` için de tekrarlayın).
+
+![Font Boyutu](/assets/images/custom_font_size.webp)
+*Font boyutunu 64 olarak ayarlıyoruz*
 
 **Konumlandırma (Anchor Presets):**
 
 * **ScoreLabel:** Text alanına `0` yazın. Horizontal/Vertical Alignment ayarlarını **Center** yapın. Anchor Preset'i **Center Top** olarak seçin.
 * **Message:** Text alanına `Dodge the Creeps!` yazın. Alignment ayarlarını **Center** yapın. Autowrap Mode'u **Word** olarak ayarlayın (uzun metinlerin alt satıra inmesi için). Anchor Preset'i **Center** yapın.
 * **StartButton:** Text alanına `Start` yazın. Anchor Preset'i **Center Bottom** olarak seçin ve Y pozisyonunu biraz yukarı (örneğin `580`) taşıyın.
+
+![Anchor Presets](/assets/images/ui_anchor.webp)
+*Anchor Presets ile node'ları kolayca konumlandırabiliriz*
 
 ---
 
@@ -69,6 +79,9 @@ Arayüzümüz hazır olduğuna göre `main.tscn` sahnesini açıp `HUD` sahneniz
 
 1. `HUD` instance'ını seçin ve sağ paneldeki **Signals** sekmesinden yeni oluşturduğunuz `start_game` sinyalini, Main scriptinizdeki `new_game()` fonksiyonuna bağlayın.
 
+![Tamamlanan Ana Sahne](/assets/images/completed_main_scene.webp)
+*Main sahnesi tüm bileşenlerle eksiksiz hâlde*
+
 2. Main scriptinizdeki `_ready()` fonksiyonunun içinde bulunan `new_game()` çağrısını silin. Böylece oyun siz "Start" butonuna basana kadar başlamayacaktır.
 3. `game_over()` fonksiyonunuzun içine `show_game_over()` çağrısını ekleyin ve `_on_score_timer_timeout()` içerisinde `update_score(score)` çağrısı yaparak skoru güncelleyin.
 
@@ -77,6 +90,15 @@ Arayüzümüz hazır olduğuna göre `main.tscn` sahnesini açıp `HUD` sahneniz
 Oyun bitip yeniden başlatıldığında, ekrandaki eski düşmanlar (mob'lar) kalmaya devam eder. Bunları tek bir komutla temizlemek için Godot'nun grup (group) sistemini kullanmalıyız.
 
 1. `mob.tscn` sahnesini açın, kök node'u seçip **Groups** sekmesinden `mobs` adında yeni bir grup oluşturup node'u bu gruba dahil edin.
+
+![Group Sekmesi](/assets/images/group_tab.webp)
+*Groups sekmesinden mob'ları bir gruba ekleyeceğiz*
+
+![Grup Oluşturma](/assets/images/add_group_dialog.webp)
+*"mobs" adında yeni bir grup oluşturuyoruz*
+
+![Mob Grup Görünümü](/assets/images/scene_group_mobs.webp)
+*Mob sahnesi artık "mobs" grubuna üye*
 
 2. Main scriptindeki `new_game()` fonksiyonunun içine şu satırı ekleyin: 
 
@@ -102,7 +124,19 @@ Oyun deneyimini tamamlamak için birkaç estetik dokunuş yapalım:
 
 > 💡 **Bilgilendirme:** Müziğin kesintisiz çalması için Stream dosyanızın yanındaki oka tıklayıp "Make Unique" dedikten sonra **Loop** kutusunu işaretlemeyi unutmayın.
 
+![Müzik Unique Resource](/assets/images/unique_resource_music.webp)
+*Stream'i önce "Make Unique" yapıp ardından Loop'u etkinleştiriyoruz*
+
 * **Klavye Kısayolu:** Oyuna her seferinde fareyle tıklamak yerine "Enter" tuşuyla başlamak için; **Project Settings > Input Map** üzerinden `start_game` adında yeni bir eylem oluşturup Enter tuşunu atayın. Ardından `StartButton` node'unun Inspector panelindeki **Shortcut** özelliğine bu eylemi bağlayın.
+
+![start_game Input Eylemi](/assets/images/input-mapping-start_game.webp)
+*Input Map'e "start_game" eylemi eklendi ve Enter tuşuna atandı*
+
+![StartButton Kısayol](/assets/images/start_button_shortcut.webp)
+*StartButton'ın Shortcut özelliğine yeni bir resource ekliyoruz*
+
+![StartButton Kısayol 2](/assets/images/start_button_shortcut2.webp)
+*InputEventAction olarak "start_game" eylemini seçiyoruz*
 
 ---
 

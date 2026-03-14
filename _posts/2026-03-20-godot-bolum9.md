@@ -7,7 +7,10 @@ permalink: /godot-egitim-serisi-bolum-9/
 published: true
 ---
 
-2D oyun projemizi başarıyla tamamladıktan sonra artık bir adım ileriye geçme ve ilk **3D oyunumuzu ("Squash the Creeps!")** geliştirme zamanı! 
+2D oyun projemizi başarıyla tamamladıktan sonra artık bir adım ileriye geçme ve ilk **3D oyunumuzu ("Squash the Creeps!")** geliştirme zamanı!
+
+![Squash the Creeps Önizleme](/assets/images/squash-the-creeps-final.webp)
+*Serinin sonunda bu oyunu yapmış olacaksın — zıplayarak düşmanların üstüne bas!*
 
 3D oyun geliştirmek, 2D'ye kıyasla bazı yeni zorlukları beraberinde getirir: Artık derinliği ifade eden bir **Z ekseni** vardır, 2D'de olduğu gibi ekranın tamamı oyun sahneniz değildir (kamerayı özel olarak yönetmeniz gerekir) ve fizik motoru biraz daha farklı çalışır. Ancak endişelenmeyin, hepsini adım adım çözeceğiz!
 
@@ -15,59 +18,33 @@ Bu projede ihtiyacınız olacak bazı görsel ve animasyon içeriklerini [burada
 
 ---
 
-![Project Manager'dan Import butonuna tıklayın](/assets/images/01.import_button.webp)
-*Project Manager'dan Import butonuna tıklayın*
-
-![İndirdip içeriğini bir klasöre açtığınız Zip dosyasındaki project.godot dosyasını seçip Open butonu ile açın](/assets/images/02.browse_to_project_folder.webp)
-*İndirdip içeriğini bir klasöre açtığınız Zip dosyasındaki project.godot dosyasını seçip Open butonu ile açın*
-
-![Açılan pencerede Import (İçe Aktar) Butonuna basın](/assets/images/03.import_and_edit.webp)
-*Açılan pencerede Import (İçe Aktar) Butonuna basın*
-
-Eğer projenin daha eski bir sürüm ile oluşturulduğu hatasını alırsanız endişelenmeyin. OK (Tamam) butonu ile devam edin.
-
-![Projenin eski bir sürümle oluşturulduğu uyarısını OK (Tamam) butonu ile geçin](/assets/images/import_project_to_4.x_prompt.webp)
-*Projenin eski bir sürümle oluşturulduğu uyarısını OK (Tamam) butonu ile geçin*
-
-Proje açıldığında FileSystem paneliniz aşağıdaki gibi görünecektir.
-
-![Proje açıldığında FileSystem paneliniz bu şekilde görünecektir.](/assets/images/04.start_assets.webp)
-*Proje açıldığında FileSystem paneliniz bu şekilde görünecektir.*
-
----
-
 ## 3D Oyun Alanını Hazırlama
 
 Oyun mantığını barındıracak ana sahneyi oluşturarak başlayalım. Yeni bir sahne oluşturun ve kök node olarak sıradan bir `Node` (isim: `Main`) ekleyin.
 
-![](/assets/images/05.main_node.webp)
-
 Karakterlerin boşluğa düşmemesi için 3D uzayda fiziksel bir zemin inşa etmeliyiz. 3D'de zemin veya duvar gibi hareketsiz çarpışma objeleri için `StaticBody3D` kullanılır.
 
 1. `Main` node'una bir `StaticBody3D` çocuğu ekleyin ve adını `Ground` yapın.
-2. Fiziksel sınırları belirlemek için `Ground` node'una bir `CollisionShape3D` ekleyin ve Inspector'dan şeklini (Shape) `BoxShape3D` olarak seçin.
+2. Fiziksel sınırları belirlemek için `Ground` node'una bir `CollisionShape3D` ekleyin ve Inspector'dan şeklini (Shape) `BoxShape3D` olarak seçin. Bu kutunun boyutlarını (Size) **X: 60, Y: 2, Z: 60** olarak ayarlayın.
 
-![](/assets/images/08.create_box_shape3D.webp)
+![BoxShape3D Oluştur](/assets/images/08.create_box_shape3D.webp)
+*Zemin için en uygun şekil BoxShape3D — düz ve güvenilir*
 
-Bu kutunun boyutlarını (Size) **X: 60, Y: 2, Z: 60** olarak ayarlayın.
-
-![](/assets/images/09.box_size.webp)
+![Kutu Boyutu](/assets/images/09.box_size.webp)
+*BoxShape3D boyutu 60×2×60 olarak ayarlandı*
 
 3. Çarpışma kutuları oyun içinde görünmez. Zemini gözle görebilmek için `Ground` node'una bir `MeshInstance3D` ekleyin, Mesh özelliğini `BoxMesh` yapın ve onun da boyutlarını **60, 2, 60** olarak belirleyin.
 
+![BoxMesh](/assets/images/11.box_mesh.webp)
+*Görsel zemin için BoxMesh kaynağı oluşturuyoruz*
+
+![Küp Yeniden Boyutlandırıldı](/assets/images/12.cube_resized.webp)
+*Görsel zemin tam ekranı kaplar hâlde*
 
 Sahneyi biraz aydınlatmak için `Main` node'una bir `DirectionalLight3D` ekleyin. Gerçekçi bir görünüm için Inspector'dan **Shadow** (Gölge) özelliğini aktif hale getirmeyi unutmayın.
 
-![](/assets/images/adding_static_body3D.webp)
-
-Sahneniz aşağıdaki gibi görünmelidir.
-
-![Sahnenizin son hali böyle olmalı](/assets/images/06.staticbody_node.webp)
-*Sahnenin son hali*
-
-CollisionShape3D düğümünün yanında sarı bir ünlem uyarısı çıkacaktır. Bunun sebebi henüz ona bir shape (şekil) vermemiz. Eğer uyarı simgesine tıklarsanız bir bilgilendirme penceresi açılır.
-
-![](/assets/images/07.collision_shape_warning.webp)
+![Gölgeleri Aç](/assets/images/16.turn_on_shadows.webp)
+*Shadow açıldığında sahne çok daha gerçekçi görünür*
 
 ---
 
@@ -81,18 +58,34 @@ CollisionShape3D düğümünün yanında sarı bir ünlem uyarısı çıkacaktı
 
 2. Oyuncu modelini kodla kolayca kendi etrafında döndürebilmek için bir `Node3D` çocuğu ekleyin ve adını `Pivot` yapın.
 3. 3D model dosyanızı (`player.glb`) sürükleyerek bu `Pivot` node'unun çocuğu yapın.
+
+![Sahne Yapısı](/assets/images/scene_structure.webp)
+*Player > Pivot > Character (player.glb instance'ı)*
+
 4. Karakterin dünya ile çarpışabilmesi için `Player` node'una bir `CollisionShape3D` ekleyin, şeklini `SphereShape3D` (Küre) yapın ve modeli saracak şekilde (yaklaşık 0.8 metre yarıçap) boyutlandırıp zemine hizalayın.
+
+![Küre Şekli](/assets/images/sphere_shape.webp)
+*Karakterin altında bir küre tel kafes görünür*
+
+![Küreyi Yukarı Taşı](/assets/images/moving_the_sphere_up.webp)
+*Çarpışma şeklini zemin düzlemiyle hizalayacak şekilde yukarı taşıyoruz*
 
 
 ### Girdi (Input) Eylemlerini Tanımlamak
 
 Karakteri hareket ettirmek için 3D eksenlere karşılık gelen tuş atamalarını yapmalıyız. **Project > Project Settings > Input Map** yolunu izleyerek şu eylemleri ekleyin ve ok tuşlarını atayın:
 
+![Input Map Sekmesi](/assets/images/input_map_tab.webp)
+*Input Map — üstten eylem ekleyip alttan tuş atayabilirsin*
+
 
 * `move_left` (Sol Ok)
 * `move_right` (Sağ Ok)
 * `move_forward` (Yukarı Ok / Z ekseninde ileri)
 * `move_back` (Aşağı Ok / Z ekseninde geri)
+
+![Hareket Tuşları Bağlandı](/assets/images/move_inputs_mapped.webp)
+*Dört yön eylemi klavye ve joystick ile eşleştirildi*
 
 ---
 

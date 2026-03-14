@@ -11,6 +11,9 @@ published: true
 
 Bu ilk büyük adımımızda proje ayarlarını yapacak, oyuncu sahnesini inşa edecek ve hareket mekaniklerini kodlayacağız.
 
+![Dodge the Creeps Oyununun Önizlemesi](/assets/images/dodge_preview.webp)
+*Serinin sonunda bu oyunu yapmış olacaksınız — hem de sıfırdan!*
+
 ---
 
 ## Proje Kurulumu ve Ekran Ayarları
@@ -19,12 +22,25 @@ Bu ilk büyük adımımızda proje ayarlarını yapacak, oyuncu sahnesini inşa 
 
 Öncelikle yeni bir Godot projesi oluşturun ve daha önce indirdiğiniz oyun varlıkları arşivindeki `art/` ve `fonts/` klasörlerini proje dizininizin (`res://`) içine sürükleyip bırakın.
 
+![Yeni Proje Butonu](/assets/images/new-project-button.webp)
+*Project Manager'da "New Project" butonuyla yeni proje oluşturuyoruz*
+
+![Proje Klasörü İçeriği](/assets/images/folder-content.webp)
+*Proje klasöründe art/ ve fonts/ klasörleri yerli yerinde*
+
 Oyunumuz dikey (portrait) modda oynanacak şekilde tasarlandığı için ekran boyutunu buna göre ayarlamanız gerekiyor:
 
 1. Menüden **Project > Project Settings** yolunu izleyin ve sol sütundan **Display > Window** sekmesini açın.
 
 2. **Viewport Width** (Genişlik) değerini `480`, **Viewport Height** (Yükseklik) değerini ise `720` olarak ayarlayın.
+
+![Viewport Genişlik ve Yükseklik Ayarı](/assets/images/setting-project-width-and-height.webp)
+*Viewport boyutlarını 480x720 olarak ayarlıyoruz — dikey oyun penceresi*
+
 3. Aynı sayfada aşağı inerek **Stretch** (Ölçekleme) ayarlarını bulun. **Mode** ayarını `canvas_items`, **Aspect** ayarını ise `keep` yapın.
+
+![Stretch Modu Ayarı](/assets/images/setting-stretch-mode.webp)
+*Stretch ayarları — oyunun farklı ekran boyutlarında tutarlı görünmesini sağlar*
 
 > 💡 **Bilgilendirme:** Bu stretch (ölçekleme) ayarları sayesinde oyun pencereniz farklı monitörlerde veya mobil cihazlarda yeniden boyutlandırıldığında oyun alanınızın orantısı bozulmadan tutarlı bir şekilde büyüyüp küçülecektir.
 
@@ -36,10 +52,30 @@ Oyununuzun en önemli parçasını, yani oyuncu karakterini ayrı bir sahne olar
 
 1. **Scene > New Scene** ile yeni bir sahne oluşturun ve kök node olarak `Area2D` ekleyin. Node'un adını `Player` olarak değiştirin. Neden `Area2D`? Çünkü bu node, diğer nesnelerle (düşmanlarla) olan çarpışmaları ve üst üste gelmeleri algılamak için özel olarak tasarlanmıştır.
 
+![Node Ekleme](/assets/images/add_node.webp)
+*Scene sekmesinde "Other Node" ile Area2D ekliyoruz*
+
+![Şekil Uyarısı](/assets/images/no_shape_warning.webp)
+*Area2D, çarpışma algılamak için bir şekle ihtiyaç duyar — bunu ilerleyen adımda ekleyeceğiz*
+
 2. `Player` node'una bir `AnimatedSprite2D` çocuk node'u ekleyin. Bu node görseli ve animasyonları yönetecektir.
 3. Inspector panelinden **Animation > Sprite Frames** alanına tıklayıp **New SpriteFrames** seçeneğini işaretleyin. Açılan panelde `walk` ve `up` adında iki farklı animasyon oluşturun.
+
+![Yeni SpriteFrames](/assets/images/new_spriteframes.webp)
+*Inspector'da "New SpriteFrames" oluşturuyoruz*
+
+![SpriteFrames Paneli](/assets/images/spriteframes_panel.webp)
+*SpriteFrames paneli — animasyonları ve karelerini burada yönetiriz*
+
 4. `art/` klasöründeki görsellerden `playerGrey_walk1` ve `playerGrey_walk2` dosyalarını `walk` animasyonuna, `playerGrey_up1` ve `playerGrey_up2` dosyalarını ise `up` animasyonuna sürükleyin.
+
+![SpriteFrames Paneli Dolu](/assets/images/spriteframes_panel2.webp)
+*Her animasyona ait kareler panele eklendi*
+
 5. Görseller oyun alanımız için biraz büyük kalacağından, Inspector'da `Node2D` altındaki **Scale** değerini `(0.5, 0.5)` yaparak karakteri yarı yarıya küçültün.
+
+![Oyuncu Ölçeği](/assets/images/player_scale.webp)
+*AnimatedSprite2D'nin ölçeği 0.5 olarak küçültüldü*
 
 ### Çarpışma Şeklini Eklemek
 
@@ -49,7 +85,17 @@ Oyununuzun en önemli parçasını, yani oyuncu karakterini ayrı bir sahne olar
 2. Inspector'dan **Shape** özelliğini `CapsuleShape2D` olarak seçin.
 
 3. Kapsülü, ekrandaki sprite'ı (karakter görselini) tam olarak saracak şekilde boyutlandırın.
+
+![Çarpışma Şekli](/assets/images/player_coll_shape1.webp)
+*CapsuleShape2D, oyuncu sprite'ını kapsayacak şekilde ayarlandı*
+
+![Çocukları Kilitle](/assets/images/lock_children.webp)
+*Yanlışlıkla çocuk node'ları hareket ettirmemek için kilitleme ayarı*
+
 4. Sahneyi `player.tscn` olarak kaydedin.
+
+![Oyuncu Sahne Node'ları](/assets/images/player_scene_nodes.webp)
+*Player sahnesi tamamlandı: Area2D (kök), AnimatedSprite2D ve CollisionShape2D*
 
 ---
 

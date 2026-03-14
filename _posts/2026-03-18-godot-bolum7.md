@@ -21,10 +21,15 @@ Düşmanları tıpkı oyuncu gibi ayrı bir sahne olarak tasarlayacağız, böyl
 3. Düşmanların aşağı doğru düşmesini engellemek için, `Mob` node'unu seçin ve Inspector (Denetçi) panelindeki **Gravity Scale** değerini `0` olarak ayarlayın.
 4. Düşmanların birbirlerini itip yollarından çıkarmalarını engellemek için, yine Inspector panelindeki **Collision** grubunu genişletip **Mask** özelliğindeki 1 numaralı katmanın işaretini kaldırın.
 
+![Çarpışma Maskesi Ayarı](/assets/images/set_collision_mask.webp)
+*Mask'teki 1'i kaldırarak mob'ların birbirleriyle çarpışmasını engelliyoruz*
 
 ### Animasyonlar ve Çarpışma Şekli
 
 1. `AnimatedSprite2D` node'u için `fly`, `swim` ve `walk` adında 3 farklı animasyon oluşturun ve her birinin **Animation Speed** değerini `3` olarak ayarlayın. Görseller oyun alanına göre büyük olacağı için, Inspector'dan **Scale** değerini `(0.75, 0.75)` yaparak mob boyutunu küçültün.
+
+![Mob Animasyonları](/assets/images/mob_animations.webp)
+*Mob için fly, swim ve walk animasyonları ayarlandı — her birinin hızı 3 olmalı*
 
 2. Son olarak, `CollisionShape2D` node'una bir `CapsuleShape2D` ekleyin ve şekli görselle hizalamak için Inspector'dan **Rotation** (Döndürme) değerini 90 derece olarak ayarlayın.
 3. Sahnenizi `mob.tscn` olarak kaydetmeyi unutmayın.
@@ -63,6 +68,10 @@ Düşman sahnesi hazır olduğuna göre, onları oyuna dahil edecek `Main` (Ana)
 
 1. Yeni bir sahne oluşturun, kök node olarak `Node` ekleyin ve adını `Main` yapın. (Bu node oyun mantığını yönetecek bir konteyner olduğu için `Node2D` yerine basit bir `Node` kullanıyoruz).
 2. Scene panelindeki zincir (Instance) simgesine tıklayarak `player.tscn` sahnenizi bu ana sahneye ekleyin.
+
+![Sahne Instance Butonu](/assets/images/instance_scene.webp)
+*Instance butonu ile player.tscn'yi Main sahnesine ekliyoruz*
+
 3. Oyunun akışını kontrol etmek için `Main` node'unun altına 3 adet `Timer` (`MobTimer`, `ScoreTimer`, `StartTimer`) ve oyuncunun başlangıç konumu için bir `Marker2D` (`StartPosition`) ekleyin.
 4. `MobTimer`'ın bekleme süresini (Wait Time) `0.5`, `ScoreTimer`'ı `1` ve `StartTimer`'ı `2` saniye (One Shot aktif) olarak ayarlayın.
 
@@ -71,9 +80,22 @@ Düşman sahnesi hazır olduğuna göre, onları oyuna dahil edecek `Main` (Ana)
 Düşmanların ekranın rastgele kenarlarından çıkmasını sağlamak için bir yol çizmemiz gerekiyor.
 
 1. `Main` node'una bir `Path2D` çocuğu ekleyin ve adını `MobPath` yapın.
+
+![Path2D Butonları](/assets/images/path2d_buttons.webp)
+*Path2D seçildiğinde nokta ekleme ve yol kapatma butonları görünür*
+
 2. Üstteki **Add Point** ikonunu seçerek ve **Grid Snap** özelliğini açarak ekranın sınırlarını saat yönünde çevreleyen 4 noktalı bir dikdörtgen yol çizin. İşlemi bitirmek için **Close Curve** butonuna tıklayın.
 
+![Grid Snap Butonu](/assets/images/grid_snap_button.webp)
+*Grid Snap ve Smart Snap açık olmalı — noktalar tam köşelere oturur*
+
+![Path2D Çizimi](/assets/images/draw_path2d.webp)
+*Ekranın kenarlarını çevreleyen spawn yolu saat yönünde çizildi*
+
 3. Çizdiğiniz bu yolun üzerinde rastgele bir konum seçebilmek için `MobPath` node'unun altına bir `PathFollow2D` çocuğu ekleyin ve adını `MobSpawnLocation` olarak belirleyin.
+
+![Ana Sahne Node Yapısı](/assets/images/main_scene_nodes.webp)
+*Main sahnesi tüm node'larla tamamlandı*
 
 ---
 

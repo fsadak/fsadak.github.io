@@ -18,7 +18,12 @@ Script'ler, bir node'a eklenen ve o node'un davranışını genişleten kod dosy
 > 💡 **Bilgilendirme:** Godot, tek bir projede birden fazla dil kullanmanıza olanak tanır. Hızlı yazılması gereken mantıklar için GDScript, maksimum performans gerektiren kısımlar için C++ kullanabilirsiniz.
 
 * **GDScript:** Godot için özel olarak geliştirilmiş, sade ve öğrenmesi çok kolay bir dildir. Motorla sıkı bir editör entegrasyonu sunar ve harici bir kod editörü gerektirmez. Yeni başlıyorsanız kesinlikle GDScript ile başlamalısınız.
+
+![GDScript Editörü](/assets/images/scripting_gdscript.webp)
+*Godot'nun yerleşik script editöründe GDScript kodu*
+
 * **C# (.NET):** Oyun sektöründe popüler olan bu dil, performans ve esneklik sunar ancak harici bir editör gerektirir ve daha çok deneyimli kullanıcılara önerilir.
+
 * **C / C++ (GDExtension):** Maksimum performans içindir, ancak öğrenme eğrisi oldukça zordur.
 
 Biz bu eğitim serimizde, oyun geliştiricilerinin ihtiyaçlarına tam uyum sağlayan ve yıldırım hızında çalışan **GDScript**'i kullanacağız.
@@ -29,10 +34,31 @@ Biz bu eğitim serimizde, oyun geliştiricilerinin ihtiyaçlarına tam uyum sağ
 
 Artık kod yazmaya başlayabiliriz! Amacımız, Godot ikonunu ekranda döndürmek ve hareket ettirmektir.
 
+![Dönen Godot İkonu](/assets/images/scripting_first_script_rotating_godot.webp)
+*Bu bölümün sonunda Godot ikonu böyle dönüyor olacak*
+
 1. Yeni bir proje oluşturun ve kök node olarak `Sprite2D` ekleyin.
+
+![Sprite2D Ekleme](/assets/images/scripting_first_script_add_sprite_node.webp)
+*Sprite2D node'unu oluşturuyoruz*
+
 2. FileSystem (Dosya Sistemi) panelinden `icon.svg` dosyasını Inspector (Denetçi) panelindeki **Texture** alanına sürükleyip bırakın.
+
+![Texture Ayarı](/assets/images/scripting_first_script_setting_texture.webp)
+*icon.svg dosyasını Texture alanına sürükleyip bırakıyoruz*
+
+![Sprite Ortalama](/assets/images/scripting_first_script_centering_sprite.webp)
+*Godot ikonunu viewport'un ortasına taşıyoruz*
+
 3. `Sprite2D` node'una sağ tıklayın ve **Attach Script** (Script Ekle) seçeneğini seçin.
+
+![Script Ekleme Menüsü](/assets/images/scripting_first_script_attach_script.webp)
+*Sprite2D'ye sağ tıklayıp "Attach Script" seçiyoruz*
+
 4. Açılan pencerede Template (Şablon) alanını **Object: Empty** olarak değiştirip **Create** (Oluştur) butonuna tıklayın.
+
+![Script Ayar Penceresi](/assets/images/scripting_first_script_attach_node_script.webp)
+*Script ayarlama penceresi*
 
 Script dosyanızın en üstünde `extends Sprite2D` yazısını göreceksiniz. Bu, yazdığınız kodun `Sprite2D`'nin tüm özelliklerine erişebileceği anlamına gelir.
 
@@ -86,6 +112,9 @@ Bu kod sayesinde ikonunuz baktığı yöne doğru çember çizerek hareket edece
 ## Oyuncu Girdilerini (Input) Dinlemek
 
 İkonun kendi kendine dönmesi güzel, ancak kontrolü oyuncuya vermemiz gerekiyor. Godot'da klavye veya fare girdilerini işlemek için iki temel yöntem vardır: `_unhandled_input()` (sadece tuşa basıldığında tetiklenir) ve `Input` singleton'ı (her karede sürekli kontrol sağlar).
+
+![Girdiye Göre Hareket](/assets/images/scripting_first_script_moving_with_input.webp)
+*Bu bölümün sonunda ok tuşlarıyla ikonu yönlendiriyor olacaksın*
 
 Biz hareket mekaniği için `Input` singleton'ını kullanacağız. Dönme hareketini ok tuşlarına bağlamak için `_process()` fonksiyonunuzu şu şekilde güncelleyin:
 
