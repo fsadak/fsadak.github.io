@@ -1,3 +1,10 @@
+---
+# Dosya: tabs/about.md
+layout: page
+icon: fas fa-info-circle
+order: 4
+---
+
 # Siber Atölye'ye Hoş Geldiniz! 🚀
 
 Merhaba, Siber Atölye'nin kurucusu, kodların ve devrelerin arasındaki o ince çizgide yürümeyi seven bir geliştiriciyim.
