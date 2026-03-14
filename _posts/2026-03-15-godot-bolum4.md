@@ -144,6 +144,10 @@ Bu uzun ve doyurucu rehberde şunları başardınız:
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='tAj18IY1n5w' %}
+
 ## Sıradaki Adım
 
 Bir sonraki bölümde, Godot'nun en güçlü ve esnek sistemlerinden biri olan **Sinyallere (Signals)** ve node'ların birbiriyle nasıl iletişim kurduğuna odaklanacağız!
