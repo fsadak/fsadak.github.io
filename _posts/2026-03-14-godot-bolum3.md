@@ -223,7 +223,7 @@ Instancing ile şunları elde edersin:
 
 ## Sıradaki Adım
 
-Instancing mantığını kavradık. Bir sonraki bölümde **GDScript ile scripting**'e giriş yapacağız — node'lara nasıl davranış kazandırılır, bunu keşfedeceğiz! 🚀
+Instancing mantığını kavradık. Bir sonraki bölümde **GDScript ile kodlamaya** giriş yapacağız — node'lara nasıl davranış kazandırılır, bunu keşfedeceğiz! 🚀
 
 ---
 
