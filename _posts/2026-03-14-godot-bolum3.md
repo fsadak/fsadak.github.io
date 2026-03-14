@@ -38,7 +38,7 @@ Bu sahneyi kaydettikten sonra başka sahnelere defalarca ekleyebilirsiniz. Her i
 ![Birden Fazla Top Instance'ı](/assets/images/instancing_ball_instances_example.webp)
 *Aynı ball.tscn sahnesinden üretilen birden fazla instance — her biri bağımsız davranır*
 
-Her instance, kaynak sahnedeki yapı ve özellikleri miras alır. Ancak her birini **bağımsız olarak** değiştirebilirsin: zıplama kuvveti, ağırlık veya sahne tarafından sunulan herhangi bir özellik.
+Her instance, kaynak sahnedeki yapı ve özellikleri miras alır. Ancak her birini **bağımsız olarak** değiştirebilirsiniz: zıplama kuvveti, ağırlık veya sahne tarafından sunulan herhangi bir özellik.
 
 ---
 
@@ -46,29 +46,29 @@ Her instance, kaynak sahnedeki yapı ve özellikleri miras alır. Ancak her biri
 
 Instancing'i pratikte görmek için Godot'nun hazırladığı örnek projeyi kullanacağız.
 
-🔗 Projeyi şu adresten indir: [instancing_starter.zip](https://docs.godotengine.org/en/stable/_downloads/instancing_starter.zip)
+🔗 Projeyi şu adresten indirin: [instancing_starter.zip](https://docs.godotengine.org/en/stable/_downloads/instancing_starter.zip)
 
-Arşivi bilgisayarına çıkart. Ardından Godot'yu aç ve **Project Manager**'dan **Import** butonuna tıkla.
+Arşivi bilgisayarınıza açın. Ardından Godot'yu açın ve **Project Manager**'dan **Import** butonuna tıklayın.
 
 ![Import Butonu](/assets/images/instancing_import_button.webp)
 *Project Manager'daki Import butonu*
 
-Açılan pencerede çıkarttığın klasöre git ve `project.godot` dosyasına çift tıkla.
+Açılan pencerede arşivi açtığınız klasöre gidin ve `project.godot` dosyasına çift tıklayın.
 
 ![project.godot Dosyası Seçimi](/assets/images/instancing_import_project_file.webp)
-*project.godot dosyasını seç*
+*project.godot dosyasını seçin*
 
-Son olarak **Import & Edit** butonuna tıkla:
+Son olarak **Import & Edit** butonuna tıklayın:
 
 ![Import & Edit Butonu](/assets/images/instancing_import_and_edit_button.webp)
 *Import & Edit ile proje açılır*
 
-> ℹ️ Projenin daha eski bir Godot sürümünde açıldığına dair bir uyarı görürsen sorun değil. **OK** tıkla.
+> ℹ️ Projenin daha eski bir Godot sürümünde açıldığına dair bir uyarı görürseniz sorun değil. **OK** tıklayın.
 
-Proje iki packed scene içeriyor: topun çarptığı duvarları içeren `main.tscn` ve `ball.tscn`. Main sahnesi otomatik açılmalı. Boş bir 3D sahne görüyorsan ekranın üst kısmındaki **2D** butonuna tıkla.
+Proje iki packed scene içeriyor: topun çarptığı duvarları içeren `main.tscn` ve `ball.tscn`. Main sahnesi otomatik açılmalı. Boş bir 3D sahne görüyorsan ekranın üst kısmındaki **2D** butonuna tıklayın.
 
 ![2D Ekranı Seç](/assets/images/instancing_2d_scene_select.webp)
-*3D yerine 2D görünümünü seç*
+*3D yerine 2D görünümünü seçin*
 
 Sahne şöyle görünmelidir:
 
@@ -81,12 +81,12 @@ Sahne şöyle görünmelidir:
 
 Main node'a bir top ekleyelim.
 
-**Scene doku**'nda `Main` node'una tıklayarak seç. Ardından Scene doku'nun üst kısmındaki **zincir simgesi (link icon)** butonuna tıkla. Bu buton, seçili node'a bir sahne instance'ı eklemeyi sağlar.
+**Scene doku**'nda `Main` node'una tıklayarak seçin. Ardından Scene doku'nun üst kısmındaki **zincir simgesi (link icon)** butonuna tıklayın. Bu buton, seçili node'a bir sahne instance'ı eklemeyi sağlar.
 
 ![Sahne Bağlantı Butonu](/assets/images/instancing_scene_link_button.webp)
 *Zincir simgesi — bir sahneyi instance olarak ekleme butonu*
 
-Açılan pencerede `ball` sahnesine çift tıkla:
+Açılan pencerede `ball` sahnesine çift tıklayın:
 
 ![Instance Penceresi](/assets/images/instancing_instance_child_window.webp)
 *ball.tscn sahnesini instance olarak seçiyoruz*
@@ -96,28 +96,28 @@ Top viewport'un sol üst köşesinde belirir:
 ![Top Eklendi](/assets/images/instancing_ball_instanced.webp)
 *Top instance'ı sahneye eklendi*
 
-Topa tıkla ve görünümün ortasına sürükle:
+Topa tıklayın ve görünümün ortasına sürükleyin:
 
 ![Top Ortalandı](/assets/images/instancing_ball_moved.webp)
 *Topu sahnenin ortasına taşıyoruz*
 
-**F5** (macOS'ta Cmd + B) ile oyunu çalıştır. Topun düştüğünü görmelisin!
+**F5** ile oyunu çalıştırın. Topun düştüğünü görmelisiniz!
 
 ---
 
 ## Birden Fazla Instance Oluştur
 
-Şimdi daha fazla top ekleyelim. Top hâlâ seçiliyken **Ctrl + D** (macOS'ta Cmd + D) kısayoluyla **duplicate (kopyala)** komutunu çalıştır. Yeni topu farklı bir konuma sürükle.
+Şimdi daha fazla top ekleyelim. Top hâlâ seçiliyken **Ctrl + D** kısayoluyla **duplicate (kopyala)** komutunu çalıştırın. Yeni topu farklı bir konuma sürükleyin.
 
 ![Top Kopyalandı](/assets/images/instancing_ball_duplicated.webp)
 *Ctrl+D ile top kopyalandı — yeni bir instance oluştu*
 
-Bu işlemi istediğin kadar tekrarlayarak birden fazla top ekleyebilirsin:
+Bu işlemi istediğiniz kadar tekrarlayarak birden fazla top ekleyebilirsiniz:
 
 ![Birden Fazla Top](/assets/images/instancing_main_scene_with_balls.webp)
 *Sahneye birden fazla top instance'ı eklendi*
 
-Oyunu tekrar çalıştır. Her topun **birbirinden bağımsız** düştüğünü göreceksin. İşte instancing tam olarak budur: her biri şablon sahneden üretilmiş, ama birbirinden bağımsız çalışan kopyalar.
+Oyunu tekrar çalıştırın. Her topun **birbirinden bağımsız** düştüğünü göreceksiniz. İşte instancing tam olarak budur: her biri şablon sahneden üretilmiş, ama birbirinden bağımsız çalışan kopyalar.
 
 ---
 
@@ -126,38 +126,38 @@ Oyunu tekrar çalıştır. Her topun **birbirinden bağımsız** düştüğünü
 Instancing'in iki farklı düzenleme katmanı var:
 
 **1. Tek bir instance'ı değiştir:**
-Inspector'dan herhangi bir instance'ın özelliğini değiştirebilirsin — bu değişiklik yalnızca o instance'ı etkiler, diğerlerini etkilemez.
+Inspector'dan herhangi bir instance'ın özelliğini değiştirebilirsiniz — bu değişiklik yalnızca o instance'ı etkiler, diğerlerini etkilemez.
 
 **2. Tüm instance'ları aynı anda güncelle:**
-Kaynak sahneyi (`ball.tscn`) açıp orada bir değişiklik yaptığında, projedeki tüm Ball instance'ları otomatik olarak güncellenir.
+Kaynak sahneyi (`ball.tscn`) açıp orada bir değişiklik yaptığınızda, projedeki tüm Ball instance'ları otomatik olarak güncellenir.
 
-### Tüm Topların Zıplama Kuvvetini Artır
+### Tüm Topların Zıplama Kuvvetini Artırmak
 
-FileSystem'de `ball.tscn` dosyasına çift tıklayarak aç:
+FileSystem'de `ball.tscn` dosyasına çift tıklayarak açın:
 
 ![ball.tscn Açıldı](/assets/images/instancing_ball_scene_open.webp)
 *ball.tscn dosyasını açıyoruz*
 
-Scene doku'nda **Ball** node'unu seç. Sağdaki Inspector'da **PhysicsMaterial** özelliğini bul ve üzerine tıklayarak genişlet:
+Scene doku'nda **Ball** node'unu seçin. Sağdaki Inspector'da **PhysicsMaterial** özelliğini bulun ve üzerine tıklayarak genişletin:
 
 ![PhysicsMaterial Genişletildi](/assets/images/instancing_physics_material_expand.webp)
 *PhysicsMaterial özelliğini genişletiyoruz*
 
-**Bounce** değerini `0.5` olarak ayarla (alana tıkla, `0.5` yaz, Enter'a bas):
+**Bounce** değerini `0.5` olarak ayarlayın (alana tıklayın, `0.5` yazın, Enter'a basın):
 
 ![Bounce Değeri Güncellendi](/assets/images/instancing_property_bounce_updated.webp)
 *Bounce değeri 0.5 olarak ayarlandı*
 
-Kaydet ve **F5** ile oyunu çalıştır. Tüm topların çok daha fazla zıpladığını göreceksin — çünkü kaynak sahnedeki değişiklik tüm instance'lara yansıdı.
+Kaydedin ve **F5** ile oyunu çalıştırın. Tüm topların çok daha fazla zıpladığını göreceksiniz — çünkü kaynak sahnedeki değişiklik tüm instance'lara yansıdı.
 
 ### Tek Bir Topu Farklılaştır
 
-Şimdi viewport üstündeki sekme çubuğundan **Main sahnesine** geri dön:
+Şimdi viewport üstündeki sekme çubuğundan **Main sahnesine** geri dönün:
 
 ![Sahne Sekmeleri](/assets/images/instancing_scene_tabs.webp)
 *Sekme çubuğundan Main sahnesine dönüyoruz*
 
-Instance'lardan birini seç ve Inspector'da **Gravity Scale** değerini `10` olarak ayarla:
+Instance'lardan birini seçin ve Inspector'da **Gravity Scale** değerini `10` olarak ayarlayın:
 
 ![Gravity Scale Değeri](/assets/images/instancing_property_gravity_scale.webp)
 *Tek bir instance'ın Gravity Scale değeri 10'a yükseltildi*
@@ -167,11 +167,11 @@ Instance'lardan birini seç ve Inspector'da **Gravity Scale** değerini `10` ola
 ![Revert Simgesi](/assets/images/instancing_property_revert_icon.webp)
 *Revert ikonu — bu özelliğin kaynak sahnedeki değerin üzerine yazıldığını gösterir*
 
-Bu ikon, instance'da **kaynak sahnedeki değerin üzerine yazıldığını** gösterir. Kaynak sahnede bu özelliği değiştirsen bile bu instance'taki değer korunur. Revert ikonuna tıklarsan değer, kaynak sahnedeki hâline geri döner.
+Bu ikon, instance'da **kaynak sahnedeki değerin üzerine yazıldığını** gösterir. Kaynak sahnede bu özelliği değiştirseniz bile bu instance'taki değer korunur. Revert ikonuna tıklarsanız değer, kaynak sahnedeki hâline geri döner.
 
-Oyunu yeniden çalıştır. Bu topun diğerlerinden çok daha hızlı düştüğünü göreceksin.
+Oyunu yeniden çalıştırın. Bu topun diğerlerinden çok daha hızlı düştüğünü göreceksiniz.
 
-> 💡 **Not:** PhysicsMaterial değerlerini tek bir instance için değiştirmek istersen, Inspector'da PhysicsMaterial'e sağ tıklayıp **Make Unique** seçeneğini kullanman gerekir. Kaynaklar (Resources), Godot'nun önemli bir konseptidir ve ilerleyen derslerde ele alacağız.
+> 💡 **Not:** PhysicsMaterial değerlerini tek bir instance için değiştirmek isterseniz, Inspector'da PhysicsMaterial'e sağ tıklayıp **Make Unique** seçeneğini kullanmanız gerekir. Kaynaklar (Resources), Godot'nun önemli bir konseptidir ve ilerleyen derslerde ele alacağız.
 
 ---
 
@@ -179,21 +179,21 @@ Oyunu yeniden çalıştır. Bu topun diğerlerinden çok daha hızlı düştüğ
 
 Instance'lar ve sahneler, Godot'yu diğer motorlardan ayıran bir **tasarım dili** sunar. Godot sıfırdan bu konsept etrafında inşa edilmiştir.
 
-Godot ile oyun geliştirirken **MVC (Model-View-Controller)** veya **Entity-Relationship** gibi mimari kod kalıplarını bir kenara bırakmanı öneririz. Bunlar yerine şu soruyu sor: **"Oyuncunun göreceği elemanlar neler?"** Kodunu bu elemanlara göre yapılandır.
+Godot ile oyun geliştirirken **MVC (Model-View-Controller)** veya **Entity-Relationship** gibi mimari kod kalıplarını bir kenara bırakmanızı öneririz. Bunlar yerine şu soruyu sorun: **"Oyuncunun göreceği elemanlar neler?"** Kodunuzu bu elemanlara göre yapılandırın.
 
-Örneğin bir top-down shooter oyununu şöyle bölebilirsin:
+Örneğin bir top-down shooter oyununu şöyle bölebilirsiniz:
 
 ![Shooter Oyun Diyagramı](/assets/images/instancing_diagram_shooter.png)
 *Basit bir shooter oyunun sahne diyagramı — her kutu bir sahneye karşılık gelir*
 
-Bu tür diyagramı neredeyse her oyun türü için çıkarabilirsin. Oklarlar hangi sahnenin hangisini instance ettiğini gösterir.
+Bu tür diyagramı neredeyse her oyun türü için çıkarabilirsiniz. Oklar hangi sahnenin hangisini instance ettiğini gösterir.
 
 Daha karmaşık bir örnek — tonlarca varlık ve iç içe geçmiş elemanlara sahip açık dünya oyunu:
 
 ![Açık Dünya Diyagramı](/assets/images/instancing_diagram_open_world.png)
 *Açık dünya oyunu sahne diyagramı — her eleman bir sahne, instance'lar hiyerarşiyi oluşturur*
 
-Bu yaklaşımın avantajı: **Sahne tabanlı tasarım geliştirmeyi hızlandırır.** Çoğu oyun bileşeni doğrudan bir sahneye karşılık geldiğinden, soyut mimari kodlara çok az ihtiyaç duyarsın. Oyun mantığına odaklanabilirsin.
+Bu yaklaşımın avantajı: **Sahne tabanlı tasarım geliştirmeyi hızlandırır.** Çoğu oyun bileşeni doğrudan bir sahneye karşılık geldiğinden, soyut mimari kodlara çok az ihtiyaç duyarsınız. Oyun mantığına odaklanabilirsiniz.
 
 Godot editörü programcılar, tasarımcılar ve sanatçılar için eşit derecede erişilebilir olacak şekilde tasarlanmıştır. Tipik bir ekipte 2D/3D sanatçılar, seviye tasarımcıları, oyun tasarımcıları ve animatörler hepsi aynı editörde çalışabilir.
 
@@ -209,7 +209,7 @@ Godot editörü programcılar, tasarımcılar ve sanatçılar için eşit derece
 | **Kaynak sahnede değişiklik** | Tüm instance'ları günceller |
 | **Instance'da değişiklik** | Yalnızca o instance'ı etkiler, revert ile geri alınabilir |
 
-Instancing ile şunları elde edersin:
+Instancing ile şunları elde edersiniz:
 - Oyunu **yeniden kullanılabilir bileşenlere** bölme
 - Karmaşık sistemleri **yapılandırma ve kapsülleme**
 - Oyun projesinin yapısını **doğal biçimde düşünme** dili
