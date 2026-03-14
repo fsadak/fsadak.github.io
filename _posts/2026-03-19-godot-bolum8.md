@@ -106,6 +106,10 @@ Oyun deneyimini tamamlamak için birkaç estetik dokunuş yapalım:
 
 ---
 
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='d93VNPQC8AA' %}
+
 ## Tebrikler!
 
 2D eğitim serisini ve ilk oyununuzu tamamen bitirdiniz. Oyununuzu dışa aktarmak (Export) ve arkadaşlarınızla paylaşmak için projenizi çalıştırılabilir dosya (.exe, vb.) olarak ayarlayabilirsiniz.
