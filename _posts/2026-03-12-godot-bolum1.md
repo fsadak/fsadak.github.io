@@ -488,6 +488,8 @@ Belirli oyun türlerine (RPG, platform, bulmaca) özel eğitimler için: [Tutori
 
 {% include embed/youtube.html id='0-rDQcxnWuc' %}
 
+---
+
 ## Sıradaki Adım
 
 Bu yazıda Godot'nun ne olduğunu, programlama dillerini, temel kavramlarını, editör arayüzünü, tasarım felsefesini ve öğrenme kaynaklarını ele aldık. **Giriş bölümü tamamlandı!**

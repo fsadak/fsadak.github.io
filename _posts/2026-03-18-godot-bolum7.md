@@ -178,6 +178,8 @@ Harika bir iş çıkardınız! Bu uzun ve teknik bölümde;
 
 {% include embed/youtube.html id='u1GNQzgZOTI' %}
 
+---
+
 ## Sıradaki Adım
 
 Oyununuz artık oynanabilir ve sizi zorlayabilir durumda! Bir sonraki bölümde bu heyecanı taçlandıracak olan **Kullanıcı Arayüzü (HUD), ve Sesler** ekleme aşamasına geçeceğiz. Görüşmek üzere!

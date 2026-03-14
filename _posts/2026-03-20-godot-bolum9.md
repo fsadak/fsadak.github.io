@@ -133,6 +133,11 @@ func _physics_process(delta):
 2. Sahneye bir `Camera3D` node'u ekleyip yukarıdan oyuncuya bakacak şekilde konumlandırın.
 3. Bu tür oyunlar için "Perspektif" yerine Ortografik (Orthogonal) kamera kullanmak mesafeleri okumayı kolaylaştırır. Kamerayı seçip Inspector'dan **Projection** ayarını `Orthogonal` yapın ve **Size** değerini `19` olarak ayarlayın.
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='sP5ZefVN4xg' %}
 
 ---
 

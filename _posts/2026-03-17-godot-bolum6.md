@@ -185,6 +185,8 @@ Harika bir iş çıkardınız! Bu bölümde;
 
 {% include embed/youtube.html id='cUV0MFJczeY' %}
 
+---
+
 ## Sıradaki Adım
 
 Bir sonraki bölümde oyununuza asıl heyecanı katacak olan **Düşman Yapay Zekası ve Spawner (Oluşturucu)** sistemini kuracağız. Görüşmek üzere!
