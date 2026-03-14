@@ -15,6 +15,8 @@ Bu ilk büyük adımımızda proje ayarlarını yapacak, oyuncu sahnesini inşa 
 
 ## Proje Kurulumu ve Ekran Ayarları
 
+İhtiyacınız olan [Tasarım Görselleri](https://github.com/godotengine/godot-docs-project-starters/releases/download/latest-4.x/dodge_the_creeps_2d_assets.zip)
+
 Öncelikle yeni bir Godot projesi oluşturun ve daha önce indirdiğiniz oyun varlıkları arşivindeki `art/` ve `fonts/` klasörlerini proje dizininizin (`res://`) içine sürükleyip bırakın.
 
 Oyunumuz dikey (portrait) modda oynanacak şekilde tasarlandığı için ekran boyutunu buna göre ayarlamanız gerekiyor:
@@ -178,6 +180,10 @@ Harika bir iş çıkardınız! Bu bölümde;
 * GDScript ile pürüzsüz bir 8 yönlü hareket kodu yazıp, ekrandan çıkmayı engelleyen matematiksel fonksiyonları (`normalized`, `clamp`) kullandınız.
 
 ---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='cUV0MFJczeY' %}
 
 ## Sıradaki Adım
 
