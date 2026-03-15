@@ -2,7 +2,7 @@ name: "Otomatik Yayin Tetikleyici"
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # UTC 09:00 = Türkiye 12:00 (yaz saati) / 11:00 (kış) — aşağıya bak
+    - cron: '5 9 * * *'   # UTC 09:05 = Türkiye 12:05 (yaz saati) / 11:05 (kış)
   workflow_dispatch:        # elle de tetikleyebilmek için
 
 jobs:
