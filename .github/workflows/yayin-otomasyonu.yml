@@ -2,25 +2,37 @@ name: "Otomatik Yayin Tetikleyici"
 
 on:
   schedule:
-    # Her Salı ve Perşembe TSİ 12:05'te çalışır.
-    # (UTC 09:05 = TSİ 12:05)
-    - cron: '05 09 * * 2,4'
-  workflow_dispatch:
+    - cron: '0 9 * * *'   # UTC 09:00 = Türkiye 12:00 (yaz saati) / 11:00 (kış) — aşağıya bak
+  workflow_dispatch:        # elle de tetikleyebilmek için
 
 jobs:
-  update-site:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Repoyu Kopyala
-        uses: actions/checkout@v4 # v3'ten v4'e güncellendi (Node 24 uyumlu)
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Bos Bir Commit At (Siteyi Gunceller)
-        run: |
-          run: |
-            git config --global user.name "Siber Atolye Bot"
-            git config --global user.email "bot@goldenware.tr"
-            git commit --allow-empty -m "Sali/Persembe planlanmis yayin tetiklendi"
-            git pull --rebase origin main
-            git push
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
