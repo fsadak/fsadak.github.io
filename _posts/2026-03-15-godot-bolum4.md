@@ -179,7 +179,7 @@ Bu uzun ve doyurucu rehberde şunları başardınız:
 
 ## Sıradaki Adım
 
-Bir sonraki bölümde, Godot'nun en güçlü ve esnek sistemlerinden biri olan **Sinyallere (Signals)** ve node'ların birbiriyle nasıl iletişim kurduğuna odaklanacağız!
+Bir sonraki bölümde, Godot'nun en güçlü sistemlerinden biri olan **Sinyallere (Signals)** ve node'ların birbiriyle nasıl iletişim kurduğuna odaklanacağız!
 
 ---
 
