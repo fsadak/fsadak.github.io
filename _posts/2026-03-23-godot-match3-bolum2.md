@@ -345,6 +345,6 @@ func _grid_to_pixel(row: int, col: int) -> Vector2:
 
 ## Konuyla ilgili Youtube videosu aşağıdadır...
 
-{% include embed/youtube.html id='f9ebHFNUW2w' %}
+{% include embed/youtube.html id='iP-YtOrW-4g' %}
 
 ---

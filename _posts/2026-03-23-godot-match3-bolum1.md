@@ -154,7 +154,7 @@ Bu noktada şunu görüyor olmalısınız:
 
 ## Konuyla ilgili Youtube videosu aşağıdadır...
 
-{% include embed/youtube.html id='f9ebHFNUW2w' %}
+{% include embed/youtube.html id='iP-YtOrW-4g' %}
 
 ---
 
