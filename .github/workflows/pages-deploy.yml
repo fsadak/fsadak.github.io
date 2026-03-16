@@ -1,7 +1,7 @@
 name: "Build and Deploy"
 on:
   schedule:
-    - cron: '55 9 * * *'   # UTC 09:05 = Türkiye 12:05 (yaz saati) / 11:05 (kış)
+    - cron: '5 9 * * *'   # UTC 09:05 = Türkiye 12:05 (yaz saati) / 11:05 (kış)
   push:
     branches:
       - main
