@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Eğitim Serisi - Bölüm 6: 2D Oyun Projesine Hazırlık ve Oyuncu Karakteri"
-date: 2026-03-16 12:00:00 +0300
+date: 2026-03-17 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, dodge-the-creeps, player]
 permalink: /godot-egitim-serisi-bolum-6/
