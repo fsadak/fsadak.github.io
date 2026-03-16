@@ -438,4 +438,12 @@ func _on_swap_finished() -> void:
 | Grid dışına tıkla | Hiçbir şey olmaz |
 | Animasyon sırasında tıkla | Hiçbir şey olmaz (engellendi) |
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='4_amoZdCiIU' %}
+
+---
+
 > **Sonraki bölümde:** Eşleşme bulma algoritmasını yazacağız. Yatay ve dikey 3+ aynı renk dizilimlerini tespit edeceğiz.
