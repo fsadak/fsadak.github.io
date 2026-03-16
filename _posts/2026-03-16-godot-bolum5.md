@@ -207,4 +207,4 @@ Sinyaller; iki nesnenin çarpışması, oyuncunun bir alana girmesi veya bir ani
 
 Tebrikler, Godot Engine temellerini attığımız giriş serisini tamamladınız! Bir sonraki büyük adımımızda, şimdiye kadar öğrendiğiniz node'lar, sahneler, script'ler, girdiler ve sinyaller konularının hepsini bir araya getireceğiniz İlk 2D Oyununuzu (Dodge the Creeps!) geliştirmeye başlayacaksınız.
 
-Hazırsanız bir sonraki bölümde görüşmek üzere!
+Hazırsanız bir sonraki bölümde görüşmek üzere.
