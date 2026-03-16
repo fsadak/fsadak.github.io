@@ -150,6 +150,14 @@ Bu noktada şunu görüyor olmalısınız:
 └──────────────────────┘
 ```
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='f9ebHFNUW2w' %}
+
+---
+
 Grid ortalanmış ve koyu arka plan üzerinde görünüyorsa **Bölüm 1 tamamdır!**
 
 > **Sonraki bölümde:** Grid'in arkasındaki veri yapısını (8x8 dizi) oluşturacak ve şekerleri rastgele yerleştireceğiz.

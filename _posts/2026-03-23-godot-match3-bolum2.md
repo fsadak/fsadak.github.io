@@ -340,3 +340,11 @@ func _grid_to_pixel(row: int, col: int) -> Vector2:
 - **Hata mesajı mı var?** → Output panelinde (altta) hata mesajını okuyun
 
 > **Sonraki bölümde:** Şekerlere tıklama, seçme ve iki şekeri yer değiştirme (swap) mekaniklerini ekleyeceğiz.
+
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='f9ebHFNUW2w' %}
+
+---
