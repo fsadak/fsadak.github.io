@@ -218,20 +218,6 @@ Bunlara ek olarak, oyununuzun ihtiyaçlarına özel **kendi sinyallerinizi** de 
 
 ---
 
-<div class="adsense-area-middle" style="margin: 40px 0; text-align: center;">
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7025916496705120"
-	     crossorigin="anonymous"></script>
-	<ins class="adsbygoogle"
-	     style="display:block"
-	     data-ad-client="ca-pub-7025916496705120"
-	     data-ad-slot="1908261118"
-	     data-ad-format="auto"
-	     data-full-width-responsive="true"></ins>
-	<script>
-	     (adsbygoogle = window.adsbygoogle || []).push({});
-	</script>
-</div>
-
 ## Godot Editörüne İlk Bakış
 
 ### Proje Yöneticisi (Project Manager)

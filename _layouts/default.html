@@ -109,5 +109,9 @@ layout: compress
 		{% endfor %}
 
 		{% include_cached search-loader.html lang=lang %}
+
+		{% if page.layout == 'post' %}
+		<script src="/assets/js/adsense-injector.js"></script>
+		{% endif %}
 	</body>
 </html>
