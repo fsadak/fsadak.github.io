@@ -130,6 +130,39 @@ func _setup_ui() -> void:
 	_update_ui()
 ```
 
+**Satır satır açıklama:**
+
+```
+	var score_label: Label = $ScoreLabel
+```
+- `$ScoreLabel` → `get_node("ScoreLabel")` kısayoludur. Godot'ta çok sık kullanılan bu sözdizimi, sahne ağacındaki çocuk düğüme ismiyle erişir.
+- `: Label` → Tip belirteci. Godot'a "bu bir Label node'udur" diyoruz. Bu sayede otomatik tamamlama ve hata kontrolü çalışır.
+
+```
+	score_label.position = Vector2(20, 10)
+	score_label.size = Vector2(260, 40)
+```
+- `position` → Label'ın sol üst köşesinin ekrandaki konumu. (20, 10) → soldan 20px, üstten 10px.
+- `size` → Label'ın genişliği ve yüksekliği. 260×40 piksel boyutunda bir alan.
+
+```
+	score_label.add_theme_font_size_override("font_size", 24)
+	score_label.add_theme_color_override("font_color", Color.WHITE)
+```
+- `add_theme_font_size_override()` → Godot'un tema (theme) sistemini geçersiz kılarak (override) özel font boyutu ayarlar. "font_size" tema özellik adıdır, 24 piksel büyüklüğünde yazı istiyoruz.
+- `add_theme_color_override()` → Aynı şekilde yazı rengini beyaz yapıyoruz.
+- **Neden `override`?** Godot'ta her node varsayılan bir temaya sahiptir. `override` ile o node'un temasını değiştirmeden sadece bu özel özelliği farklı yapıyoruz.
+
+```
+	moves_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+```
+- Hamle sayacı sağa dayalı (right-aligned) olacak. Böylece ekranın sol yarısında skor, sağ yarısında hamle bilgisi düzenli görünür.
+
+```
+	_update_ui()
+```
+- Kurulum sonrası label'ları güncel değerlerle dolduruyoruz.
+
 Bu fonksiyon her Label'ın pozisyonunu, boyutunu, font büyüklüğünü ve rengini ayarlar.
 
 **Label düzeni:**
@@ -159,7 +192,21 @@ func _update_ui() -> void:
 	$TargetLabel.text = "Hedef: " + str(target_score)
 ```
 
-`$ScoreLabel` ifadesi `get_node("ScoreLabel")` kısayoludur. Godot'ta çok sık kullanılır.
+**Satır satır açıklama:**
+
+```
+func _update_ui() -> void:
+	$ScoreLabel.text = "Skor: " + str(score)
+```
+- `$ScoreLabel` → `get_node("ScoreLabel")` kısayolu. Godot'ta `$İsim` sözdizimi sahne ağacındaki düğüme erişmenin en kısa yoludur.
+- `str(score)` → Sayıyı stringe çevirir. `score = 450` ise → `"Skor: 450"`.
+
+```
+	$MovesLabel.text = "Hamle: " + str(moves_left)
+	$LevelLabel.text = "Seviye: " + str(level)
+	$TargetLabel.text = "Hedef: " + str(target_score)
+```
+- Diğer label'ları da aynı şekilde güncelliyoruz. Bu fonksiyon puan değiştiğinde, hamle azaldığında veya seviye atlandığında çağrılır.
 
 ---
 
@@ -218,11 +265,58 @@ func _add_bonus_score(bonus_type: String) -> void:
 var chain_count := 0
 ```
 
-**Açıklama:**
+**`_add_match_score()` — Satır satır açıklama:**
 
-- `pow(1.5, chain_count)` — Üslü çarpan. 0. zincir = 1.0×, 1. zincir = 1.5×, 2. zincir = 2.25× ...
-- `int(...)` — Ondalık sonucu tam sayıya çevirir (küsurat atılır)
-- Bonus puanı zincir çarpanından etkilenmez, sabit kalır
+```
+func _add_match_score(match_size: int) -> void:
+	var base_score := 0
+	match match_size:
+		3:
+			base_score = 30
+		4:
+			base_score = 60
+		_:
+			base_score = 100
+```
+- `match match_size:` → GDScript'in **switch/case** yapısı. `match_size` değerine göre ilgili dal çalışır.
+- `3:` → 3'lü eşleşme, 30 puan.
+- `4:` → 4'lü eşleşme, 60 puan.
+- `_:` → **Joker** (wildcard). Yukarıdaki hiçbir değer tutmadıysa burası çalışır. 5 ve üzeri eşleşmeler 100 puan.
+
+```
+	var multiplier := pow(1.5, chain_count)
+```
+- `pow(1.5, chain_count)` → Üslü çarpan. `pow` = power (üs). `1.5` tabanın `chain_count` kez çarpımı.
+  - `chain_count = 0` → `pow(1.5, 0) = 1.0` → normal puan
+  - `chain_count = 1` → `pow(1.5, 1) = 1.5` → %50 bonus
+  - `chain_count = 2` → `pow(1.5, 2) = 2.25` → %125 bonus
+- Bu sayede zincirleme eşleşmeler giderek daha değerli olur!
+
+```
+	score += int(base_score * multiplier)
+	_update_ui()
+```
+- `int(...)` → Çarpım sonucu ondalıklı olabilir (örneğin 30 × 1.5 = 45.0). `int()` ile tam sayıya çeviriyoruz.
+- `score +=` → Mevcut skora ekliyoruz.
+- `_update_ui()` → Ekrandaki skor label'ını güncelliyoruz.
+
+**`_add_bonus_score()` — Satır satır açıklama:**
+
+```
+func _add_bonus_score(bonus_type: String) -> void:
+	var base_score := 0
+	match bonus_type:
+		"arrow_h", "arrow_v":
+			base_score = 80
+		"bomb":
+			base_score = 120
+		"rainbow":
+			base_score = 200
+	score += base_score
+	_update_ui()
+```
+- Bonus puanları zincir çarpanından **etkilenmez**, sabit kalır. Rainbow en değerli (200), ok en az (80).
+- `"arrow_h", "arrow_v":` → İki değer aynı dal'da birleştirilebilir (virgülle).
 
 ---
 
@@ -363,14 +457,78 @@ func _restart_game() -> void:
 	is_animating = false
 ```
 
-**Açıklamalar:**
+**Satır satır açıklamalar:**
 
-- **`_check_level_status()`** — Her zincir bittiğinde çağrılır. Hedef puana ulaşıldıysa seviye atla, hamle bittiyse game over
-- **`_level_complete()`** — Seviyeyi artırır, hamleleri sıfırlar, hedefi yükseltir. Skor kümülatif devam eder
-- **`_game_over()`** — Mesaj gösterir ve `is_animating = true` ile girişi kilitler
-- **`_show_message()`** — 2 saniyelik mesaj gösterir, sonra `_on_message_finished` çağrılır
-- **`_on_message_finished()`** — Mesaj game over ise → oyunu yeniden başlat. Seviye atlama ise → sadece mesajı gizle
-- **`_restart_game()`** — Tüm değişkenleri sıfırlar, tahtayı yeniden oluşturur
+```
+func _check_level_status() -> void:
+	if score >= target_score:
+		_level_complete()
+	elif moves_left <= 0:
+		_game_over()
+```
+- Her zincir bittiğinde (`_check_chain_matches` içinden) çağrılır.
+- **Önce** hedef kontrol: Skor hedefe ulaştı mı? Ulaştıysa → seviye tamamlandı!
+- **Sonra** hamle kontrol: Hamle bitti mi? Bittiyse → game over.
+- Sıra önemli: Oyuncu son hamlesinde hedefe ulaşırsa, game over değil seviye geçişi olur.
+
+```
+func _level_complete() -> void:
+	level += 1
+	moves_left = BASE_MOVES
+	target_score = BASE_TARGET + (level - 1) * TARGET_INCREMENT
+	_update_ui()
+	_show_message("Seviye " + str(level) + "!")
+```
+- `level += 1` → Seviyeyi artır.
+- `moves_left = BASE_MOVES` → Hamleleri 20'ye sıfırla.
+- `target_score = BASE_TARGET + (level - 1) * TARGET_INCREMENT` → Yeni hedef = 1000 + (seviye-1) × 500. Seviye 2 → 1500, Seviye 3 → 2000...
+- Mesaj gösterilir, 2 saniye sonra oyun devam eder.
+
+```
+func _game_over() -> void:
+	_show_message("Oyun Bitti!\nSkor: " + str(score))
+	is_animating = true
+```
+- `\n` → Satır sonu karakteri. Mesaj iki satır halinde görünür.
+- `is_animating = true` → Oyuncunun tıklamasını engelliyoruz. Game over olduktan sonra tıklama anlamlı değil.
+
+```
+func _show_message(text: String) -> void:
+	$MessageLabel.text = text
+	var tween := create_tween()
+	tween.tween_interval(2.0)
+	tween.tween_callback(_on_message_finished)
+```
+- MessageLabel'a metni yazıyoruz.
+- `tween_interval(2.0)` → Tween'e 2 saniyelik **bekleme** ekler. Hiçbir animasyon yapmaz, sadece bekler. Bu süre sonunda callback çağrılır.
+- Bu yapı `await get_tree().create_timer(2.0).timeout` ile aynı şeyi yapar ama Tween zinciriyle uyumludur.
+
+```
+func _on_message_finished() -> void:
+	var was_game_over: bool = $MessageLabel.text.begins_with("Oyun")
+	$MessageLabel.text = ""
+	if was_game_over:
+		_restart_game()
+```
+- `begins_with("Oyun")` → Mesaj "Oyun Bitti!" ile mi başlıyor? Bu basit bir kontrol: game over mesajıysa oyunu sıfırla, seviye mesajıysa sadece mesajı gizle.
+
+```
+func _restart_game() -> void:
+	score = 0
+	moves_left = BASE_MOVES
+	level = 1
+	target_score = BASE_TARGET
+	chain_count = 0
+	_init_grid()
+	_draw_candies()
+	_update_ui()
+	is_animating = false
+```
+- Tüm değişkenleri ilk değerlerine döndürüyoruz: skor 0, hamle 20, seviye 1, hedef 1000, zincir 0.
+- `_init_grid()` → Yeni rastgele tahta oluştur.
+- `_draw_candies()` → Yeni tahtayı ekrana çiz.
+- `_update_ui()` → Label'ları güncelle.
+- `is_animating = false` → Oyuncunun tıklamasına izin ver.
 
 **Seviye atlama akışı:**
 ```

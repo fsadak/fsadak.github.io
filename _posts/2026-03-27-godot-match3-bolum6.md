@@ -179,15 +179,96 @@ func _remove_matches(matches: Array) -> void:
 		_place_bonus(b.cell, b.type)
 ```
 
-**Adım adım açıklama:**
+**Satır satır açıklama:**
 
-1. **Kesişim kontrolü:** Her eşleşme grubunu diğerleriyle karşılaştırır. Ortak hücre varsa (L veya T şekli) ve toplam benzersiz hücre 5+ ise → `bomb` oluştur
-2. **Düz çizgi kontrolü:** Kesişime dahil olmayan gruplar için:
-   - 5+ hücre → `rainbow` (ortaya yerleşir)
-   - 4 hücre → `arrow_h` veya `arrow_v` (rastgele)
-   - 3 hücre → bonus yok, sadece silinir
-3. **Silme:** Tüm eşleşen hücreler silinir, **bonus yerleşecek hücreler hariç**
-4. **Bonus yerleştirme:** Son adımda bonus sprite'ları oluşturulur
+```
+	var cells_to_remove := {}
+	var bonuses_to_create := []
+```
+- `cells_to_remove` → Silinecek tüm hücrelerin sözlüğü (tekrar önleme için).
+- `bonuses_to_create` → Oluşturulacak bonusların listesi. Her eleman `{cell = pozisyon, type = "bomb"}` formatında bir sözlük.
+
+**Adım 1 — Kesişim kontrolü (L/T şekli):**
+
+```
+	var used_in_intersection := {}
+	for i in matches.size():
+		for j in range(i + 1, matches.size()):
+```
+- `used_in_intersection` → Kesişime dahil olan grup indekslerini tutacak. Bunlar 2. adımda tekrar kontrol edilmemeli.
+- İç içe iki döngü ile her eşleşme grubunu diğerleriyle karşılaştırıyoruz. `range(i + 1, ...)` sayesinde her çifti sadece bir kez kontrol ediyoruz (A-B ve B-A aynı şey).
+
+```
+			var intersection := _get_intersection(matches[i], matches[j])
+			if intersection != Vector2i(-1, -1):
+```
+- İki grubun ortak hücresi var mı? Varsa bu L veya T şeklinde bir eşleşme — iki düz çizgi bir noktada kesişiyor.
+
+```
+				var unique := {}
+				for c: Vector2i in matches[i]:
+					unique[c] = true
+				for c: Vector2i in matches[j]:
+					unique[c] = true
+				if unique.size() >= 5:
+					bonuses_to_create.append({cell = intersection, type = "bomb"})
+					used_in_intersection[i] = true
+					used_in_intersection[j] = true
+```
+- İki grubun toplam **benzersiz** hücre sayısını hesaplıyoruz. Kesişim noktası iki kez sayılmamalı, o yüzden sözlük kullanıyoruz.
+- 5+ benzersiz hücre varsa → kesişim noktasına `bomb` üretiyoruz. Her iki grubu da `used_in_intersection`'a ekliyoruz ki 2. adımda tekrar işlenmesinler.
+
+**Adım 2 — Düz çizgi bonusları:**
+
+```
+	for i in matches.size():
+		if used_in_intersection.has(i):
+			continue
+```
+- Kesişime dahil olan grupları atlıyoruz (zaten bomb üretildi).
+
+```
+		var group: Array = matches[i]
+		if group.size() >= 5:
+			bonuses_to_create.append({cell = group[group.size() / 2], type = "rainbow"})
+```
+- 5+ hücrelik düz eşleşme → `rainbow` bonus. `group.size() / 2` ile grubun **ortasına** yerleştiriyoruz.
+
+```
+		elif group.size() == 4:
+			var arrow_type: String = ["arrow_h", "arrow_v"][randi() % 2]
+			bonuses_to_create.append({cell = group[2], type = arrow_type})
+```
+- 4'lü eşleşme → `arrow_h` veya `arrow_v` (rastgele). `[randi() % 2]` → 0 veya 1 döner, diziden o indeksteki elemanı seçer. Grubun 3. hücresine (indeks 2) yerleştirilir.
+
+**Adım 3-6 — Silme ve yerleştirme:**
+
+```
+	for match_group in matches:
+		for cell in match_group:
+			cells_to_remove[cell] = true
+```
+- Tüm eşleşen hücreleri topluyoruz.
+
+```
+	var bonus_positions := {}
+	for b in bonuses_to_create:
+		bonus_positions[b.cell] = b.type
+```
+- Bonus yerleşecek hücrelerin listesini hazırlıyoruz.
+
+```
+	for cell: Vector2i in cells_to_remove:
+		if bonus_positions.has(cell):
+			continue
+```
+- Bonus yerleşecek hücreleri **silmiyoruz**. O hücredeki eski şeker yerine bonus sprite gelecek.
+
+```
+	for b in bonuses_to_create:
+		_place_bonus(b.cell, b.type)
+```
+- Son adımda bonus sprite'larını oluşturuyoruz.
 
 ---
 
@@ -204,16 +285,20 @@ func _get_intersection(group_a: Array, group_b: Array) -> Vector2i:
 	return Vector2i(-1, -1)
 ```
 
+**Satır satır açıklama:**
+
+- İç içe iki döngü ile her iki grubun tüm hücrelerini karşılaştırır.
+- Aynı hücre bulunursa → hemen o hücreyi döndürür. Bu kesişim noktası, L/T şeklinin köşe noktasıdır.
+- Ortak hücre yoksa → `Vector2i(-1, -1)` döner (geçersiz koordinat, "bulunamadı" anlamında).
+
 Bonus şekeri tahtaya yerleştiren fonksiyon:
 
 ```gdscript
 func _place_bonus(cell: Vector2i, bonus_type: String) -> void:
-	# Mevcut sprite'ı kaldır
 	var old_sprite: Sprite2D = candy_sprites[cell.x][cell.y]
 	if old_sprite != null:
 		old_sprite.queue_free()
 
-	# Bonus verisini ve görselini yerleştir
 	grid[cell.x][cell.y] = bonus_type
 	var sprite := Sprite2D.new()
 	sprite.texture = candy_textures[bonus_type]
@@ -222,6 +307,30 @@ func _place_bonus(cell: Vector2i, bonus_type: String) -> void:
 	add_child(sprite)
 	candy_sprites[cell.x][cell.y] = sprite
 ```
+
+**Satır satır açıklama:**
+
+```
+	var old_sprite: Sprite2D = candy_sprites[cell.x][cell.y]
+	if old_sprite != null:
+		old_sprite.queue_free()
+```
+- Bu hücrede hâlâ eski bir sprite varsa (eşleşen şekerin görseli) onu siliyoruz. Bonus sprite'ı onun yerine gelecek.
+
+```
+	grid[cell.x][cell.y] = bonus_type
+```
+- Grid verisini güncelliyoruz. Artık bu hücrede `"red"` yerine `"bomb"` veya `"arrow_h"` gibi bir bonus türü yazıyor.
+
+```
+	var sprite := Sprite2D.new()
+	sprite.texture = candy_textures[bonus_type]
+	sprite.scale = Vector2(CANDY_SCALE, CANDY_SCALE)
+	sprite.position = _grid_to_pixel(cell.x, cell.y)
+	add_child(sprite)
+	candy_sprites[cell.x][cell.y] = sprite
+```
+- Yeni bonus sprite'ı oluşturup sahneye ekliyoruz. `candy_textures[bonus_type]` bonus görselini verir (örneğin `bomb.png`). Sprite hücrenin merkezine konumlandırılır.
 
 ---
 
@@ -289,7 +398,32 @@ func _activate_bonus(cell: Vector2i) -> void:
 	_apply_gravity_and_fill()
 ```
 
-**`match` ifadesi** — GDScript'te `if-elif` zinciri yerine kullanılan daha temiz bir yapıdır. `bonus_type` değişkeninin değerine göre ilgili dal çalışır.
+**Satır satır açıklama:**
+
+```
+func _activate_bonus(cell: Vector2i) -> void:
+	var bonus_type: String = grid[cell.x][cell.y]
+	is_animating = true
+```
+- Bonus türünü okuyup kaydediyoruz (`"arrow_h"`, `"bomb"` vs.). Animasyonu kilitlemeyi hemen yapıyoruz.
+
+```
+	_clear_cell(cell)
+```
+- Bonus şekerin kendisini tahtadan siliyoruz. Silmeden aktive edersek sorun çıkabilir (bonus kendini tekrar tetikleyebilir).
+
+```
+	match bonus_type:
+		"arrow_h":
+			_activate_arrow_h(cell)
+		...
+```
+- **`match` ifadesi** — GDScript'te `if-elif` zinciri yerine kullanılan daha temiz bir yapıdır. `bonus_type` değişkeninin değerine göre ilgili dal çalışır. Her bonus türü kendi aktivasyon fonksiyonunu çağırır.
+
+```
+	_apply_gravity_and_fill()
+```
+- Bonus aktivasyonu bitince yerçekimi, doldurma ve zincir kontrolü başlatılır.
 
 ---
 
@@ -341,12 +475,67 @@ func _activate_rainbow() -> void:
 					_clear_cell(Vector2i(row, col))
 ```
 
-**Açıklamalar:**
+**Satır satır açıklamalar:**
 
-- **arrow_h:** Yatay ok → tüm satırı siler. `cell.x` sabit kalır, sütun 0'dan 7'ye kadar döner
-- **arrow_v:** Dikey ok → tüm sütunu siler. `cell.y` sabit kalır, satır 0'dan 7'ye kadar döner
-- **bomb:** 3x3 alan → merkez hücrenin etrafındaki 9 hücreyi siler. `range(-1, 2)` → -1, 0, 1 değerlerini verir
-- **rainbow:** Tahtayı tarar, her rengin kaç kez geçtiğini sayar, en çoğunu bulur ve o renkteki tüm şekerleri siler
+**Arrow yatay:**
+```
+func _activate_arrow_h(cell: Vector2i) -> void:
+	for col in GRID_SIZE:
+		_clear_cell(Vector2i(cell.x, col))
+```
+- `cell.x` sabit kalır (aynı satır), `col` 0'dan 7'ye döner → tüm satır silinir. Toplam 8 hücre temizlenir.
+
+**Arrow dikey:**
+```
+func _activate_arrow_v(cell: Vector2i) -> void:
+	for row in GRID_SIZE:
+		_clear_cell(Vector2i(row, cell.y))
+```
+- `cell.y` sabit kalır (aynı sütun), `row` 0'dan 7'ye döner → tüm sütun silinir.
+
+**Bomb:**
+```
+func _activate_bomb(cell: Vector2i) -> void:
+	for dr in range(-1, 2):
+		for dc in range(-1, 2):
+			var target := Vector2i(cell.x + dr, cell.y + dc)
+			if _is_valid_cell(target):
+				_clear_cell(target)
+```
+- `range(-1, 2)` → -1, 0, 1 değerlerini üretir. İç içe iki döngüde `dr` ve `dc` kombinasyonları 3×3 = 9 hücre verir: sol-üst, üst, sağ-üst, sol, merkez, sağ, sol-alt, alt, sağ-alt.
+- `_is_valid_cell()` kontrolü: Bomb grid kenarında ise bazı hücreler sınır dışı olabilir (örneğin köşede patlarsa 4 hücre grid dışı kalır).
+
+**Rainbow:**
+```
+func _activate_rainbow() -> void:
+	var color_count := {}
+	for row in GRID_SIZE:
+		for col in GRID_SIZE:
+			var ct: String = grid[row][col]
+			if CANDY_TYPES.has(ct):
+				color_count[ct] = color_count.get(ct, 0) + 1
+```
+- Tüm tahtayı tarayıp her rengin kaç kez geçtiğini sayıyoruz. `CANDY_TYPES.has(ct)` kontrolü bonus şekerleri saymamamızı sağlar.
+- `color_count.get(ct, 0)` → Sözlükte `ct` anahtarı varsa değerini döner, yoksa `0` döner. Sonra 1 ekleyerek sayacı artırıyoruz.
+
+```
+	var max_type := ""
+	var max_count := 0
+	for ct: String in color_count:
+		if color_count[ct] > max_count:
+			max_count = color_count[ct]
+			max_type = ct
+```
+- En çok bulunan rengi arıyoruz. Klasik "maximum bulma" algoritması: her rengi mevcut maximum ile karşılaştır, daha büyükse güncelle.
+
+```
+	if max_type != "":
+		for row in GRID_SIZE:
+			for col in GRID_SIZE:
+				if grid[row][col] == max_type:
+					_clear_cell(Vector2i(row, col))
+```
+- Bulunan en yaygın renkteki **tüm** şekerleri tahtadan siliyoruz. Tahtada 12 kırmızı şeker varsa hepsi bir anda kaybolur — etkileyici bir patlama!
 
 ---
 
@@ -366,6 +555,30 @@ func _clear_cell(cell: Vector2i) -> void:
 		candy_sprites[cell.x][cell.y] = null
 	grid[cell.x][cell.y] = ""
 ```
+
+**Satır satır açıklama:**
+
+```
+func _clear_cell(cell: Vector2i) -> void:
+	if not _is_valid_cell(cell):
+		return
+```
+- Grid dışı bir hücreye erişmeye çalışıyorsak fonksiyondan çık. Bomb grid kenarındayken bazı hedef hücreler sınır dışı olabilir.
+
+```
+	if grid[cell.x][cell.y] == "":
+		return
+```
+- Hücre zaten boşsa → bir şey yapmaya gerek yok. Birden fazla bonus aynı hücreyi silmeye çalışabilir (örneğin iki arrow'un yolları kesişirse).
+
+```
+	var sprite: Sprite2D = candy_sprites[cell.x][cell.y]
+	if sprite != null:
+		sprite.queue_free()
+		candy_sprites[cell.x][cell.y] = null
+	grid[cell.x][cell.y] = ""
+```
+- Sprite'ı sahneden kaldır, referansı `null` yap, grid verisini `""` yap. Bu üç adım bir hücreyi tamamen temizler.
 
 Bu fonksiyon her aktivasyonda tekrar tekrar kullanılır. Güvenlik kontrolleri sayesinde:
 - Grid dışı hücreler atlanır (bomb köşede ise)

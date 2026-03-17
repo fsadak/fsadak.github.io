@@ -84,10 +84,44 @@ read_row = 0: boş → geç
 Sonuç:      [__, __, __, __, 🔴, 🟢, 🔵, 🟡]  ← boşluklar üstte
 ```
 
-- `write_row` her zaman bir sonraki yazılacak pozisyonu gösterir
-- Dolu hücre bulduğunda, eğer zaten doğru yerdeyse dokunmaz
-- Değilse hem `grid` verisini hem `candy_sprites` referansını taşır
-- Fonksiyon, herhangi bir hareket olduysa `true` döner
+**Satır satır açıklama:**
+
+```
+func _apply_vertical_gravity() -> bool:
+	var moved := false
+```
+- `-> bool` → Herhangi bir şeker taşındıysa `true`, hiçbir şey değişmediyse `false` döner. Bu bilgi `_settle_candies()` tarafından döngü kontrolü için kullanılacak.
+
+```
+	for col in GRID_SIZE:
+		var write_row := GRID_SIZE - 1
+```
+- Her sütunu ayrı ayrı işliyoruz. `write_row` bir **yazma imleci** görevi görür — sütunun en altından başlar (row 7) ve her dolu hücre yerleştirildiğinde bir yukarı çıkar.
+
+```
+		for read_row in range(GRID_SIZE - 1, -1, -1):
+```
+- `range(7, -1, -1)` → 7, 6, 5, 4, 3, 2, 1, 0 — alttan yukarıya doğru okuyoruz. Bu **iki-işaretçi** (two-pointer) algoritmasıdır: `read_row` okur, `write_row` yazar.
+
+```
+			if grid[read_row][col] != "":
+				if read_row != write_row:
+```
+- Dolu hücre bulduğumuzda: eğer okuma ve yazma pozisyonu farklıysa → şeker taşınmalı. Aynıysa → şeker zaten doğru yerde.
+
+```
+					grid[write_row][col] = grid[read_row][col]
+					grid[read_row][col] = ""
+					candy_sprites[write_row][col] = candy_sprites[read_row][col]
+					candy_sprites[read_row][col] = null
+					moved = true
+```
+- Hem `grid` verisini hem `candy_sprites` referansını yeni pozisyona taşıyoruz. Eski pozisyonu boşaltıyoruz. Sprite'ın ekrandaki pozisyonu henüz değişmez — o animasyonla yapılacak.
+
+```
+				write_row -= 1
+```
+- Yazma imlecini bir yukarı kaydırıyoruz. Sonraki dolu hücre buraya yazılacak.
 
 ---
 
@@ -163,6 +197,26 @@ func _settle_candies() -> void:
 			changed = _apply_diagonal_slide()
 ```
 
+**Satır satır açıklama:**
+
+```
+func _settle_candies() -> void:
+	var changed := true
+```
+- `changed` döngü kontrolü için kullanılır. `true` ile başlıyoruz ki döngüye en az bir kez girelim.
+
+```
+	while changed:
+		changed = _apply_vertical_gravity()
+```
+- Önce dikey yerçekimi uygula. Hareket olduysa `changed = true`, olmadıysa `false`.
+
+```
+		if not changed:
+			changed = _apply_diagonal_slide()
+```
+- Dikey yerçekimi bir şey taşımadıysa → çapraz kaymayı dene. Kayma olduysa `changed = true` olur ve döngü başa döner (tekrar dikey yerçekimi). Kayma da olmadıysa `changed = false` kalır ve döngü biter.
+
 **Akış:**
 
 ```
@@ -206,12 +260,53 @@ func _fill_empty_cells() -> void:
 			candy_sprites[i][col] = sprite
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- `empty_count` — Sütunun tepesinde kaç boş hücre olduğunu sayar
-- `grid[i][col] = candy_type` — Veriyi yerleştirir
-- `_grid_to_pixel(i - empty_count, col)` — Sprite'ı grid'in **üstünde** konumlandırır. Örneğin 3 boş hücre varsa: `i=0` → `_grid_to_pixel(-3, col)`, yani grid'in 3 hücre üstünden başlar
-- `sprite.modulate.a = 0.0` — Sprite'ı tamamen şeffaf başlatır. Grid dışında oluştuğu için görünmemesi gerekir, animasyon sırasında grid alanına girince görünür olacak
+```
+func _fill_empty_cells() -> void:
+	for col in GRID_SIZE:
+```
+- Her sütunu ayrı ayrı işliyoruz. Yerçekimi sonrası boş hücreler her sütunun **üst kısmında** toplanmış durumda.
+
+```
+		var empty_count := 0
+		for row in GRID_SIZE:
+			if grid[row][col] == "":
+				empty_count += 1
+			else:
+				break
+```
+- Sütunun tepesinden aşağı doğru boş hücreleri sayıyoruz. İlk dolu hücreye ulaşınca `break` ile çıkıyoruz. Yerçekimi zaten boşlukları üste topladığı için ortada veya altta boş hücre kalmaz.
+
+```
+		for i in empty_count:
+			var candy_type: String = CANDY_TYPES[randi() % CANDY_TYPES.size()]
+			grid[i][col] = candy_type
+```
+- `for i in empty_count` → 0'dan `empty_count - 1`'e kadar döner. Her boş hücre için rastgele bir şeker türü seçip `grid`'e yazıyoruz. Burada başlangıç eşleşme kontrolü yapmıyoruz — yeni gelen şekerler eşleşme oluşturursa zincir reaksiyon halledecek.
+
+```
+			var sprite := Sprite2D.new()
+			sprite.texture = candy_textures[candy_type]
+			sprite.scale = Vector2(CANDY_SCALE, CANDY_SCALE)
+```
+- Yeni sprite oluşturup texture ve ölçeği ayarlıyoruz (Bölüm 2'deki `_draw_candies()` ile aynı mantık).
+
+```
+			sprite.position = _grid_to_pixel(i - empty_count, col)
+```
+- **Kritik satır:** Sprite'ı grid'in **üstünde** konumlandırıyoruz. `i - empty_count` negatif bir satır numarası verir. Örneğin 3 boş hücre varsa: `i=0` → `_grid_to_pixel(-3, col)` → grid'in 3 hücre üstü. Animasyon sırasında sprite buradan aşağı düşerek gerçek yerine (row 0) gelecek.
+
+```
+			sprite.modulate.a = 0.0
+```
+- Sprite'ı tamamen **görünmez** başlatıyoruz. `modulate.a` alfa (saydamlık) kanalıdır: `0.0` = tamamen şeffaf, `1.0` = tamamen opak. Grid dışında oluştuğu için oyuncuya görünmemeli, `_animate_board()` içinde yavaşça görünür olacak.
+
+```
+			add_child(sprite)
+			candy_sprites[i][col] = sprite
+```
+- Sprite'ı sahneye ekleyip referansını diziye kaydediyoruz.
 
 ---
 
@@ -248,15 +343,59 @@ func _animate_board(callback: Callable) -> void:
 		callback.call()
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- Tüm hücreleri tarar ve sprite'ın mevcut pozisyonu ile hedef pozisyonu farklıysa animasyon ekler
-- `set_parallel(true)` — Tüm sprite'lar **aynı anda** hareket eder
-- `EASE_IN + TRANS_QUAD` — Hareket başta yavaş, sona doğru hızlanır (yerçekimi hissi)
-- `is_equal_approx()` — Float karşılaştırmasında küçük farkları yok sayar
-- `sprite.modulate.a < 1.0` kontrolü — Yeni oluşturulan (görünmez) sprite'ları 0.15 saniyede görünür yapar. Böylece grid dışında belirip kötü görüntü oluşturmazlar, düşerken yavaşça belirirler
-- `callback` — Animasyon bitince çağrılacak fonksiyon (zincir reaksiyon kontrolü)
-- Hareket yoksa callback'i hemen çağırır (beklemeye gerek yok)
+```
+func _animate_board(callback: Callable) -> void:
+```
+- `callback: Callable` → Animasyon bitince çağrılacak fonksiyonu parametre olarak alır. Bu **callback deseni** sayesinde aynı fonksiyonu farklı devam işlemleriyle kullanabiliriz. Bizim kullanımımızda callback = `_check_chain_matches`.
+
+```
+	var tween := create_tween()
+	tween.set_parallel(true)
+```
+- Yeni tween oluşturup paralel moda alıyoruz. Tüm sprite animasyonları **aynı anda** çalışacak.
+
+```
+	var has_animation := false
+	for row in GRID_SIZE:
+		for col in GRID_SIZE:
+			var sprite: Sprite2D = candy_sprites[row][col]
+			if sprite == null:
+				continue
+```
+- Tüm hücreleri tarıyoruz. `null` olan hücreler (boş) atlanır.
+
+```
+			var target := _grid_to_pixel(row, col)
+			if not sprite.position.is_equal_approx(target):
+				tween.tween_property(sprite, "position", target, 0.3) \
+					.set_ease(Tween.EASE_IN) \
+					.set_trans(Tween.TRANS_QUAD)
+				has_animation = true
+```
+- `target` → Sprite'ın **olması gereken** piksel pozisyonu (grid verisine göre).
+- `is_equal_approx()` → İki `Vector2` değerini karşılaştırır. Float sayılarda küçük yuvarlama hataları olabileceği için `==` yerine bu fonksiyon kullanılır.
+- Pozisyon farklıysa → Tween ile animasyonlu taşıma ekler. `0.3` saniye sürer.
+- `EASE_IN` + `TRANS_QUAD` → Hareket **başta yavaş, sona doğru hızlanır**. Bu, gerçek yerçekimini simüle eder — düşen bir nesne giderek hızlanır.
+
+```
+			if sprite.modulate.a < 1.0:
+				tween.tween_property(sprite, "modulate:a", 1.0, 0.15)
+				has_animation = true
+```
+- Yeni oluşturulan sprite'lar `modulate.a = 0.0` (görünmez) başlatılmıştı. Bu kontrol onları 0.15 saniyede tamamen görünür yapar.
+- `"modulate:a"` → Godot'ta alt özellik yolu. `modulate` özelliğinin `a` (alfa) kanalını anime eder.
+
+```
+	if has_animation:
+		tween.set_parallel(false)
+		tween.tween_callback(callback)
+	else:
+		callback.call()
+```
+- Animasyon varsa → paralel modu kapat, tüm animasyonlar bittikten sonra `callback` çağrılsın.
+- Animasyon yoksa (hiçbir sprite taşınmadı) → `callback.call()` ile hemen devam et. Beklemeye gerek yok.
 
 ---
 
@@ -271,10 +410,23 @@ func _apply_gravity_and_fill() -> void:
 	_animate_board(_check_chain_matches)
 ```
 
-Kısa ve öz:
-1. Mevcut şekerleri yerleştir (dikey + çapraz)
-2. Boşlukları yeni şekerlerle doldur
-3. Her şeyi animasyonla göster, bitince zincir kontrolü yap
+**Satır satır açıklama:**
+
+```
+func _apply_gravity_and_fill() -> void:
+	_settle_candies()
+```
+- Önce mevcut şekerleri yerleştirir (dikey yerçekimi + çapraz kayma döngüsü). Tüm dolu hücreler mümkün olan en alt pozisyona taşınır.
+
+```
+	_fill_empty_cells()
+```
+- Üstte kalan boş hücrelere yeni rastgele şekerler yerleştirir. Sprite'lar grid'in üstünde, görünmez başlar.
+
+```
+	_animate_board(_check_chain_matches)
+```
+- Tüm veri değişikliklerini animasyonla görselleştirir. Animasyon bitince `_check_chain_matches` callback'i çağrılır — bu da zincir reaksiyon döngüsünü başlatır.
 
 ---
 
@@ -292,7 +444,28 @@ func _check_chain_matches() -> void:
 		is_animating = false  # Zincir bitti, oyuncunun sırası
 ```
 
-Bu fonksiyon **öz-yinelemeli** (recursive) bir döngü oluşturur:
+**Satır satır açıklama:**
+
+```
+func _check_chain_matches() -> void:
+	var matches := _find_matches()
+```
+- Yerçekimi ve doldurma sonrası tahtada yeni eşleşme var mı kontrol ediyoruz.
+
+```
+	if matches.size() > 0:
+		_remove_matches(matches)
+		_apply_gravity_and_fill()
+```
+- Yeni eşleşme bulunduysa → sil + tekrar yerçekimi + doldurma + animasyon + tekrar kontrol. Bu **öz-yinelemeli** (recursive) bir zincir oluşturur: `_apply_gravity_and_fill()` bitince tekrar `_check_chain_matches()` çağrılır.
+
+```
+	else:
+		is_animating = false
+```
+- Eşleşme yoksa → zincir bitti! `is_animating = false` ile oyuncunun tekrar tıklamasına izin veriyoruz.
+
+**Zincir akışı:**
 
 ```
 Eşleşme bul → Sil → Yerçekimi → Doldur → Animasyon →

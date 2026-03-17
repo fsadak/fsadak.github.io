@@ -102,12 +102,50 @@ func _load_textures() -> void:
 		candy_textures[candy_name] = load(path)
 ```
 
-**Açıklama:**
+**`_ready()` — Satır satır açıklama:**
 
-- `_ready()` — Oyun başladığında sırasıyla: texture'ları yükle, grid'i oluştur, şekerleri ekrana çiz.
-- `_load_textures()` — Her şeker türü için PNG dosyasını `load()` ile yükler ve `candy_textures` sözlüğüne kaydeder. Örneğin `candy_textures["red"]` artık `red.png` dosyasının texture'ını tutar.
-- `var path: String` — Godot 4.6'da değişkenin tipini açıkça belirtiyoruz. `:=` operatörü string birleştirme sonucunun tipini her zaman çıkaramadığı için `var path: String = ...` şeklinde yazıyoruz.
-- Fonksiyon isimlerinin başındaki `_` alt çizgi, Godot'da "bu fonksiyon dışarıdan değil, sadece bu script içinden çağrılır" anlamına gelen bir **gelenektir** (convention).
+```
+func _ready() -> void:
+```
+- `func` → GDScript'te fonksiyon tanımlama anahtar kelimesi.
+- `_ready()` → Godot'un **yerleşik yaşam döngüsü** (lifecycle) fonksiyonudur. Düğüm sahne ağacına eklendiğinde Godot bu fonksiyonu **otomatik olarak bir kez** çağırır. Yani oyun başladığında bu fonksiyon çalışır.
+- `-> void` → Bu fonksiyon geriye hiçbir değer döndürmez. GDScript'te `void` dönüş tipi "bu fonksiyon bir iş yapar ama sonuç üretmez" demektir.
+
+```
+	_load_textures()
+	_init_grid()
+	_draw_candies()
+```
+- Üç fonksiyonu **sırasıyla** çağırıyoruz. Sıra önemlidir: önce görsel dosyaları yükle, sonra mantıksal tahtayı oluştur, en son görselleri ekrana yerleştir. Eğer sıra değişirse, örneğin texture yüklenmeden çizim yapılırsa hata alırsınız.
+- Fonksiyon isimlerinin başındaki `_` alt çizgi, Godot'da "bu fonksiyon dışarıdan değil, sadece bu script içinden çağrılır" anlamına gelen bir **gelenektir** (convention). Zorunlu değildir ama tüm Godot topluluğu bu kurala uyar.
+
+---
+
+**`_load_textures()` — Satır satır açıklama:**
+
+```
+func _load_textures() -> void:
+```
+- Texture (görsel dosyası) yükleme fonksiyonumuz. Oyun başında bir kez çağrılır.
+
+```
+	for candy_name in CANDY_TYPES:
+```
+- `CANDY_TYPES` dizisi üzerinde döngü kurar. Sırasıyla `candy_name` değişkeni `"red"`, `"yellow"`, `"blue"`, `"green"`, `"purple"` değerlerini alır.
+
+```
+		var path: String = "res://assets/images/" + candy_name + ".png"
+```
+- Dosya yolunu string birleştirme ile oluşturuyoruz. Örneğin `candy_name = "red"` ise → `"res://assets/images/red.png"`.
+- `var path: String` — Godot 4.6'da `:=` operatörü string birleştirme sonucunun tipini her zaman çıkaramadığı için tip bilgisini açıkça yazıyoruz. Bu Godot 4.6'ya özgü bir gerekliliktir.
+- `res://` → Godot'un proje kök dizinini temsil eden sanal yoldur. Gerçek dosya sistemi yolu yerine bu sanal yolu kullanırız, böylece oyun hangi platformda çalışırsa çalışsın doğru dosyayı bulur.
+
+```
+		candy_textures[candy_name] = load(path)
+```
+- `load()` → Godot'un yerleşik fonksiyonudur. Verilen yoldaki dosyayı diskten okuyup bellekte bir **Resource** nesnesine dönüştürür. PNG dosyaları için bu bir `Texture2D` nesnesi olur.
+- `candy_textures[candy_name]` → Sözlüğe (Dictionary) yeni bir anahtar-değer çifti ekler. Örneğin `candy_textures["red"]` artık `red.png` dosyasının texture'ını tutar.
+- Neden önceden yüklüyoruz? Her şekeri çizerken `load()` çağırmak yerine bir kez yükleyip sözlükte saklamak **çok daha performanslıdır**. 64 şeker × her kare = sürekli disk okuma yerine, 5 kez yükle + sözlükten oku.
 
 ---
 
@@ -138,16 +176,63 @@ func _init_grid() -> void:
 			grid[row][col] = available[randi() % available.size()]
 ```
 
-**Bu nasıl çalışıyor? Adım adım:**
+**Satır satır açıklama:**
 
-1. Önce 8x8'lik boş bir dizi oluşturuyoruz (her hücre boş string `""`).
-2. Sonra her hücreyi sol üstten sağ alta doğru dolduruyoruz.
-3. Her hücre için 5 rengin kopyasını alıyoruz (`available`).
-4. **Yatay kontrol:** Eğer soldaki 2 hücre aynı renkse (örneğin ikisi de "red"), bu hücreye "red" koyarsak 3'lü eşleşme olur. O yüzden "red"i listeden çıkarıyoruz.
-5. **Dikey kontrol:** Aynı mantık üstteki 2 hücre için.
-6. Kalan renklerden rastgele birini seçiyoruz.
+```
+func _init_grid() -> void:
+```
+- Grid'i sıfırdan oluşturan fonksiyon. Oyun başında ve her seviye geçişinde çağrılır.
 
-> **Neden `available` listesi her zaman en az 1 eleman içerir?** En kötü durumda hem yatayda hem dikeyde birer renk çıkarılır = 5 - 2 = 3 renk kalır. Yani her zaman seçim yapılabilir.
+```
+	grid.clear()
+```
+- `grid` dizisinin içini tamamen boşaltır. Seviye geçişlerinde eski grid verisini temizlemek için gerekli. İlk çalıştırmada zaten boş ama temizlemek güvenli bir alışkanlıktır.
+
+```
+	for row in GRID_SIZE:
+		var grid_row := []
+		for col in GRID_SIZE:
+			grid_row.append("")
+		grid.append(grid_row)
+```
+- `for row in GRID_SIZE` → `row` değişkeni 0'dan 7'ye kadar (toplam 8) döner. GDScript'te `for i in N` yazarsak, `i` 0, 1, 2, ..., N-1 değerlerini alır.
+- Her satır için boş bir `grid_row` dizisi oluşturuyoruz.
+- İç döngüde her sütun için boş string `""` ekliyoruz.
+- Sonuçta `grid` şöyle bir yapıya sahip olur: `[["","","",...""], ["","","",...""], ...]` — 8 satır, her satırda 8 boş hücre.
+
+```
+	for row in GRID_SIZE:
+		for col in GRID_SIZE:
+```
+- İkinci geçişte tüm hücreleri sol üstten (0,0) sağ alta (7,7) doğru dolduruyoruz. Bu sıra önemlidir çünkü kontrol ettiğimiz sol ve üst hücreler zaten dolu olmalı.
+
+```
+			var available := CANDY_TYPES.duplicate()
+```
+- `CANDY_TYPES.duplicate()` → Orijinal dizinin bir **kopyasını** oluşturur: `["red", "yellow", "blue", "green", "purple"]`. Kopyasını almamız şart çünkü aşağıda bu diziden eleman çıkaracağız — orijinali değiştirmek istemeyiz.
+
+```
+			if col >= 2 and grid[row][col - 1] == grid[row][col - 2]:
+				available.erase(grid[row][col - 1])
+```
+- **Yatay kontrol:** `col >= 2` → En az 2 sütun geride bakabilecek kadar ilerdeyiz mi? (0. ve 1. sütunlarda sol tarafta 2 hücre yok).
+- `grid[row][col - 1] == grid[row][col - 2]` → Soldaki iki hücre aynı renk mi? Örneğin ikisi de `"red"` ise, bu hücreye de `"red"` koyarsak 3'lü eşleşme olur.
+- `available.erase(grid[row][col - 1])` → O rengi kullanılabilir listesinden çıkar. `erase()` diziden belirtilen elemanı siler. Artık bu renk seçilemez.
+
+```
+			if row >= 2 and grid[row - 1][col] == grid[row - 2][col]:
+				available.erase(grid[row - 1][col])
+```
+- **Dikey kontrol:** Aynı mantık ama bu sefer üstteki iki hücreye bakıyoruz. `row - 1` bir üst satır, `row - 2` iki üst satır.
+
+```
+			grid[row][col] = available[randi() % available.size()]
+```
+- `randi()` → Godot'un yerleşik rastgele tam sayı üreten fonksiyonu.
+- `% available.size()` → Modülo (kalan) operatörü ile sonucu `0` ile `available.size() - 1` arasına sınırlıyoruz. Örneğin listede 4 eleman kaldıysa, `randi() % 4` → 0, 1, 2 veya 3 döner.
+- `available[...]` → Listeden rastgele bir renk seçilir ve grid'e yazılır.
+
+> **Neden `available` listesi her zaman en az 1 eleman içerir?** 5 renkten en kötü durumda hem yatayda hem dikeyde birer renk çıkarılır = 5 - 2 = 3 renk kalır. Yani her zaman en az 3 seçenek mevcuttur ve program asla boş listeden seçim yapmak zorunda kalmaz.
 
 ---
 
@@ -183,14 +268,64 @@ func _draw_candies() -> void:
 
 **Satır satır açıklama:**
 
-- `candy_sprites.clear()` — Önceki görsel referanslarını temizliyoruz.
-- `get_children()` döngüsü — Game düğümünün altındaki tüm çocuk düğümleri dolaşır. Grid sprite'ı hariç hepsini siler (`queue_free()` düğümü güvenli şekilde kaldırır).
-- İç döngüde her hücre için:
-  - `Sprite2D.new()` — Kod ile yeni bir sprite düğümü oluşturur.
-  - `.texture` — Önceden yüklediğimiz texture'ı atar.
-  - `.scale` — 82px'lik görseli 64px hücreye sığdırır.
-  - `.position` — Hücrenin ekrandaki piksel konumu (bir sonraki fonksiyonda hesaplanacak).
-  - `add_child(sprite)` — Sprite'ı Game düğümünün çocuğu olarak sahneye ekler.
+```
+	candy_sprites.clear()
+```
+- Önceki görsel referanslarını temizliyoruz. Seviye geçişlerinde eski sprite referanslarının kalmamasını sağlar.
+
+```
+	for child in get_children():
+		if child.name != "Grid":
+			child.queue_free()
+```
+- `get_children()` → Game düğümünün altındaki **tüm çocuk düğümleri** bir dizi olarak döndürür (Grid sprite'ı, eski şeker sprite'ları vs.).
+- `child.name != "Grid"` → Grid arka plan görseli hariç tüm çocukları siliyoruz. Grid'i silmemeliyiz çünkü o tahtanın arka plan çizgilerini gösterir.
+- `queue_free()` → Düğümü sahne ağacından **güvenli şekilde** kaldırır. "Güvenli" demek: Godot mevcut frame'i bitirdikten sonra siler, böylece silme işlemi sırasında hata oluşmaz. `free()` yerine `queue_free()` kullanmak Godot'ta standart uygulamadır.
+
+```
+	for row in GRID_SIZE:
+		var sprite_row := []
+```
+- Her satır için boş bir sprite referans dizisi oluşturuyoruz. Bu dizi o satırdaki sprite'ları tutacak.
+
+```
+		for col in GRID_SIZE:
+			var candy_type: String = grid[row][col]
+			if candy_type == "":
+				sprite_row.append(null)
+				continue
+```
+- `grid[row][col]` → Mantıksal grid'den bu hücrenin şeker türünü okuyoruz (örneğin `"red"`).
+- Eğer hücre boşsa (`""`) → sprite listesine `null` ekliyoruz (bu hücrede görsel yok) ve `continue` ile döngünün sonraki iterasyonuna atlıyoruz. İlk oluşturmada boş hücre olmaz ama ileride yerçekimi sonrası boş hücreler oluşacak.
+
+```
+			var sprite := Sprite2D.new()
+```
+- `Sprite2D.new()` → **Kod ile** yeni bir Sprite2D düğümü oluşturur. Godot Editor'da "Add Node" ile yaptığımız işlemin aynısını kodda yapıyoruz. Bu düğüm henüz sahneye eklenmedi, sadece bellekte var.
+
+```
+			sprite.texture = candy_textures[candy_type]
+```
+- Daha önce `_load_textures()` ile yüklediğimiz texture'ı sprite'a atıyoruz. Örneğin `candy_type = "blue"` ise → `candy_textures["blue"]` = `blue.png`'nin texture'ı.
+
+```
+			sprite.scale = Vector2(CANDY_SCALE, CANDY_SCALE)
+```
+- Sprite'ın hem x hem y ekseninde ölçeğini `0.63` yapıyoruz. 82px × 0.63 ≈ 52px ile şeker, 64px'lik hücrenin içine güzel oturur ve grid çizgilerinin üstüne taşmaz.
+
+```
+			sprite.position = _grid_to_pixel(row, col)
+```
+- Grid koordinatlarını (satır, sütun) ekran piksellerine çeviriyoruz. Bu fonksiyonu bir sonraki bölümde yazacağız.
+
+```
+			add_child(sprite)
+			sprite_row.append(sprite)
+		candy_sprites.append(sprite_row)
+```
+- `add_child(sprite)` → Sprite'ı Game düğümünün **çocuğu** olarak sahne ağacına ekler. Bu adımdan sonra sprite ekranda görünür hale gelir. Godot'ta bir düğüm sahne ağacına eklenmeden ekranda görünmez.
+- `sprite_row.append(sprite)` → Sprite referansını satır dizisine ekliyoruz.
+- `candy_sprites.append(sprite_row)` → Tamamlanan satırı ana diziye ekliyoruz. Sonuçta `candy_sprites[row][col]` ile herhangi bir hücrenin sprite'ına erişebiliyoruz.
 
 ---
 
@@ -205,11 +340,30 @@ func _grid_to_pixel(row: int, col: int) -> Vector2:
 	return Vector2(x, y)
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- `GRID_OFFSET.x + col * CELL_SIZE` → Hücrenin sol kenarının x pozisyonu
-- `+ CELL_SIZE / 2` → Sprite merkezden konumlandığı için yarım hücre kaydırıyoruz ki görselin merkezi hücrenin merkezine gelsin
-- Aynı mantık y ekseni için de geçerli
+```
+func _grid_to_pixel(row: int, col: int) -> Vector2:
+```
+- `row: int, col: int` → Grid koordinatları parametre olarak gelir. `row` = satır (0-7), `col` = sütun (0-7).
+- `-> Vector2` → Bu fonksiyon bir `Vector2` (x, y çifti) döndürür. Sprite'ların pozisyonu `Vector2` tipindedir.
+
+```
+	var x := GRID_OFFSET.x + col * CELL_SIZE + CELL_SIZE / 2
+```
+- `GRID_OFFSET.x` → Grid'in sol kenarının ekrandaki x pozisyonu (24 piksel).
+- `col * CELL_SIZE` → Kaçıncı sütundaysak o kadar hücre genişliği kaydırıyoruz. Örneğin sütun 3 → 3 × 64 = 192 piksel.
+- `CELL_SIZE / 2` → 64 / 2 = 32 piksel ekliyoruz. Neden? Sprite2D görseli **merkezinden** konumlandırılır. Hücrenin sol kenarına değil, **ortasına** yerleştirmek için yarım hücre genişliği ekliyoruz.
+
+```
+	var y := GRID_OFFSET.y + row * CELL_SIZE + CELL_SIZE / 2
+```
+- Aynı mantık dikey eksen için. `GRID_OFFSET.y = 225` + satır sayısı × hücre yüksekliği + yarım hücre.
+
+```
+	return Vector2(x, y)
+```
+- Hesaplanan x ve y'yi bir `Vector2` olarak döndürüyoruz. Bu değer doğrudan `sprite.position`'a atanabilir.
 
 **Görsel olarak:**
 

@@ -24,17 +24,35 @@ func _pixel_to_grid(pixel: Vector2) -> Vector2i:
 	return Vector2i(row, col)
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- Tıklanan pikselden `GRID_OFFSET`'i çıkarıyoruz → grid'in sol üst köşesine göre konum buluyoruz
-- `CELL_SIZE`'a bölüyoruz → hangi hücrede olduğunu hesaplıyoruz
-- `int()` ile tam sayıya çeviriyoruz (örneğin 1.7 → 1, yani 2. hücre)
-- `Vector2i` — tam sayı (integer) vektörü döndürüyoruz çünkü satır/sütun her zaman tam sayıdır
+```
+func _pixel_to_grid(pixel: Vector2) -> Vector2i:
+```
+- `pixel: Vector2` → Ekrandaki tıklama pozisyonu (x, y piksel cinsinden). Godot fare tıklamalarını `Vector2` olarak verir.
+- `-> Vector2i` → Tam sayı (integer) vektör döndürür. Grid koordinatları her zaman tam sayıdır (3. satır, 5. sütun gibi).
+
+```
+	var col := int((pixel.x - GRID_OFFSET.x) / CELL_SIZE)
+```
+- `pixel.x - GRID_OFFSET.x` → Tıklanan x pikselinden grid'in sol kenarını çıkarıyoruz. Böylece grid'in **içindeki** konumu buluyoruz. Örneğin `pixel.x = 150`, `GRID_OFFSET.x = 24` → 150 - 24 = 126 piksel (grid'in solundan itibaren).
+- `/ CELL_SIZE` → Hücre genişliğine bölüyoruz. 126 / 64 = 1.97 → 1. sütunun (0'dan başlıyor) sonuna yakınız.
+- `int(...)` → Ondalık kısmı atarak tam sayıya çeviriyoruz. `int(1.97)` → `1`. Bu bize sütun numarasını verir.
+
+```
+	var row := int((pixel.y - GRID_OFFSET.y) / CELL_SIZE)
+```
+- Aynı mantık dikey eksen için. `GRID_OFFSET.y = 225` çıkarılır, `CELL_SIZE`'a bölünür, tam sayıya çevrilir.
+
+```
+	return Vector2i(row, col)
+```
+- Sonucu `Vector2i(satır, sütun)` formatında döndürüyoruz. **Dikkat:** `Vector2i`'nin `x` değeri **satır**, `y` değeri **sütun** olarak kullanılıyor. Bu grid tabanlı oyunlarda yaygın bir konvansiyondur.
 
 **Örnek:** Oyuncu (150, 300) pikselina tıklarsa:
 - col = int((150 - 24) / 64) = int(1.97) = 1
 - row = int((300 - 225) / 64) = int(1.17) = 1
-- Sonuç: (1, 1) → 2. satır, 2. sütun (0'dan başlıyor)
+- Sonuç: Vector2i(1, 1) → 2. satır, 2. sütun (0'dan başlıyor)
 
 ---
 
@@ -47,11 +65,21 @@ func _is_valid_cell(cell: Vector2i) -> bool:
 	return cell.x >= 0 and cell.x < GRID_SIZE and cell.y >= 0 and cell.y < GRID_SIZE
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- `cell.x` satır, `cell.y` sütundur
-- Her ikisi de 0 ile 7 arasında olmalı (8x8 grid)
-- Bu koşulların hepsi sağlanırsa `true`, biri bile sağlanmazsa `false` döner
+```
+func _is_valid_cell(cell: Vector2i) -> bool:
+```
+- `-> bool` → Bu fonksiyon `true` veya `false` döndürür. Geçerlilik kontrol fonksiyonları genelde `bool` döner.
+
+```
+	return cell.x >= 0 and cell.x < GRID_SIZE and cell.y >= 0 and cell.y < GRID_SIZE
+```
+- `cell.x >= 0` → Satır numarası negatif olmamalı (grid'in üstüne tıklanmış olabilir).
+- `cell.x < GRID_SIZE` → Satır numarası 8'den küçük olmalı (0-7 arasında). Grid'in altına tıklanmışsa bu koşul sağlanmaz.
+- `cell.y >= 0` ve `cell.y < GRID_SIZE` → Aynı kontrol sütun için.
+- `and` operatörü → **Tüm** koşullar `true` olmalı. Biri bile `false` ise sonuç `false` döner.
+- Oyuncu grid dışına (boş alana, skor bölgesine vs.) tıkladığında bu fonksiyon `false` döner ve tıklama yok sayılır.
 
 ---
 
@@ -89,14 +117,38 @@ func _input(event: InputEvent) -> void:
 
 **Satır satır açıklama:**
 
-- `_input(event)` — Godot her kullanıcı etkileşiminde bu fonksiyonu çağırır ve olay bilgisini `event` parametresiyle verir
-- `if is_animating: return` — Animasyon devam ediyorsa hiçbir şey yapma, fonksiyondan çık
-- `event is InputEventMouseButton` — Bu olay bir fare tıklaması mı?
-- `event.pressed` — Buton basıldı mı? (bırakma olayını filtreliyoruz)
-- `event.button_index == MOUSE_BUTTON_LEFT` — Sol tuş mu?
-- `_pixel_to_grid(event.position)` — Tıklanan pikseli grid koordinatına çevir
-- `_is_valid_cell(cell)` — Grid içinde mi kontrol et
-- `_on_cell_clicked(cell)` — Geçerliyse tıklama işlemini başlat (bir sonraki adımda yazacağız)
+```
+func _input(event: InputEvent) -> void:
+```
+- `_input()` → Godot'un yerleşik fonksiyonudur. `_ready()` gibi otomatik çağrılır ama fark şudur: `_ready()` bir kez çalışır, `_input()` ise **her kullanıcı etkileşiminde** çağrılır (fare hareketi, tıklama, tuş basımı vs.).
+- `event: InputEvent` → Godot, olayın ne olduğunu bu parametre ile bildirir. Fare tıklaması mı, klavye mi, dokunma mı — hepsi `InputEvent`'in alt sınıflarıdır.
+
+```
+	if is_animating:
+		return
+```
+- Eğer bir animasyon devam ediyorsa (şekerler hareket ediyor, yer değiştiriyor vs.) fonksiyondan hemen çıkıyoruz. `return` fonksiyonu sonlandırır, altındaki kodlar çalışmaz. Bu sayede oyuncu animasyon bitmeden tıklayarak oyunu bozamaz.
+
+```
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+```
+- `event is InputEventMouseButton` → `is` operatörü ile olayın tipini kontrol ediyoruz. Bu bir fare **tuşu** olayı mı? (Fare hareketi `InputEventMouseMotion` olurdu, onu istemiyoruz.)
+- `event.pressed` → Buton **basıldı** mı? Fare tuşu bırakıldığında da olay gelir (`pressed = false`), onu filtreliyoruz.
+- `event.button_index == MOUSE_BUTTON_LEFT` → Hangi fare tuşu? Sol tuş mu? Sağ tuş veya orta tuş olaylarını yok sayıyoruz.
+- Üç koşul `and` ile birleştirilmiş: hepsi `true` olmalı ki içeri girelim.
+
+```
+		var cell := _pixel_to_grid(event.position)
+```
+- `event.position` → Godot, fare tıklamasının ekrandaki piksel konumunu bu özellikle verir.
+- Piksel konumunu grid koordinatlarına çeviriyoruz (3.1'de yazdığımız fonksiyon).
+
+```
+		if _is_valid_cell(cell):
+			_on_cell_clicked(cell)
+```
+- Hesaplanan hücre grid sınırları içinde mi kontrol ediyoruz (3.2'de yazdığımız fonksiyon).
+- Geçerliyse tıklama işleyici fonksiyonu çağırıyoruz.
 
 ---
 
@@ -138,6 +190,47 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 		_highlight_cell(cell, true)
 ```
 
+**Satır satır açıklama:**
+
+```
+func _on_cell_clicked(cell: Vector2i) -> void:
+	if grid[cell.x][cell.y] == "":
+		return
+```
+- Tıklanan hücre boşsa (şeker yok) → hiçbir şey yapma. İleride yerçekimi sonrası boş hücreler oluşacak, onlara tıklamayı engellemek gerekiyor.
+
+```
+	if selected_cell == Vector2i(-1, -1):
+		selected_cell = cell
+		_highlight_cell(cell, true)
+		return
+```
+- `selected_cell == Vector2i(-1, -1)` → Henüz hiçbir şeker seçili değilse: bu hücreyi seçili olarak işaretle, görsel olarak vurgula ve fonksiyondan çık. Oyuncu şimdi ikinci tıklamayı yapacak.
+
+```
+	if selected_cell == cell:
+		_highlight_cell(cell, false)
+		selected_cell = Vector2i(-1, -1)
+		return
+```
+- Oyuncu aynı şekere tekrar tıkladıysa → seçimi iptal et. Vurguyu kaldır ve `selected_cell`'i sıfırla.
+
+```
+	if _is_adjacent(selected_cell, cell):
+		_highlight_cell(selected_cell, false)
+		_swap_candies(selected_cell, cell)
+		selected_cell = Vector2i(-1, -1)
+```
+- Yeni tıklanan hücre, seçili hücrenin **komşusu** ise → takas yap! Önce eski vurguyu kaldır, sonra iki şekerin yerini değiştir, son olarak seçimi sıfırla.
+
+```
+	else:
+		_highlight_cell(selected_cell, false)
+		selected_cell = cell
+		_highlight_cell(cell, true)
+```
+- Komşu değilse → önceki seçimi kaldır, yeni hücreyi seç. Oyuncu uzak bir yere tıkladığında seçimini o hücreye kaydırıyor.
+
 **Akış diyagramı:**
 
 ```
@@ -166,11 +259,26 @@ func _is_adjacent(cell_a: Vector2i, cell_b: Vector2i) -> bool:
 	return (diff.x == 1 and diff.y == 0) or (diff.x == 0 and diff.y == 1)
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- İki hücre arasındaki farkı hesaplıyoruz ve mutlak değer alıyoruz
-- Komşu olmak için: ya satır farkı 1 ve sütun farkı 0 olmalı (dikey komşu), ya da tam tersi (yatay komşu)
-- Çapraz komşular reddedilir (her iki fark da 1 olurdu)
+```
+func _is_adjacent(cell_a: Vector2i, cell_b: Vector2i) -> bool:
+```
+- İki hücrenin komşu olup olmadığını kontrol eden fonksiyon. `-> bool` → `true` (komşu) veya `false` (komşu değil) döner.
+
+```
+	var diff := (cell_a - cell_b).abs()
+```
+- `cell_a - cell_b` → İki hücre arasındaki farkı hesaplıyoruz. Örneğin `(2,3) - (3,3)` → `(-1, 0)`.
+- `.abs()` → Mutlak değer alıyoruz: `(-1, 0)` → `(1, 0)`. Hangi hücrenin yukarıda/aşağıda olduğu önemli değil, sadece **uzaklık** önemli.
+
+```
+	return (diff.x == 1 and diff.y == 0) or (diff.x == 0 and diff.y == 1)
+```
+- İlk koşul: `diff.x == 1 and diff.y == 0` → Satır farkı tam 1, sütun farkı 0 → **dikey komşu** (üst-alt).
+- İkinci koşul: `diff.x == 0 and diff.y == 1` → Satır farkı 0, sütun farkı tam 1 → **yatay komşu** (sol-sağ).
+- `or` ile bağlanmış: ikisinden biri sağlanırsa `true` döner.
+- Çapraz komşular `(1,1)` olurdu → her iki koşul da sağlanmaz → `false` döner.
 
 **Örnekler:**
 - (2,3) ve (2,4) → fark (0,1) → yatay komşu ✓
@@ -197,12 +305,35 @@ func _highlight_cell(cell: Vector2i, highlight: bool) -> void:
 		sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- `highlight = true` → Şekeri %20 büyüt ve parlaklaştır
-- `highlight = false` → Normal boyutuna ve rengine döndür
-- `sprite.modulate` — Sprite'ın rengini çarpar. `Color(1.2, 1.2, 1.2)` görseli normalden biraz daha parlak yapar
-- `sprite.scale` — Sprite'ın ölçeğini değiştirir
+```
+func _highlight_cell(cell: Vector2i, highlight: bool) -> void:
+```
+- `highlight: bool` → `true` ise vurgula, `false` ise vurguyu kaldır. Tek fonksiyon ile iki işi yapıyoruz.
+
+```
+	var sprite: Sprite2D = candy_sprites[cell.x][cell.y]
+	if sprite == null:
+		return
+```
+- `candy_sprites` dizisinden bu hücrenin sprite referansını alıyoruz.
+- `null` kontrolü: Hücre boşsa (şeker silinmişse) sprite olmayabilir. Bu durumda fonksiyondan çıkıyoruz, yoksa hata alırız.
+
+```
+	if highlight:
+		sprite.scale = Vector2(CANDY_SCALE * 1.2, CANDY_SCALE * 1.2)
+		sprite.modulate = Color(1.2, 1.2, 1.2, 1.0)
+```
+- `CANDY_SCALE * 1.2` → Normal ölçeğin %20 büyüğü. 0.63 × 1.2 = 0.756. Şeker biraz büyüyerek "seçildi" hissi verir.
+- `sprite.modulate` → Sprite'ın **renk çarpanıdır**. Her piksel bu renkle çarpılır. `Color(1.2, 1.2, 1.2, 1.0)` → R, G, B kanalları 1.0'dan büyük olduğu için görsel normalden **daha parlak** görünür. Son değer `1.0` alfa (saydamlık) kanalıdır.
+
+```
+	else:
+		sprite.scale = Vector2(CANDY_SCALE, CANDY_SCALE)
+		sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+```
+- Normal boyut ve renk değerlerine döndürüyoruz. `Color(1.0, 1.0, 1.0, 1.0)` → orijinal renk (hiçbir değişiklik yok).
 
 ---
 
@@ -244,22 +375,76 @@ func _on_swap_finished() -> void:
 
 **Satır satır açıklama:**
 
-**Veri takası:**
-- `grid` dizisindeki iki hücrenin değerlerini klasik `temp` yöntemiyle değiştiriyoruz
-- Aynı şekilde `candy_sprites` dizisindeki referansları da değiştiriyoruz
+```
+func _swap_candies(cell_a: Vector2i, cell_b: Vector2i) -> void:
+	is_animating = true
+```
+- Takası başlatırken hemen `is_animating = true` yapıyoruz. Bu sayede animasyon süresince `_input()` fonksiyonu hiçbir tıklamayı işlemez.
 
-**Animasyon (Tween):**
-- `create_tween()` — Yeni bir Tween nesnesi oluşturur
-- `set_parallel(true)` — Bundan sonraki tween işlemleri aynı anda (paralel) çalışsın
-- `tween_property(sprite_a, "position", pos_b, 0.2)` — sprite_a'nın `position` özelliğini 0.2 saniyede pos_b'ye taşı
-- `.set_ease(Tween.EASE_IN_OUT)` — Hareket başta yavaş, ortada hızlı, sonda yavaş olsun (doğal görünüm)
-- `set_parallel(false)` — Paralel modu kapat, sonraki işlem sıralı olsun
-- `tween_callback(_on_swap_finished)` — Animasyon bitince bu fonksiyonu çağır
+**1. Grid verisini takas et:**
+```
+	var temp: String = grid[cell_a.x][cell_a.y]
+	grid[cell_a.x][cell_a.y] = grid[cell_b.x][cell_b.y]
+	grid[cell_b.x][cell_b.y] = temp
+```
+- Klasik **üç değişkenli takas** algoritması. Bir geçici değişken (`temp`) kullanarak iki hücrenin içeriğini yer değiştiriyoruz. Örneğin A="red", B="blue" ise: temp="red" → A="blue" → B="red". Bu mantıksal veri takasıdır, ekranda henüz bir şey değişmez.
+
+**2. Sprite referanslarını takas et:**
+```
+	var sprite_a: Sprite2D = candy_sprites[cell_a.x][cell_a.y]
+	var sprite_b: Sprite2D = candy_sprites[cell_b.x][cell_b.y]
+	candy_sprites[cell_a.x][cell_a.y] = sprite_b
+	candy_sprites[cell_b.x][cell_b.y] = sprite_a
+```
+- `candy_sprites` dizisindeki **referansları** da takas ediyoruz. Grid verisi ile sprite referanslarının **senkron** kalması şart. Yoksa ileride yanlış sprite'ı silmeye veya taşımaya çalışırız.
+
+**3. Hedef pozisyonları hesapla:**
+```
+	var pos_a := _grid_to_pixel(cell_a.x, cell_a.y)
+	var pos_b := _grid_to_pixel(cell_b.x, cell_b.y)
+```
+- Her iki hücrenin ekrandaki piksel pozisyonunu hesaplıyoruz. **Dikkat:** Grid verisi zaten takas edildiği için, `pos_a` artık `sprite_b`'nin gitmesi gereken yer, `pos_b` ise `sprite_a`'nın gitmesi gereken yer.
+
+**4. Tween animasyonu oluştur:**
+```
+	var tween := create_tween()
+```
+- `create_tween()` → Godot'un **Tween** sistemidir. Bir değeri belirli sürede A noktasından B noktasına yumuşak geçişle değiştirir. Tek satır kodla profesyonel animasyon yaratır.
+
+```
+	tween.set_parallel(true)
+```
+- Bundan sonra eklenen tween işlemleri **aynı anda** (paralel) çalışsın. İki şeker **eş zamanlı** hareket etmeli, biri bitmeden diğeri başlamamalı.
+
+```
+	tween.tween_property(sprite_a, "position", pos_b, 0.2).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(sprite_b, "position", pos_a, 0.2).set_ease(Tween.EASE_IN_OUT)
+```
+- `tween_property()` → Bir düğümün belirli özelliğini animasyonla değiştirir.
+  - 1\. parametre: Hangi düğüm (`sprite_a`)
+  - 2\. parametre: Hangi özellik (`"position"` — sprite'ın ekrandaki konumu)
+  - 3\. parametre: Hedef değer (`pos_b` — gitmesi gereken piksel konumu)
+  - 4\. parametre: Süre (`0.2` saniye — hızlı ve akıcı)
+- `.set_ease(Tween.EASE_IN_OUT)` → Hareket eğrisi. Başta yavaş başlar, ortada hızlanır, sonda yine yavaşlar. Bu, doğal ve profesyonel bir hareket hissi verir. Sabit hız kullanılsa robot gibi görünürdü.
+
+```
+	tween.set_parallel(false)
+```
+- Paralel modu kapatıyoruz. Bundan sonra eklenen işlem, üstteki animasyonlar **bittikten sonra** çalışacak.
+
+```
+	tween.tween_callback(_on_swap_finished)
+```
+- `tween_callback()` → Tween tamamlandığında verilen fonksiyonu çağır. Yani iki sprite hedef pozisyonlarına ulaştığında `_on_swap_finished()` otomatik çalışır.
 
 **`_on_swap_finished()`:**
-- `is_animating = false` → Oyuncunun tekrar tıklamasına izin ver
+```
+func _on_swap_finished() -> void:
+	is_animating = false
+```
+- Animasyon tamamlandı, kilidi aç. Oyuncu artık tekrar tıklayabilir.
 
-> **Not:** Şu an takas sonrası eşleşme kontrolü yapmıyoruz. Eşleşme yoksa geri takas da yok. Bunları Bölüm 5'te ekleyeceğiz. Şimdilik sadece takasın çalıştığını doğruluyoruz.
+> **Not:** Şu an takas sonrası eşleşme kontrolü yapmıyoruz. Eşleşme yoksa geri takas da yok. Bunları bir sonraki bölümde ekleyeceğiz. Şimdilik sadece takasın çalıştığını doğruluyoruz.
 
 ---
 

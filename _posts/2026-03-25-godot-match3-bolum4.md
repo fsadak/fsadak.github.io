@@ -65,19 +65,70 @@ func _find_matches() -> Array:
 	return matches
 ```
 
-**Algoritma adım adım (yatay tarama örneği):**
+**Satır satır açıklama (yatay tarama):**
+
+```
+func _find_matches() -> Array:
+	var matches := []
+```
+- `-> Array` → Fonksiyon bir dizi döndürür. Bu dizi, bulunan eşleşme gruplarını içerir.
+- `matches` → Bulunan tüm eşleşmelerin toplandığı ana liste.
+
+```
+	for row in GRID_SIZE:
+		var col := 0
+		while col < GRID_SIZE:
+```
+- Dış döngü her **satırı** sırayla tarar (0'dan 7'ye).
+- İç döngü **sütunları** tarar. `for` yerine `while` kullanıyoruz çünkü eşleşme bulduğumuzda `col`'u birden fazla adım atlamamız gerekecek (`col += match_length`). `for` döngüsünde adım boyutunu değiştiremezsiniz.
+
+```
+			var candy_type: String = grid[row][col]
+			if candy_type == "":
+				col += 1
+				continue
+```
+- Mevcut hücrenin şeker türünü okuyoruz.
+- Hücre boşsa → bir sonraki sütuna geç. `continue` döngünün geri kalanını atlayıp başa döner.
+
+```
+			var match_length := 1
+			while col + match_length < GRID_SIZE and grid[row][col + match_length] == candy_type:
+				match_length += 1
+```
+- `match_length = 1` → Mevcut hücrenin kendisi zaten 1 eşleşme.
+- İç `while` döngüsü sağa doğru aynı renkte şeker olduğu sürece devam eder.
+  - `col + match_length < GRID_SIZE` → Grid sınırları dışına çıkma.
+  - `grid[row][col + match_length] == candy_type` → Sağdaki hücre aynı renk mi?
+- Her aynı renk bulunduğunda `match_length` 1 artar.
+- Örneğin `[red, red, red, blue]` → `match_length` 1→2→3 olur, `blue`'da durur.
+
+```
+			if match_length >= 3:
+				var match_group := []
+				for i in match_length:
+					match_group.append(Vector2i(row, col + i))
+				matches.append(match_group)
+```
+- 3 veya daha fazla ardışık aynı renk bulduk → eşleşme var!
+- `match_group` dizisi bu eşleşmedeki tüm hücrelerin koordinatlarını tutar.
+- `for i in match_length` → 0'dan `match_length - 1`'e kadar döner. Her hücrenin `Vector2i(satır, sütun)` koordinatını gruba ekler.
+- Tamamlanan grup `matches` ana listesine eklenir.
+
+```
+			col += match_length
+```
+- **Kritik optimizasyon:** `col`'u 1 değil `match_length` kadar ileri atlıyoruz. Çünkü bu hücreleri zaten kontrol ettik. Örneğin 3'lü eşleşme bulduysa, col 3 adım atlar. Bu sayede aynı hücreleri tekrar taramayız.
+
+**Dikey tarama** yatay taramayla aynı mantıkta çalışır, sadece satır ve sütun rolleri yer değiştirir: `for col in GRID_SIZE` dış döngü, `while row < GRID_SIZE` iç döngü olur.
+
+**Algoritma görsel örneği:**
 
 ```
 Satır: [red, red, red, blue, blue, green, green, green]
         ───────────                     ─────────────
         col=0, 3 ardışık red → eşleşme!  col=5, 3 ardışık green → eşleşme!
 ```
-
-1. `col = 0`'dan başla, mevcut rengi oku (`red`)
-2. Sağa doğru aynı renk devam ediyor mu say (`match_length`)
-3. 3 veya daha fazlaysa, bu hücreleri bir grup olarak `matches`'e ekle
-4. `col`'u `match_length` kadar ileri atla (zaten kontrol edildi)
-5. Satır bitene kadar tekrarla
 
 **Dönüş değeri:** Her eleman bir eşleşme grubunu temsil eden `Vector2i` dizisi. Örneğin:
 ```
@@ -111,12 +162,41 @@ func _remove_matches(matches: Array) -> void:
 		grid[cell.x][cell.y] = ""
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- **Neden `cells_to_remove` sözlüğü?** Bir hücre hem yatay hem dikey eşleşmenin parçası olabilir (T veya L şekli). Sözlük aynı hücrenin iki kez silinmesini önler.
-- `sprite.queue_free()` — Sprite'ı sahneden güvenli şekilde kaldırır (Godot frame sonunda siler)
-- `candy_sprites[cell.x][cell.y] = null` — Referansı temizler
-- `grid[cell.x][cell.y] = ""` — Hücreyi boş olarak işaretle
+```
+func _remove_matches(matches: Array) -> void:
+	var cells_to_remove := {}
+```
+- `cells_to_remove` bir **Dictionary** (sözlük) olarak kullanılıyor. Neden dizi değil de sözlük? Çünkü bir hücre hem yatay hem dikey eşleşmenin parçası olabilir (T veya L şekli). Sözlükte aynı anahtar iki kez eklenemez → otomatik olarak tekrarları önler. Bu, programlamada **set (küme)** veri yapısının sözlükle taklit edilmesidir.
+
+```
+	for match_group in matches:
+		for cell in match_group:
+			cells_to_remove[cell] = true
+```
+- Tüm eşleşme gruplarını dolaşıyoruz. Her gruptaki her hücreyi sözlüğe ekliyoruz. `true` değeri önemsiz, sadece anahtarın varlığı önemli.
+
+```
+	for cell: Vector2i in cells_to_remove:
+```
+- Sözlük üzerinde `for` döngüsü anahtarları (hücre koordinatları) dolaşır. `cell: Vector2i` ile tipi belirtiyoruz.
+
+```
+		var sprite: Sprite2D = candy_sprites[cell.x][cell.y]
+		if sprite != null:
+			sprite.queue_free()
+			candy_sprites[cell.x][cell.y] = null
+```
+- `candy_sprites` dizisinden sprite referansını alıyoruz.
+- `null` kontrolü: Sprite zaten silinmiş olabilir (aynı hücre farklı eşleşmelerde olabilir).
+- `queue_free()` → Sprite'ı sahneden güvenli şekilde kaldırır. Godot mevcut frame'i bitirdikten sonra gerçek silme işlemini yapar.
+- Referansı `null` yapıyoruz ki ileride bu hücreye erişen kod "burada sprite yok" bilsin.
+
+```
+		grid[cell.x][cell.y] = ""
+```
+- Grid verisini boş string ile işaretliyoruz. Bu hücre artık şekersiz. İleride yerçekimi bu boşlukları dolduracak.
 
 ---
 
@@ -140,7 +220,27 @@ func _on_swap_finished() -> void:
 		_reverse_swap()
 ```
 
-Ayrıca son yapılan takası hatırlamamız gerekiyor. Bunun için `_swap_candies()` fonksiyonuna takası kaydeden değişkenler ekleyeceğiz.
+**Satır satır açıklama:**
+
+```
+	var matches := _find_matches()
+```
+- Takas tamamlandıktan hemen sonra tahtada eşleşme var mı kontrol ediyoruz.
+
+```
+	if matches.size() > 0:
+		_remove_matches(matches)
+		is_animating = false
+```
+- Eşleşme bulunduysa → eşleşen şekerleri sil. Sonra `is_animating = false` ile oyuncunun tekrar oynamasına izin ver.
+
+```
+	else:
+		_reverse_swap()
+```
+- Eşleşme yoksa → takas geçersiz! Şekerleri eski yerlerine animasyonla geri döndür. `is_animating` burada `false` yapılmıyor çünkü geri takas animasyonu başlıyor — o animasyon bitince `false` yapılacak.
+
+Ayrıca son yapılan takası hatırlamamız gerekiyor. Geri takas için hangi iki hücrenin yer değiştirdiğini bilmeliyiz. Bunun için `_swap_candies()` fonksiyonuna takası kaydeden değişken ekleyeceğiz.
 
 **Değişkenler bölümüne** (dosyanın üst kısmı) şunu ekleyin:
 
@@ -148,11 +248,15 @@ Ayrıca son yapılan takası hatırlamamız gerekiyor. Bunun için `_swap_candie
 var last_swap := [Vector2i(-1, -1), Vector2i(-1, -1)]  # Son takas edilen hücreler
 ```
 
+- İki elemanlı bir dizi. İlk eleman (`last_swap[0]`) birinci hücre, ikinci eleman (`last_swap[1]`) ikinci hücre. Başlangıçta geçersiz değerler.
+
 **`_swap_candies()` fonksiyonunun en başına** (is_animating = true satırının hemen altına) şu satırı ekleyin:
 
 ```gdscript
 	last_swap = [cell_a, cell_b]
 ```
+
+- Her takas yapıldığında iki hücrenin koordinatlarını kaydediyoruz. Eşleşme yoksa bu bilgiyle geri takas yapacağız.
 
 ---
 
@@ -187,11 +291,51 @@ func _reverse_swap() -> void:
 	tween.tween_callback(func() -> void: is_animating = false)
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- Geri takas, normal takasla aynı mantıkta çalışır — veriyi ve sprite'ları tersine çevirir
-- Animasyon tamamlandığında `is_animating = false` yaparak oyuncunun tekrar oynamasına izin verir
-- `func() -> void:` — Bu bir **lambda** (anonim) fonksiyondur. Sadece `is_animating = false` yapması gereken tek satırlık bir callback için ayrı fonksiyon yazmak yerine, satır içinde tanımlıyoruz
+```
+func _reverse_swap() -> void:
+	var cell_a: Vector2i = last_swap[0]
+	var cell_b: Vector2i = last_swap[1]
+```
+- `last_swap` dizisinden daha önce kaydedilen iki hücre koordinatını alıyoruz.
+
+```
+	var temp: String = grid[cell_a.x][cell_a.y]
+	grid[cell_a.x][cell_a.y] = grid[cell_b.x][cell_b.y]
+	grid[cell_b.x][cell_b.y] = temp
+```
+- Grid verisini geri takas ediyoruz. Bu, `_swap_candies()`'deki takasın tam tersi.
+
+```
+	var sprite_a: Sprite2D = candy_sprites[cell_a.x][cell_a.y]
+	var sprite_b: Sprite2D = candy_sprites[cell_b.x][cell_b.y]
+	candy_sprites[cell_a.x][cell_a.y] = sprite_b
+	candy_sprites[cell_b.x][cell_b.y] = sprite_a
+```
+- Sprite referanslarını da geri takas ediyoruz. Veri ve görsel her zaman senkron olmalı.
+
+```
+	var pos_a := _grid_to_pixel(cell_a.x, cell_a.y)
+	var pos_b := _grid_to_pixel(cell_b.x, cell_b.y)
+```
+- Hedef pozisyonları hesaplıyoruz. Grid verisi zaten geri takas edildiği için pozisyonlar doğru.
+
+```
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(sprite_a, "position", pos_b, 0.2).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(sprite_b, "position", pos_a, 0.2).set_ease(Tween.EASE_IN_OUT)
+	tween.set_parallel(false)
+```
+- Tween animasyonu ile şekerleri eski yerlerine geri taşıyoruz. `_swap_candies()`'deki animasyonla aynı yapı.
+
+```
+	tween.tween_callback(func() -> void: is_animating = false)
+```
+- `func() -> void:` → Bu bir **lambda** (anonim fonksiyon). Sadece `is_animating = false` yapmak için ayrı bir fonksiyon tanımlamak yerine, satır içinde kısa bir fonksiyon yazıyoruz.
+- Lambda fonksiyonları tek satırlık basit callback'ler için idealdir. GDScript'te `func():` ile başlar, `:` sonrasına fonksiyon gövdesi gelir.
+- Animasyon bitince çalışır → oyuncu tekrar tıklayabilir hale gelir.
 
 ---
 

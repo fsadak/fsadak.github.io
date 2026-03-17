@@ -121,15 +121,88 @@ func _show_popup(title: String, info: String, button1_text: String, button1_acti
 	panel.add_child(btn2)
 ```
 
-**Adım adım açıklama:**
+**Satır satır açıklama:**
 
-1. **`popup_overlay` (ColorRect):** Ekranın tamamını kaplayan yarı saydam siyah katman. `Color(0, 0, 0, 0.6)` → %60 opak siyah
-2. **`panel` (ColorRect):** Modalın kendisi — koyu mavi-gri arka plan. `popup_overlay`'in **çocuğu** olarak ekleniyor, böylece overlay silindiğinde panel de silinir
-3. **`title_label`:** Büyük sarı başlık yazısı
-4. **`info_label`:** Skor ve seviye bilgisi
-5. **`btn1` ve `btn2`:** İki buton. `pressed.connect(callback)` ile tıklanınca ilgili fonksiyon çağrılır
+```gdscript
+func _show_popup(title: String, info: String, button1_text: String, button1_action: Callable, button2_text: String, button2_action: Callable) -> void:
+```
+Fonksiyon 6 parametre alıyor: başlık metni, bilgi metni, iki butonun metni ve iki butonun **Callable** tipinde aksiyon fonksiyonları. `Callable`, Godot 4'te bir fonksiyon referansını taşıyan özel bir tiptir — yani "şu fonksiyonu çağır" bilgisini parametre olarak gönderebiliyoruz. Bu sayede aynı popup fonksiyonunu hem seviye tamamlama hem de game over için kullanabiliriz.
 
-**`pressed.connect()` nedir?** Godot'un sinyal sistemidir. Buton tıklanınca `pressed` sinyali yayılır, `connect()` ile bu sinyale bir fonksiyon bağlarız. Sinyal/slot sistemi Godot'un temel yapı taşlarından biridir.
+```gdscript
+	is_animating = true
+```
+Popup açıkken oyuncunun şekerlere tıklamasını engelliyoruz. `_input()` fonksiyonumuz `is_animating == true` olduğunda hiçbir girişi işlemez.
+
+```gdscript
+	popup_overlay = ColorRect.new()
+	popup_overlay.color = Color(0, 0, 0, 0.6)
+	popup_overlay.position = Vector2.ZERO
+	popup_overlay.size = Vector2(576, 1024)
+	add_child(popup_overlay)
+```
+- `ColorRect.new()` → Godot'ta **kod ile** yeni bir UI node oluşturuyoruz. `ColorRect`, düz renk dikdörtgen çizen en basit UI elemanıdır.
+- `Color(0, 0, 0, 0.6)` → RGBA formatında renk: R=0, G=0, B=0 (siyah), A=0.6 (%60 opak). Yani arka plan yarı saydam siyah olur — altındaki oyun tahtası hafifçe görünür ama kararmış olur.
+- `Vector2.ZERO` → `Vector2(0, 0)` ile aynı, sol üst köşe. Bu overlay tüm ekranı kaplayacak.
+- `size = Vector2(576, 1024)` → Viewport'umuzun tam boyutu. Ekranın her pikseli kararır.
+- `add_child(popup_overlay)` → Overlay'i sahne ağacına ekliyoruz. `self` (yani Game node) altına çocuk olarak girer.
+
+```gdscript
+	var panel := ColorRect.new()
+	panel.color = Color(0.15, 0.15, 0.25, 0.95)
+	panel.size = Vector2(400, 320)
+	panel.position = Vector2(88, 340)
+	popup_overlay.add_child(panel)
+```
+- Panelin rengi `Color(0.15, 0.15, 0.25, 0.95)` → koyu lacivert-gri, neredeyse tam opak (%95). RGB değerleri 0-1 arasında olduğu için 0.15 çok koyu bir tondur.
+- `size = Vector2(400, 320)` → Panel 400x320 piksel. Ekranın ortasına sığacak büyüklükte.
+- `position = Vector2(88, 340)` → Yatayda: `(576 - 400) / 2 = 88` piksel → tam ortada. Dikeyden biraz aşağıda.
+- **Dikkat:** `popup_overlay.add_child(panel)` — panel, overlay'in **çocuğu**. Bu çok önemli çünkü overlay silindiğinde tüm çocukları (panel, label'lar, butonlar) otomatik olarak birlikte silinir. Godot'un sahne ağacı mimarisi bu hiyerarşiyi garanti eder.
+
+```gdscript
+	var title_label := Label.new()
+	title_label.text = title
+	title_label.position = Vector2(0, 20)
+	title_label.size = Vector2(400, 50)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 32)
+	title_label.add_theme_color_override("font_color", Color.YELLOW)
+	panel.add_child(title_label)
+```
+- `Label.new()` → Yeni bir metin node'u oluşturuyoruz.
+- `title_label.text = title` → Parametre olarak gelen başlığı ("TEBRİKLER!" veya "OYUN BİTTİ!") atıyoruz.
+- `position = Vector2(0, 20)` → Panelin **içinde** 20 piksel aşağıda. Pozisyon, panele göre (relative) hesaplanır çünkü panelin çocuğu.
+- `size = Vector2(400, 50)` → Panelin tam genişliğinde, 50 piksel yüksekliğinde.
+- `horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER` → Metin yatay ortaya hizalı.
+- `add_theme_font_size_override("font_size", 32)` → Tema fontunu 32px ile eziyoruz. "Override" kelimesi önemli: Godot'un varsayılan tema ayarını geçersiz kılıyoruz.
+- `add_theme_color_override("font_color", Color.YELLOW)` → Sarı renk. `Color.YELLOW` Godot'un built-in renk sabiti.
+- `panel.add_child(title_label)` → Label'ı panelin çocuğu yapıyoruz.
+
+```gdscript
+	var info_label := Label.new()
+	info_label.text = info
+	info_label.position = Vector2(0, 80)
+	info_label.size = Vector2(400, 80)
+	info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	info_label.add_theme_font_size_override("font_size", 22)
+	info_label.add_theme_color_override("font_color", Color.WHITE)
+	panel.add_child(info_label)
+```
+Bilgi label'ı — skor ve seviye bilgisini gösterir. Yapısı başlık ile aynı, farklı olan: daha küçük font (22px), beyaz renk ve pozisyon daha aşağıda (y=80). `info` parametresi `\n` (newline) içerdiği için otomatik olarak iki satır halinde görünür.
+
+```gdscript
+	var btn1 := Button.new()
+	btn1.text = button1_text
+	btn1.position = Vector2(75, 180)
+	btn1.size = Vector2(250, 50)
+	btn1.add_theme_font_size_override("font_size", 20)
+	btn1.pressed.connect(button1_action)
+	panel.add_child(btn1)
+```
+- `Button.new()` → Godot'un tıklanabilir buton node'u. Label'dan farklı olarak, fare ile etkileşim desteği hazır gelir.
+- `position = Vector2(75, 180)` → Panelin içinde ortalanmış. Yatay: `(400 - 250) / 2 = 75`.
+- `btn1.pressed.connect(button1_action)` → **Sinyal bağlantısı.** `pressed`, Button node'unun built-in sinyalidir — oyuncu butona her tıkladığında bu sinyal yayılır. `.connect()` ile bu sinyale bir fonksiyon bağlarız. `button1_action` zaten `Callable` tipinde bir fonksiyon referansı — mesela `_start_next_level` veya `_restart_game`. Sinyal/slot sistemi Godot'un temel yapı taşlarından biridir ve node'lar arası iletişimi sağlar.
+
+İkinci buton (`btn2`) tamamen aynı yapıda, sadece pozisyonu daha aşağıda (y=245) ve farklı bir aksiyon fonksiyonuna bağlı.
 
 ---
 
@@ -144,7 +217,27 @@ func _close_popup() -> void:
 		popup_overlay = null
 ```
 
-`queue_free()` overlay'i ve tüm çocuklarını (panel, label'lar, butonlar) birlikte siler. Godot'ta bir node silindiğinde tüm alt node'ları da otomatik silinir — bu **sahne ağacı** (scene tree) mimarisinin güzel bir özelliğidir.
+**Satır satır açıklama:**
+
+```gdscript
+func _close_popup() -> void:
+```
+Modalı kapatıp bellekten temizleyen yardımcı fonksiyon. `-> void` dönüş tipi yok demektir.
+
+```gdscript
+	if popup_overlay != null:
+```
+Güvenlik kontrolü: Popup zaten kapalıysa (yani `null` ise) hiçbir şey yapmıyoruz. Bu, fonksiyonun yanlışlıkla iki kez çağrılmasını önler.
+
+```gdscript
+		popup_overlay.queue_free()
+```
+`queue_free()`, Godot'un node silme yöntemidir. "Hemen sil" yerine "bu frame sonunda sil" der — böylece o anki işlemler güvenle tamamlanır. **Kritik nokta:** `queue_free()` bir node'u sildiğinde, **tüm alt node'larını** (children) da otomatik siler. Bizim hiyerarşimiz: `popup_overlay → panel → (title_label, info_label, btn1, btn2)`. Yani sadece overlay'i silmek tüm popup elemanlarını temizler.
+
+```gdscript
+		popup_overlay = null
+```
+Referansı `null` yapıyoruz. Bu iki işe yarar: (1) Garbage collector belleği temizleyebilir, (2) `_close_popup()` tekrar çağrılırsa `!= null` kontrolü sayesinde güvenli şekilde atlanır.
 
 ---
 
@@ -206,21 +299,124 @@ func _quit_game() -> void:
 	get_tree().quit()
 ```
 
-**Önemli düzeltme — `score = 0`:**
+**Satır satır açıklama:**
 
-Önceki bölümde `_start_next_level()` fonksiyonunda skor sıfırlanmıyordu. Bu durumda:
-- Seviye 1'de 1200 puan kazandınız → Seviye 2'ye 1200 puanla giriyorsunuz
-- Seviye 2 hedefi 1500 → Sadece 300 puan daha lazım → 1-2 eşleşme ile seviye biter!
+### `_level_complete()`
 
-Şimdi her seviye `score = 0` ile başlıyor, böylece hedef anlamlı oluyor.
+```gdscript
+func _level_complete() -> void:
+	is_animating = true
+```
+Popup açılacağı için oyuncu girişini kilitleriz.
 
-**Açıklamalar:**
+```gdscript
+	var next_level := level + 1
+```
+Bir sonraki seviye numarasını hesaplıyoruz. Henüz `level` değişkenini artırmıyoruz — bunu "Sonraki Seviye" butonuna basıldığında yapacağız.
 
-- **`_level_complete()`** — Kutlama popup'ını gösterir. Butonlar: "Sonraki Seviye" → `_start_next_level`, "Çıkış" → `_quit_game`
-- **`_game_over()`** — Game over popup'ını gösterir. Butonlar: "Tekrar Oyna" → `_restart_game`, "Çıkış" → `_quit_game`
-- **`_start_next_level()`** — Popup'ı kapatır, seviyeyi artırır, **skoru sıfırlar**, tahtayı tamamen yeniler
-- **`_restart_game()`** — Her şeyi sıfırlar, oyunu en baştan başlatır
-- **`_quit_game()`** — `get_tree().quit()` ile oyunu tamamen kapatır
+```gdscript
+	var info: String = "Skor: " + str(score) + "\nSeviye " + str(next_level) + " hazır!"
+```
+Popup'ta gösterilecek bilgi metni. `str()` ile sayıları stringe çeviriyoruz. `\n` newline karakteri — metin iki satır halinde görünür. **Not:** `var info: String = ...` yazıyoruz, `:=` değil — Godot 4.6'da string birleştirme ile `:=` tip çıkarımı hata verebiliyor.
+
+```gdscript
+	_show_popup(
+		"TEBRİKLER!",
+		info,
+		"Sonraki Seviye",
+		_start_next_level,
+		"Çıkış",
+		_quit_game
+	)
+```
+Az önce yazdığımız popup fonksiyonunu çağırıyoruz. Dikkat edin: `_start_next_level` ve `_quit_game` fonksiyon isimleri parantez **olmadan** yazılıyor — çünkü fonksiyonu **çağırmıyoruz**, **referansını** (Callable) gönderiyoruz. Parantez koysaydık fonksiyon hemen çalışırdı.
+
+### `_game_over()`
+
+```gdscript
+func _game_over() -> void:
+	is_animating = true
+	var info: String = "Skor: " + str(score) + "\nSeviye: " + str(level)
+	_show_popup(
+		"OYUN BİTTİ!",
+		info,
+		"Tekrar Oyna",
+		_restart_game,
+		"Çıkış",
+		_quit_game
+	)
+```
+`_level_complete()` ile aynı yapıda — tek fark başlık, buton metinleri ve aksiyon fonksiyonları. "Tekrar Oyna" butonu `_restart_game`'e, "Çıkış" butonu `_quit_game`'e bağlanıyor.
+
+### `_start_next_level()`
+
+```gdscript
+func _start_next_level() -> void:
+	_close_popup()
+```
+Önce popup'ı kapatıp bellekten temizliyoruz.
+
+```gdscript
+	level += 1
+```
+Seviye numarasını artırıyoruz.
+
+```gdscript
+	score = 0  # Her seviye sıfırdan başlar!
+```
+**Kritik düzeltme!** Önceki bölümde bu satır yoktu. Sonuç: Seviye 1'de 1200 puan kazandınız → Seviye 2'ye 1200 puanla giriyorsunuz → Seviye 2 hedefi 1500 → Sadece 300 puan daha lazım → 1-2 eşleşme ile seviye bitiyor! Bu, oyunu çok kolay ve anlamsız yapıyordu. Şimdi her seviye `score = 0` ile başlıyor.
+
+```gdscript
+	moves_left = BASE_MOVES
+```
+Hamle sayısını sıfırlıyoruz (20 hamle). Her seviye aynı hamle hakkıyla başlar.
+
+```gdscript
+	target_score = BASE_TARGET + (level - 1) * TARGET_INCREMENT
+```
+Yeni hedef skoru hesaplıyoruz. Formül: `1000 + (seviye - 1) × 500`. Seviye 2 için 1500, Seviye 3 için 2000, vs. Her seviye bir öncekinden 500 puan daha zor.
+
+```gdscript
+	chain_count = 0
+```
+Zincirleme sayacını sıfırlıyoruz — yeni seviyede zincirleme çarpanı baştan başlar.
+
+```gdscript
+	_init_grid()
+	_draw_candies()
+	_update_ui()
+```
+Tahtayı tamamen yeniliyoruz: `_init_grid()` yeni rastgele bir grid oluşturur, `_draw_candies()` eski sprite'ları silip yenilerini çizer, `_update_ui()` skor/hamle/seviye/hedef label'larını günceller.
+
+```gdscript
+	is_animating = false
+```
+Oyuncu girişini tekrar açıyoruz — yeni seviye oynamaya hazır.
+
+### `_restart_game()`
+
+```gdscript
+func _restart_game() -> void:
+	_close_popup()
+	score = 0
+	moves_left = BASE_MOVES
+	level = 1
+	target_score = BASE_TARGET
+	chain_count = 0
+	_init_grid()
+	_draw_candies()
+	_update_ui()
+	is_animating = false
+```
+`_start_next_level()` ile çok benzer — tek fark `level = 1` ve `target_score = BASE_TARGET` (artış formülü yok). Her şeyi fabrika ayarlarına döndürür.
+
+### `_quit_game()`
+
+```gdscript
+func _quit_game() -> void:
+	get_tree().quit()
+```
+`get_tree()` → Godot'un **SceneTree** nesnesine erişir. Bu, tüm oyun sahnesini yöneten ana yapıdır. `.quit()` uygulamayı tamamen kapatır. Masaüstünde pencere kapanır, mobilde uygulama sonlanır.
 
 ---
 
@@ -265,9 +461,64 @@ func _clear_cell(cell: Vector2i) -> void:
 				_activate_rainbow()
 ```
 
-**Kritik detay — sonsuz döngü koruması:**
+**Satır satır açıklama:**
 
-Dikkat ederseniz, önce `grid[cell.x][cell.y] = ""` ile hücreyi boşaltıyoruz, **sonra** bonusu aktive ediyoruz. Bu sıralama çok önemlidir:
+```gdscript
+func _clear_cell(cell: Vector2i) -> void:
+	if not _is_valid_cell(cell):
+		return
+```
+İlk güvenlik katmanı: Hücre koordinatları grid sınırları dışındaysa (mesela bomba grid kenarında patladığında negatif indeks oluşabilir) hemen çıkıyoruz.
+
+```gdscript
+	if grid[cell.x][cell.y] == "":
+		return
+```
+İkinci güvenlik katmanı ve **sonsuz döngü koruması**: Hücre zaten boşsa bir şey yapmıyoruz. Bu kontrol, iki bonusun birbirini sonsuz döngüde tetiklemesini önler (aşağıda detaylı açıklama var).
+
+```gdscript
+	var cell_type: String = grid[cell.x][cell.y]
+```
+Hücredeki şekerin tipini kaydediyoruz. Bunu **silmeden önce** yapmamız şart — çünkü bir sonraki adımda hücreyi boşaltacağız ve tip bilgisi kaybolacak.
+
+```gdscript
+	var sprite: Sprite2D = candy_sprites[cell.x][cell.y]
+	if sprite != null:
+		sprite.queue_free()
+		candy_sprites[cell.x][cell.y] = null
+	grid[cell.x][cell.y] = ""
+```
+Hücreyi **hem görsel hem veri** olarak temizliyoruz:
+- `sprite.queue_free()` → Ekrandaki görsel node'u siler
+- `candy_sprites[...] = null` → Sprite referansını temizler
+- `grid[...] = ""` → Grid verisini boşaltır
+
+**Kritik sıralama:** Önce hücreyi boşaltıyoruz, **sonra** bonusu aktive ediyoruz. Bu sıralama sonsuz döngüyü önler.
+
+```gdscript
+	if BONUS_TYPES.has(cell_type):
+```
+Sildiğimiz hücre bir bonus mu kontrol ediyoruz. `BONUS_TYPES = ["arrow_h", "arrow_v", "bomb", "rainbow"]` — `has()` metodu bu dizide arama yapar.
+
+```gdscript
+		_add_bonus_score(cell_type)
+```
+Bonus puan ekliyoruz (ok: 80, bomba: 120, rainbow: 200).
+
+```gdscript
+		match cell_type:
+			"arrow_h":
+				_activate_arrow_h(cell)
+			"arrow_v":
+				_activate_arrow_v(cell)
+			"bomb":
+				_activate_bomb(cell)
+			"rainbow":
+				_activate_rainbow()
+```
+Bonus tipine göre ilgili aktivasyon fonksiyonunu çağırıyoruz. `match` ifadesi her bonus tipini doğru fonksiyona yönlendirir. Bu fonksiyonlar da kendi içinde `_clear_cell()` çağırır — böylece **zincirleme** oluşur.
+
+**Sonsuz döngü koruması detaylı açıklama:**
 
 ```
 _clear_cell(bomba) → grid'i boşalt → _activate_bomb() → _clear_cell(ok) →
@@ -275,7 +526,7 @@ grid'i boşalt → _activate_arrow_h() → _clear_cell(başka hücre) → grid'i
 (hücre zaten boş? → return!)
 ```
 
-Eğer önce aktive edip sonra boşaltsaydık, iki bonus birbirine isabet ettiğinde sonsuz döngüye girerdi. Ama `grid = ""` kontrolü sayesinde zaten boşaltılmış bir hücre tekrar tetiklenemez.
+Eğer önce aktive edip sonra boşaltsaydık, iki bonus birbirine isabet ettiğinde sonsuz döngüye girerdi. Ama `grid = ""` kontrolü sayesinde zaten boşaltılmış bir hücre tekrar tetiklenemez. Bu, **özyinelemeli** (recursive) bir yapıdır ve "önce temizle, sonra tetikle" sıralaması güvenliğin garantisidir.
 
 **Zincirleme senaryo örneği:**
 

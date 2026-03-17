@@ -60,11 +60,22 @@ var total_score := 0
 var high_score := 0
 ```
 
-**Açıklama:**
+**Satır satır açıklama:**
 
-- `SAVE_PATH` — Kayıt dosyasının yolu. `user://` ile başlaması zorunlu
-- `total_score` — Oyuncunun tüm seviyelerde topladığı kümülatif puan
-- `high_score` — Tek seviyede ulaşılan en yüksek puan (rekor)
+```gdscript
+const SAVE_PATH := "user://save_data.json"
+```
+Kayıt dosyasının yolu. `user://` Godot'un **kullanıcı dizini** ön ekidir — platforma göre farklı bir klasöre işaret eder (Windows'ta `%APPDATA%`, macOS'ta `~/Library/Application Support/`...). Neden `res://` değil? Çünkü `res://` yolu oyun export edildikten sonra **salt okunurdur** — dosya yazamazsınız. `user://` ise her zaman yazılabilir.
+
+```gdscript
+var total_score := 0
+```
+Oyuncunun tüm seviyelerde topladığı **kümülatif** puan. Her seviye bittiğinde o seviyenin skoru buraya eklenir. Oyun kapatılıp açılınca bu değer JSON'dan geri yüklenir.
+
+```gdscript
+var high_score := 0
+```
+Tek bir seviyede ulaşılan en yüksek puan (rekor). `score > high_score` olduğunda güncellenir. Oyuncuya "en iyi performansın bu kadardı" bilgisi verir.
 
 ---
 
@@ -90,13 +101,47 @@ func _save_game() -> void:
 	file.close()
 ```
 
-**Adım adım açıklama:**
+**Satır satır açıklama:**
 
-1. **`save_data` sözlüğü:** Kaydedilecek verileri bir Dictionary'de topluyoruz
-2. **`FileAccess.open()`:** Dosyayı yazma modunda (`WRITE`) açar. Dosya yoksa oluşturur, varsa üzerine yazar
-3. **`file == null` kontrolü:** Dosya açılamazsa (disk dolu, izin yok vs.) hata mesajı yazdırır ve çıkar
-4. **`JSON.stringify()`:** Sözlüğü JSON string'ine çevirir. `"\t"` parametresi güzel biçimlendirilmiş (pretty-printed) çıktı verir
-5. **`file.close()`:** Dosyayı kapatır — bu adım önemli, aksi halde veri yazılmayabilir
+```gdscript
+func _save_game() -> void:
+```
+Oyun durumunu diske yazan fonksiyon. `-> void` — bir değer döndürmez.
+
+```gdscript
+	var save_data := {
+		"level": level,
+		"total_score": total_score,
+		"high_score": high_score,
+	}
+```
+Kaydedilecek verileri bir **Dictionary** (sözlük) içinde topluyoruz. Anahtarlar string (`"level"`, `"total_score"`, `"high_score"`), değerler ise oyun değişkenlerimiz. Bu sözlük JSON'a dönüştürülecek. **Not:** Son virgül (trailing comma) GDScript'te geçerlidir ve yeni satır eklerken hata yapmayı önler.
+
+```gdscript
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+```
+`FileAccess`, Godot'un dosya sistemi sınıfıdır. `open()` **statik** bir metottur — doğrudan sınıf üzerinden çağrılır, bir nesne oluşturmaya gerek yok. İki parametre alır:
+- `SAVE_PATH` → `"user://save_data.json"` — nereye yazacağımız
+- `FileAccess.WRITE` → Yazma modu. Dosya yoksa **oluşturur**, varsa **üzerine yazar** (sıfırdan)
+
+```gdscript
+	if file == null:
+		print("Kayıt hatası: ", FileAccess.get_open_error())
+		return
+```
+Dosya açılamama durumu: disk dolu, izin yok, yol geçersiz vb. durumlarda `open()` `null` döner. `FileAccess.get_open_error()` son hatanın kodunu verir. `print()` ile konsola hata mesajı yazdırıp fonksiyondan çıkıyoruz — oyun çökmez, sadece kayıt atlanır.
+
+```gdscript
+	file.store_string(JSON.stringify(save_data, "\t"))
+```
+İki iş bir satırda yapılıyor:
+1. `JSON.stringify(save_data, "\t")` → Dictionary'yi JSON string'ine çevirir. İkinci parametre `"\t"` **girintileme** (indentation) karakteridir — bu sayede dosya güzel biçimlendirilmiş (pretty-printed) olur. Bu parametre olmadan her şey tek satırda yazılırdı.
+2. `file.store_string(...)` → Oluşan JSON string'ini dosyaya yazar.
+
+```gdscript
+	file.close()
+```
+Dosyayı kapatır. Bu adım **zorunludur** — `close()` çağrılmadan veri tamamen diske yazılmayabilir (işletim sistemi arabelleğe alabilir). Ayrıca dosya kapanmazsa diğer işlemler bu dosyaya erişemez.
 
 **Oluşan JSON dosyası şöyle görünür:**
 
@@ -139,14 +184,63 @@ func _load_game() -> void:
 	target_score = BASE_TARGET + (level - 1) * TARGET_INCREMENT
 ```
 
-**Adım adım açıklama:**
+**Satır satır açıklama:**
 
-1. **`FileAccess.file_exists()`:** Kayıt dosyası var mı kontrol eder. İlk açılışta dosya olmaz → fonksiyon çıkar, varsayılan değerler kullanılır
-2. **`FileAccess.READ`:** Dosyayı okuma modunda açar
-3. **`get_as_text()`:** Tüm dosya içeriğini string olarak okur
-4. **`JSON.new()` + `parse()`:** JSON string'ini parse eder. Hata varsa mesaj yazdırıp çıkar
-5. **`data.get("key", default)`:** Sözlükten değer alır. Anahtar yoksa varsayılan değer döner — bu ileriye uyumluluk sağlar (eski kayıtlarda yeni alan yoksa patlamaması için)
-6. **`target_score` hesaplama:** Seviyeye göre hedefi yeniden hesaplıyoruz
+```gdscript
+func _load_game() -> void:
+```
+Daha önce kaydedilmiş veriyi diskten okuyup oyun değişkenlerine yükleyen fonksiyon.
+
+```gdscript
+	if not FileAccess.file_exists(SAVE_PATH):
+		return  # İlk açılış, kayıt yok
+```
+`FileAccess.file_exists()` statik bir metot — dosya var mı diye kontrol eder. Oyun ilk kez çalışıyorsa kayıt dosyası henüz yoktur → `return` ile fonksiyondan çıkıyoruz. Bu durumda tüm değişkenler varsayılan değerlerinde kalır (`level = 1`, `total_score = 0`, `high_score = 0`).
+
+```gdscript
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return
+```
+Dosyayı **okuma** modunda (`READ`) açıyoruz. Yazma modundan farklı olarak, dosya üzerinde değişiklik yapamayız — sadece içeriğini okuyabiliriz. `null` kontrolü: dosya varsa bile bozuksa veya erişim izni yoksa `null` dönebilir.
+
+```gdscript
+	var json_text: String = file.get_as_text()
+	file.close()
+```
+`get_as_text()` → Dosyanın **tüm** içeriğini tek bir string olarak okur. Bizim dosyamız küçük olduğu için (birkaç satır JSON) bu sorun değil, ama büyük dosyalar için satır satır okumak daha iyi olurdu. `close()` ile dosyayı hemen kapatıyoruz — artık ihtiyacımız yok.
+
+```gdscript
+	var json := JSON.new()
+	var error := json.parse(json_text)
+```
+JSON parse işlemi iki adımda yapılıyor:
+1. `JSON.new()` → Yeni bir JSON parser nesnesi oluşturuyoruz. `_save_game`'deki `JSON.stringify()` statik bir metottu ama `parse()` bir **nesne metodu** — bu yüzden önce `new()` ile nesne oluşturmamız gerekiyor.
+2. `json.parse(json_text)` → JSON string'ini parse eder ve sonucu `json.data` içinde saklar. Hata kodu döner: `OK` (başarılı) veya bir hata enum'u.
+
+```gdscript
+	if error != OK:
+		print("JSON parse hatası: ", json.get_error_message())
+		return
+```
+Parse başarısız olduysa (dosya bozulmuş, geçersiz JSON formatı vb.) hata mesajı yazdırıp çıkıyoruz. `OK` Godot'un built-in enum değeridir (sayısal olarak 0). `get_error_message()` hatanın detaylı açıklamasını döner.
+
+```gdscript
+	var data: Dictionary = json.data
+```
+Parse başarılıysa, `json.data` bize bir Variant (Godot'un genel tip) döner. Biz bunun Dictionary olduğunu biliyoruz (çünkü biz yazdık), `Dictionary` tipine atıyoruz.
+
+```gdscript
+	level = data.get("level", 1)
+	total_score = data.get("total_score", 0)
+	high_score = data.get("high_score", 0)
+```
+`data.get(anahtar, varsayılan)` → Dictionary'den değer alır. **İkinci parametre kritik:** Eğer anahtar bulunamazsa varsayılan değer döner. Bu, **ileriye uyumluluk** sağlar — ileride yeni bir alan eklersek (mesela `"achievements"`), eski kayıt dosyalarında bu alan olmaz ama oyun patlamaz, varsayılan değer kullanılır. Doğrudan `data["level"]` yazsaydık, anahtar yoksa hata alırdık.
+
+```gdscript
+	target_score = BASE_TARGET + (level - 1) * TARGET_INCREMENT
+```
+Hedef skoru yüklenen seviyeye göre yeniden hesaplıyoruz. Bu değeri kayıt dosyasında saklamıyoruz çünkü formülden türetilebilir — gereksiz veri kaydetmek yerine hesaplıyoruz. Bu, **veri normalizasyonu** ilkesidir.
 
 ---
 
@@ -180,6 +274,28 @@ func _start_next_level() -> void:
 	is_animating = false
 ```
 
+**Satır satır açıklama:**
+
+```gdscript
+	total_score += score
+```
+Tamamlanan seviyenin skorunu toplam skora ekliyoruz. `+=` operatörü: `total_score = total_score + score` ile aynı. Bu satır **`score = 0`'dan önce** olmalı — aksi halde sıfır eklemiş oluruz.
+
+```gdscript
+	if score > high_score:
+		high_score = score
+```
+Bu seviyedeki skor rekordan yüksekse güncelliyoruz. Basit bir "en büyüğü bul" mantığı.
+
+```gdscript
+	_save_game()
+```
+Güncellenmiş `level`, `total_score` ve `high_score` değerlerini diske kaydediyoruz. Bu, `_init_grid()`'den **önce** yapılmalı — grid oluşturma sırasında bir hata olursa bile ilerleme korunur.
+
+Diğer satırlar Bölüm 8'deki ile aynı: seviyeyi artır, skoru sıfırla, tahtayı yenile.
+
+---
+
 **`_restart_game()` fonksiyonunu** güncelleyin:
 
 ```gdscript
@@ -200,7 +316,17 @@ func _restart_game() -> void:
 	is_animating = false
 ```
 
-**Dikkat:** `_restart_game()` artık seviyeyi 1'e sıfırlamıyor — oyuncu kaldığı seviyeden devam ediyor. Game over olunca aynı seviyeyi tekrar deniyor.
+**Satır satır açıklama:**
+
+Bölüm 8'deki `_restart_game()`'ten iki kritik fark var:
+
+1. **`total_score += score` ve high score kontrolü:** Game over olsa bile oyuncunun kazandığı puanlar korunuyor. Adil bir yaklaşım — 15 hamle oynadıysa o puanlar kaybolmasın.
+
+2. **`level = 1` satırı YOK!** Bölüm 8'de `_restart_game()` seviyeyi 1'e sıfırlıyordu. Artık oyuncu **kaldığı seviyeden** tekrar deniyor. Game over → "Tekrar Oyna" → aynı seviyeyi yeni bir tahtayla tekrar başlatır. Bu, oyuncunun ilerlemesini korur.
+
+3. **`_save_game()`:** Skor ve ilerleme kaydediliyor — böylece oyuncu "Tekrar Oyna" yerine "Çıkış"ı seçse bile, sonraki açılışta kaldığı yerden devam eder.
+
+---
 
 **`_quit_game()` fonksiyonunu** güncelleyin:
 
@@ -212,6 +338,21 @@ func _quit_game() -> void:
 	_save_game()
 	get_tree().quit()
 ```
+
+**Satır satır açıklama:**
+
+```gdscript
+	total_score += score
+	if score > high_score:
+		high_score = score
+	_save_game()
+```
+Çıkmadan önce son durumu kaydediyoruz. Aynı `total_score += score` ve high score kontrolü burada da var. Üç fonksiyonda da (`_start_next_level`, `_restart_game`, `_quit_game`) bu üç satır tekrarlanıyor — her çıkış noktasında veri kaybını önlemek için.
+
+```gdscript
+	get_tree().quit()
+```
+Kayıt tamamlandıktan sonra oyunu kapatıyoruz. Sıralama önemli: önce kaydet, sonra kapat.
 
 ---
 
@@ -228,7 +369,25 @@ func _ready() -> void:
 	_setup_ui()
 ```
 
-`_load_game()` çağrıldıktan sonra `level` ve `target_score` doğru değerlere sahip olur. Ardından `_init_grid()` bu seviye için yeni bir tahta oluşturur.
+**Satır satır açıklama:**
+
+```gdscript
+func _ready() -> void:
+	_load_textures()
+	_load_game()       # ← YENİ
+	_init_grid()
+	_draw_candies()
+	_setup_ui()
+```
+
+Çağrı sırası çok önemli:
+1. `_load_textures()` → Görselleri yükle (her zaman gerekli)
+2. **`_load_game()`** → Kaydedilmiş `level`, `total_score`, `high_score` değerlerini oku. Bu, `_init_grid()`'den **önce** yapılmalı — çünkü grid oluşturma henüz seviyeye bağlı olmasa da, `target_score` doğru hesaplanmalı
+3. `_init_grid()` → Yeni tahta oluştur (kayıttan seviye yüklendikten sonra)
+4. `_draw_candies()` → Tahtayı çiz
+5. `_setup_ui()` → UI'ı hazırla ve `_update_ui()` ile `total_score`/`high_score` dahil tüm değerleri göster
+
+Eğer `_load_game()` ilk açılışta dosya bulamazsa, tüm değişkenler varsayılan değerlerinde kalır — oyun normal başlar.
 
 ---
 
@@ -266,6 +425,31 @@ Game (Node2D)
 	high_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
 ```
 
+**Satır satır açıklama:**
+
+```gdscript
+	var total_label: Label = $TotalScoreLabel
+	total_label.position = Vector2(20, 750)
+	total_label.size = Vector2(260, 30)
+	total_label.add_theme_font_size_override("font_size", 18)
+	total_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+```
+- `$TotalScoreLabel` → Sahne ağacındaki yeni Label node'una erişiyoruz.
+- `position = Vector2(20, 750)` → Grid'in altında, ekranın alt kısmına yerleştiriyoruz. Y=750 değeri grid alanının (225 + 8×64 = 737) hemen altıdır.
+- `size = Vector2(260, 30)` → Ekranın sol yarısını kaplıyor. Diğer label'lardan daha küçük (30px yükseklik) çünkü bu ikincil bilgi.
+- `font_size = 18` → Diğer label'lardan daha küçük font — ana skor (24px) ve seviye bilgisi (20px) daha önemli, toplam ve rekor ikincil bilgi.
+- `Color(0.7, 0.7, 0.7)` → Gri renk. RGB her kanalda 0.7 → açık gri. Beyaz ve sarıdan daha sönük — görsel hiyerarşi oluşturuyoruz: önemli bilgiler parlak, ikincil bilgiler sönük.
+
+```gdscript
+	var high_label: Label = $HighScoreLabel
+	high_label.position = Vector2(296, 750)
+	high_label.size = Vector2(260, 30)
+	high_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+```
+Rekor label'ı sağ tarafa hizalı (`HORIZONTAL_ALIGNMENT_RIGHT`). Position X=296 ve size X=260 ile tam sağ kenara yaslanıyor (`296 + 260 = 556`, neredeyse 576'lık viewport genişliği). Toplam sol, rekor sağ — Skor/Hamle ikilisiyle aynı düzen.
+
+---
+
 **`_update_ui()` fonksiyonuna** iki satır ekleyin:
 
 ```gdscript
@@ -277,6 +461,8 @@ func _update_ui() -> void:
 	$TotalScoreLabel.text = "Toplam: " + str(total_score)
 	$HighScoreLabel.text = "Rekor: " + str(high_score)
 ```
+
+Son iki satır yeni: `$TotalScoreLabel` ve `$HighScoreLabel`'ın metinlerini güncelliyoruz. `str()` ile sayıları stringe çevirip label'a atıyoruz. `_update_ui()` her skor değişikliğinde çağrıldığı için toplam ve rekor da otomatik güncellenir.
 
 **Ekran düzeni:**
 
