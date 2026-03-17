@@ -600,4 +600,12 @@ func _reverse_swap() -> void:
 - Yerçekimi yok — üstteki şekerler düşmüyor
 - Puan sistemi yok
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='utWR92CRWJ0' %}
+
+---
+
 > **Sonraki bölümde:** Yerçekimi sistemi ekleyeceğiz. Eşleşme sonrası şekerler düşecek, boşluklar yeni şekerlerle dolacak ve zincir reaksiyonlar kontrol edilecek.
