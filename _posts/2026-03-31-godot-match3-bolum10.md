@@ -13,7 +13,7 @@ Oyunumuzu şu ana kadar test ettiyseniz fark etmişsinizdir: şekerler eşleşti
 
 **Ne yapacağız?** Her şeker patladığında o şekerin bulunduğu pozisyonda bir patlama animasyonu oynatacağız. Üstelik **tüm patlamalar bitmeden yerçekimi başlamayacak** — yani oyuncu önce patlamaları izleyecek, sonra şekerler aşağı düşecek.
 
-Bunun için projemizde zaten bulunan `explotion.png` dosyasını kullanacağız. Bu dosya tek bir görselmiş gibi görünse de aslında içinde 8 farklı animasyon karesi barındıran bir **spritesheet**'tir.
+Bunun için projemizde zaten bulunan `explosion.png` dosyasını kullanacağız. Bu dosya tek bir görselmiş gibi görünse de aslında içinde 8 farklı animasyon karesi barındıran bir **spritesheet**'tir.
 
 **Bu bölümde öğrenecekleriniz:**
 
@@ -114,7 +114,7 @@ var active_explosions := 0
 
 Her birinin ne işe yaradığını açıklayalım:
 
-- **`explosion_spritesheet`** — `explotion.png` dosyasının bellekteki hali. Tip olarak `Texture2D` kullanıyoruz çünkü Godot'ta tüm 2D görseller bu sınıftan türer. Bu değişkeni doğrudan ekrana çizmeyeceğiz — bundan kare kare parçalar keseceğiz.
+- **`explosion_spritesheet`** — `explosion.png` dosyasının bellekteki hali. Tip olarak `Texture2D` kullanıyoruz çünkü Godot'ta tüm 2D görseller bu sınıftan türer. Bu değişkeni doğrudan ekrana çizmeyeceğiz — bundan kare kare parçalar keseceğiz.
 
 - **`explosion_frames`** — `SpriteFrames` tipinde bir kaynak. Bu, Godot'un animasyon sistemi için hazırlanmış bir veri yapısıdır. İçinde "explode" adında bir animasyon olacak ve bu animasyon 8 kareden oluşacak. `AnimatedSprite2D` node'u bu kaynağı kullanarak animasyonu oynatacak.
 
@@ -131,11 +131,11 @@ Patlama görselini oyun başladığında belleğe yüklememiz gerekiyor. Daha so
 **`_load_textures()` fonksiyonunun sonuna** şu iki satırı ekleyin:
 
 ```gdscript
-	explosion_spritesheet = load("res://assets/images/explotion.png")
+	explosion_spritesheet = load("res://assets/images/explosion.png")
 	explosion_frames = _create_explosion_frames()
 ```
 
-İlk satır `explotion.png` dosyasını diskten okuyup `Texture2D` olarak belleğe yükler. `load()` fonksiyonu Godot'un kaynak yükleme sistemidir — dosya yolunu verirsiniz, o da uygun tipte bir kaynak döner.
+İlk satır `explosion.png` dosyasını diskten okuyup `Texture2D` olarak belleğe yükler. `load()` fonksiyonu Godot'un kaynak yükleme sistemidir — dosya yolunu verirsiniz, o da uygun tipte bir kaynak döner.
 
 İkinci satır birazdan yazacağımız `_create_explosion_frames()` fonksiyonunu çağırır. Bu fonksiyon spritesheet'i 8 kareye bölüp bir `SpriteFrames` kaynağı oluşturur. Fonksiyonun dönüş değerini `explosion_frames` değişkeninde saklıyoruz çünkü her patlama animasyonu için aynı `SpriteFrames` kaynağını yeniden kullanacağız — her seferinde yeniden oluşturmak gereksiz olurdu.
 
@@ -457,7 +457,7 @@ func _load_textures() -> void:
 	for bonus_name in BONUS_TYPES:
 		var path: String = "res://assets/images/" + bonus_name + ".png"
 		candy_textures[bonus_name] = load(path)
-	explosion_spritesheet = load("res://assets/images/explotion.png")
+	explosion_spritesheet = load("res://assets/images/explosion.png")
 	explosion_frames = _create_explosion_frames()
 
 func _create_explosion_frames() -> SpriteFrames:
