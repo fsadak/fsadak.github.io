@@ -1096,4 +1096,12 @@ func _check_chain_matches() -> void:
 
 **İpucu:** 4'lü eşleşme oluşturmak zor olabilir. Tahtayı inceleyin, 2 aynı renk yan yana olan yere 3. birini kaydırarak 4'lü dizin.
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='0VjY-s4b0fU' %}
+
+---
+
 > **Sonraki bölümde:** Puan sistemi, hamle sayacı, seviye hedefi ve game over mantığını ekleyeceğiz.
