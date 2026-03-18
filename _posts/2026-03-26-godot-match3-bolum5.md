@@ -863,4 +863,12 @@ func _check_chain_matches() -> void:
 - Zincir reaksiyon sırasında tıklama engellenmeli
 - Yeni gelen şekerler grid dışından (üstten) animasyonla inmeli
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='trRGmreerAA' %}
+
+---
+
 > **Sonraki bölümde:** Bonus şeker üretimi ekleyeceğiz — 4'lü eşleşme arrow, düz 5'li eşleşme rainbow, diğer 5'li eşleşmeler bomb verecek.
