@@ -193,7 +193,6 @@ Harika bir iş çıkardınız! Bu uzun ve teknik bölümde;
 * `Path2D` ve `PathFollow2D` ile oyun ekranını çevreleyen dinamik bir oluşturucu (spawner) hattı çektiniz.
 * Matematiksel fonksiyonlar (`randf`, `PI`, vektör rotasyonları) kullanarak düşmanların rastgele hız ve açılarda oyun alanına girmesini sağladınız.
 * Oyuncunun `hit` sinyalini alarak oyunu durdurma mantığını kurdunuz.
-
 ---
 
 ## Konuyla ilgili Youtube videosu aşağıdadır...
