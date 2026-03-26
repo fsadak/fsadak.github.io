@@ -21,11 +21,11 @@ tagline: Siber Atölye dijital üretim laboratuvarı. Oyun geliştirme (Godot), 
 avatar: /assets/images/avatar.png
 
 description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
+  Godot Engine, Home Assistant, ESP32 ve yazılım mimarileri hakkında Türkçe teknik eğitimler ve projeler. Oyun geliştirme ve IoT konularında adım adım rehberler.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: "https://goldenware.tr"
+url: "https://www.goldenware.tr"
 
 github:
   username: fsadak # change to your GitHub username
