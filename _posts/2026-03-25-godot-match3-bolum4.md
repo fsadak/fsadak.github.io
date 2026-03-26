@@ -3,6 +3,7 @@ title: "Godot Engine Oyun Mekanikleri - Bölüm 4: Candy Blast — Eşleşme Bul
 date: 2026-03-25 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
+description: "Godot Match-3'te eşleşme bulma algoritması: yatay ve dikey tarama, 3'lü gruplama ve eşleşen hücreleri silme. GDScript rehberi."
 permalink: /godot-oyun-mekanikleri-bolum-4/
 published: true
 ---

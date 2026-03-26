@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 2: Node'lar ve Sahneler: İlk Sahn
 date: 2026-03-13 12:05:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, hud, canvaslayer, ui, ses]
+description: "Godot Engine'de Node ve Sahne kavramlarını pekiştir, ilk Godot sahnenizi adım adım oluşturun. Türkçe Godot başlangıç rehberi."
 permalink: /godot-egitim-serisi-bolum-2/
 published: true
 ---

@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 3: Sahne Örneklemesi (Instancing)
 date: 2026-03-14 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, 3d, character_controller, pivot, inputmap]
+description: "Godot'da Sahne Örneklemesi (Instancing) nedir? PackedScene şablonlarından instance üretmeyi ve sahneler arası hiyerarşiyi Türkçe olarak öğrenin."
 permalink: /godot-egitim-serisi-bolum-3/
 published: true
 ---

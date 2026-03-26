@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 8: Skor, Yeniden Oynama ve Kullan�
 date: 2026-03-19 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, dodge-the-creeps, hud, ui, ses]
+description: "Godot 2D oyununda skor, HUD ve yeniden oynama: CanvasLayer, Label, Timer ve grup sistemi ile game over mekaniği. Türkçe rehber."
 permalink: /godot-egitim-serisi-bolum-8/
 published: true
 ---

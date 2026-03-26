@@ -3,6 +3,7 @@ title: "Godot Engine Oyun Mekanikleri - Bölüm 2: Candy Blast — Grid Veri Yap
 date: 2026-03-23 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
+description: "Godot Match-3 oyununda 8x8 grid veri yapısı ve şekerlerin rastgele yerleştirilmesi. GDScript dizi ve Sprite2D kullanımı. Türkçe eğitim."
 permalink: /godot-oyun-mekanikleri-bolum-2/
 published: true
 ---

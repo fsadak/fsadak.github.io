@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 7: Düşman Yapay Zekası ve Spawn
 date: 2026-03-18 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, dodge-the-creeps, mob, spawner, yapay-zeka]
+description: "Godot'da düşman yapay zekası ve Spawner: Path2D, PathFollow2D ile rastgele konumda düşman üretme. Türkçe oyun geliştirme rehberi."
 permalink: /godot-egitim-serisi-bolum-7/
 published: true
 ---

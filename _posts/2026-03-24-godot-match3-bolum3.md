@@ -3,6 +3,7 @@ title: "Godot Engine Oyun Mekanikleri - Bölüm 3: Candy Blast — Şeker Seçme
 date: 2026-03-24 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
+description: "Godot Match-3 oyununda şeker seçme, takas (swap) ve Tween animasyonu. Mouse input ve komsu hücre kontrolü GDScript ile. Türkçe."
 permalink: /godot-oyun-mekanikleri-bolum-3/
 published: true
 ---

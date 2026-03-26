@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 1: Godot'a Giriş — Motor, Kavra
 date: 2026-03-12 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, engine, giriş, başlangıç, oyun motoru, gdscript, node, scene, signals, editör]
+description: "Godot Engine nedir? Türkçe eğitim serimizde Node, Scene, Signal kavramları, editör arayüzü ve GDScript dili adım adım açıklanıyor. Yeni başlayanlar için ideal giriş rehberi."
 permalink: /godot-egitim-serisi-bolum-1/
 published: true
 ---

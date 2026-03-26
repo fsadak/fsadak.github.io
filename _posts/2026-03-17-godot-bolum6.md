@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 6: 2D Oyun Projesine Hazırlık ve
 date: 2026-03-17 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 2d, dodge-the-creeps, player]
+description: "Godot ile 2D oyun geliştirme: ekran ayarları, AnimatedSprite2D, CollisionShape2D ve 8 yönlü hareket kodu. Türkçe eğitim."
 permalink: /godot-egitim-serisi-bolum-6/
 published: true
 ---

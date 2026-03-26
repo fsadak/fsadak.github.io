@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 9: 3D Dünyaya Geçiş ve Oyuncu K
 date: 2026-03-20 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, 3d, characterbody3d, fizik, squash-the-creeps]
+description: "Godot ile 3D oyun geliştirme: CharacterBody3D, kamera, yerçekimi ve 3D hareket kodu. Squash the Creeps serisi Türkçe eğitim."
 permalink: /godot-egitim-serisi-bolum-9/
 published: true
 ---

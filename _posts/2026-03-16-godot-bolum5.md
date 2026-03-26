@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 5: Node'lar Arası İletişim: Sin
 date: 2026-03-16 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, gdscript, kodlama, node, sinyaller, signals]
+description: "Godot'da Sinyal (Signal) sistemi: node'lar arası iletişim, connect(), emit() ve özel sinyal tanımlama. Türkçe adım adım rehber."
 permalink: /godot-egitim-serisi-bolum-5/
 published: true
 ---

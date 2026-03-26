@@ -3,6 +3,7 @@ title: "Godot Engine Oyun Mekanikleri - Bölüm 7: Candy Blast — Skor, Hamle S
 date: 2026-03-28 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
+description: "Godot Match-3 oyununda puan sistemi, hamle sayıcı ve seviye hedefi. Game over ve başarı koşulları GDScript ile. Türkçe rehber."
 permalink: /godot-oyun-mekanikleri-bolum-7/
 published: true
 ---

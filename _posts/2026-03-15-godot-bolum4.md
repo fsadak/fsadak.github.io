@@ -3,6 +3,7 @@ title: "Godot Engine Eğitim Serisi - Bölüm 4: GDScript ile Oyun Mantığını
 date: 2026-03-15 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, 2d, gdscript]
+description: "GDScript ile oyun mantığını yazmayı, _process() döngüsünü ve klavye girdi kontrolünü öğren. Godot Engine Türkçe eğitim Bölüm 4."
 permalink: /godot-egitim-serisi-bolum-4/
 published: true
 ---

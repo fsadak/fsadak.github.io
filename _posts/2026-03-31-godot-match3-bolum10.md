@@ -3,6 +3,7 @@ title: "Godot Engine Oyun Mekanikleri - Bölüm 10: Candy Blast — Patlama Efek
 date: 2026-03-31 12:00:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, gdscript, 2d, match-3, candy-blast, animasyon, spritesheet, efekt]
+description: "Godot'da spritesheet ile patlama efekti animasyonu: AnimatedSprite2D, kare hızı ve şekerlerin yok olma efekti. Türkçe eğitim."
 permalink: /godot-oyun-mekanikleri-bolum-10/
 published: true
 ---
