@@ -1183,4 +1183,12 @@ Ama önce! Sahneye Label node'larını eklemeyi unutmayın (7.1 adımı).
 | 20 hamle bittiğinde | "Oyun Bitti!" mesajı, 2 sn sonra oyun sıfırlanır |
 | Bonus aktivasyonu | Bonus türüne göre puan eklenir |
 
-> **Sonraki bölümde:** Patlama animasyonu (explotion.png sprite sheet) ve görsel efektler ekleyeceğiz.
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='KD4fgPyDSW0' %}
+
+---
+
+> **Sonraki bölümde:** Godot'da kayıt ve yükleme: JSON ile oyun verisi saklama, global skor takibi. FileAccess konularına değineceğiz.

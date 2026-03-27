@@ -1295,6 +1295,14 @@ Game (Node2D)
 | Game over → "Tekrar Oyna" | Aynı seviyeden tekrar başlar (1'e dönmez) |
 | Game over → "Çıkış" → tekrar aç | Seviye ve skorlar korunur |
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='WeEXMYOhd50' %}
+
+---
+
 **Kayıt dosyasını görmek isterseniz:**
 
 Windows'ta `%APPDATA%\Godot\app_userdata\CandyBlast\save_data.json` dosyasını açabilirsiniz (proje adınız `CandyBlast` ise).

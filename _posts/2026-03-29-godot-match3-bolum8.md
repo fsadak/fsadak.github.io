@@ -8,16 +8,12 @@ permalink: /godot-oyun-mekanikleri-bolum-8/
 published: true
 ---
 
-Önceki bölümde seviye tamamlandığında sadece kısa bir mesaj gösterip devam ediyorduk — tahta yenilenmiyordu ve oyuncu hiçbir seçenek göremiyordu. Ayrıca iki kritik sorun vardı:
-
-1. **Skor taşması:** Seviye geçişinde skor sıfırlanmıyordu, yeni seviyeye eski puanla başlıyorduk → 1-2 eşleşme ile hedef tutuyordu
-2. **Bonus zincirleme eksik:** Bir bomba patlayıp yanındaki oku yok ettiğinde, ok da aktive olmalıydı — ama olmuyordu
+Önceki bölümde seviye tamamlandığında sadece kısa bir mesaj gösterip devam ediyorduk. Herhangi bir kullanıcı etkileşimi vs yoktu.
 
 **Bu bölümde yapılacaklar:**
 
 - Seviye tamamlanınca → kutlama ekranı (skor bilgisi + "Sonraki Seviye" / "Çıkış" butonları)
 - Game over olunca → bitiş ekranı (skor bilgisi + "Tekrar Oyna" / "Çıkış" butonları)
-- Sonraki seviyeye geçerken tahtayı tamamen yenileme + **skoru sıfırlama**
 - Yarı saydam karartma efekti (overlay)
 - **Bonus zincirleme:** Silinen hücre bonus içeriyorsa otomatik aktive olması
 
@@ -25,7 +21,7 @@ published: true
 
 ## 8.1 — Tasarım Yaklaşımı
 
-Modal ekranımız şu katmanlardan oluşacak:
+Modal (Açılır Pencere) ekranımız şu katmanlardan oluşacak:
 
 ```
 ┌────────────────────────────┐
@@ -1313,5 +1309,13 @@ func _quit_game() -> void:
 | Skor seviyeler arası taşınıyordu | `_start_next_level()` içinde `score = 0` eklendi |
 | Bonuslar birbirini tetiklemiyordu | `_clear_cell()` artık bonus hücreleri otomatik aktive ediyor |
 | Sonsuz döngü riski | Hücre önce boşaltılıp sonra aktive ediliyor |
+
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='5VCHB294oD4' %}
+
+---
 
 > **Sonraki bölümde:** Kalıcı hafıza (save/load), global puan ve kaldığı yerden devam etme sistemi ekleyeceğiz.

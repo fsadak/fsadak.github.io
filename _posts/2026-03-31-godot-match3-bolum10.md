@@ -1231,6 +1231,14 @@ func _load_game() -> void:
 
 ---
 
+---
+
+## Konuyla ilgili Youtube videosu aşağıdadır...
+
+{% include embed/youtube.html id='FaEXfjo4BjA' %}
+
+---
+
 ## 10.10 — Test
 
 1. **Ctrl+S** ile kaydedin
