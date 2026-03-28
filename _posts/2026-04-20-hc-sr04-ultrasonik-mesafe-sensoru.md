@@ -3,7 +3,6 @@ title: "HC-SR04 Ultrasonik Mesafe Sensörü: Basitten Profesyonele Tam Rehber"
 date: 2026-03-28 03:00:00 +0300
 categories: [Donanım, Sensörler]
 description: "HC-SR04 ultrasonik sensörü teknik bilgi, devre güvenliği, verimli ve etkili kullanma rehberi"
-permalink: /godot-oyun-mekanikleri-bolum-10/
 tags: [hc-sr04, esp32, arduino, ultrasonik, interrupt, mesafe-sensoru, pulseIn, millis]
 ---
 
