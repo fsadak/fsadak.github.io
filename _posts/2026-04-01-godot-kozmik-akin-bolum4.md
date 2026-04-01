@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 4: Mermiyi Doğru Noktadan Atalım"
 date: 2026-04-01 09:15:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, marker2d, ateş noktası, fire rate, await, create_timer, onready, ateş hızı]
 description: "Marker2D ile mermiyi geminin ucundan çıkarıyoruz. await ve create_timer kullanarak ateş hızını sınırlıyoruz. Basılı tutarak sürekli ateş sistemi kuruluyor."
 permalink: /godot-kozmik-akin-bolum-4/

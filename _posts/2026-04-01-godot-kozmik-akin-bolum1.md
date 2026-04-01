@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 1: Projeyi Kuralım"
 date: 2026-04-01 09:15:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Geliştirme]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
 tags: [godot, proje kurulumu, godot 4, klasör yapısı, sahne, viewport, renderer, başlangıç]
 description: "Godot Engine ile Kozmik Akın uzay nişancı oyununu sıfırdan yapıyoruz. İlk bölümde proje kurulumu, ekran boyutu ayarları ve ilk sahne oluşturma adım adım anlatılıyor."
 permalink: /godot-kozmik-akin-bolum-1/
