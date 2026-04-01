@@ -18,7 +18,7 @@ Bu bölümde oyunumuzun en önemli parçasını oluşturacağız: oyuncunun kont
 
 Bu seride kullandığımız tüm görseller **Kenney.nl** sitesinden alınmıştır ve ücretsiz, lisanssız kullanıma açıktır. Seriyle birlikte hazırladığımız asset paketini aşağıdaki bağlantıdan indirebilirsiniz:
 
-📦 **[kozmik_akin assets.zip](http://goldenware.tr/blog/kozmikakin/assets.zip)**
+📦 **[kozmik_akin assets.zip](https://goldenware.tr/blog/kozmikakin/assets.zip)**
 
 Zip dosyasını açın ve içindeki `sprites/` klasöründeki dosyaları Godot projenizin `res://assets/sprites/` klasörüne kopyalayın.
 
