@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Bölüm 6: Candy Blast — Bonuslar. Üretim ve Aktivasyon"
 date: 2026-03-27 12:00:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Candy Blast]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
 description: "Godot Match-3'te bonus şeker üretimi: 4'lü arrow, 5'li rainbow, L/T şekli bomb. Bonus aktivasyon mekaniği GDScript ile. Türkçe."
 permalink: /godot-oyun-mekanikleri-bolum-6/

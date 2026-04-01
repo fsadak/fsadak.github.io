@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 8: Ses Efektleri Ekleyelim"
 date: 2026-04-01 09:15:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Kozmik Akın]
 tags: [godot, audiostreamplayer, ses efekti, lazer, patlama, finished sinyali, set_deferred, ogg]
 description: "AudioStreamPlayer node'u ile ateş, patlama ve hasar sesleri ekleniyor. finished sinyali ile ses tamamlanana kadar düşman sahnede tutuluyor."
 permalink: /godot-kozmik-akin-bolum-8/

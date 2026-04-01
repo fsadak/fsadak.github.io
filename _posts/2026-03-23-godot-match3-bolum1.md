@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Bölüm 1: Candy Blast — Proje Kurulumu ve Sahne Yapısı"
 date: 2026-03-23 12:00:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Candy Blast]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
 description: "Godot ile Match-3 oyunu yapımı: Candy Blast projesinde proje ayarları, ana sahne ve grid arka planı kurulumu. Türkçe adım adım rehber."
 permalink: /godot-oyun-mekanikleri-bolum-1/

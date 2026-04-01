@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Bölüm 8: Candy Blast — Seviye Geçiş Ekranı, Bonus Zincirleme ve Düzeltmeler"
 date: 2026-03-29 12:00:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Candy Blast]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
 description: "Godot Match-3'te seviye geçiş ekranı, bonus zincir düzenlemesi ve bug düzeltmeleri. Sahne geçişi ve UI animasyonu. Türkçe rehber."
 permalink: /godot-oyun-mekanikleri-bolum-8/

@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 9: Oyun Arayüzünü Yapalım"
 date: 2026-04-01 09:15:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Kozmik Akın]
 tags: [godot, canvaslayer, hud, label, ui, skor göstergesi, can göstergesi, sinyal, arayüz]
 description: "CanvasLayer ve Label node'ları ile oyun içi arayüz yapıyoruz. GameManager sinyalleri HUD'a bağlanarak skor ve can bilgisi ekranda güncelleniyor."
 permalink: /godot-kozmik-akin-bolum-9/

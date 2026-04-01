@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 5: Düşmanları Üretelim"
 date: 2026-04-01 09:15:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Kozmik Akın]
 tags: [godot, timer, spawn, düşman, area2d, randf_range, sinyal, timeout, otomatik üretim]
 description: "Timer node'u ile belirli aralıklarla rastgele konumda düşman üretiyoruz. Godot sinyal sistemi ilk kez kullanılıyor: timeout sinyali ile spawn fonksiyonu bağlanıyor."
 permalink: /godot-kozmik-akin-bolum-5/

@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Bölüm 5: Candy Blast — Yerçekimi, Doldurma ve Zincir Reaksiyon"
 date: 2026-03-26 12:00:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Candy Blast]
 tags: [godot, gdscript, 2d, match-3, candy-blast, proje-kurulumu]
 description: "Godot Match-3 oyununda yerçekimi, boş hücre doldurma ve zincir reaksiyon mekaniği. Düşerek dolan şekerlerin Tween animasyonu."
 permalink: /godot-oyun-mekanikleri-bolum-5/

@@ -1,7 +1,7 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Bölüm 9: Candy Blast — Kalıcı Hafıza: Kayıt, Yükleme ve Global Skor"
 date: 2026-03-30 12:00:00 +0300
-categories: [Godot Eğitim Serisi, Oyun Mekanikleri]
+categories: [Godot Eğitim Serisi, Oyun Mekanikleri - Candy Blast]
 tags: [godot, gdscript, 2d, match-3, candy-blast, save-load, json, kalıcı-hafıza]
 description: "Godot'da kayıt ve yükleme: JSON ile oyun verisi saklama, global skor takibi. FileAccess ve Autoload kullanımı. Türkçe rehber."
 permalink: /godot-oyun-mekanikleri-bolum-9/
