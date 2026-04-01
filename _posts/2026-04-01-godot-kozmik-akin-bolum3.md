@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 3: Sınırları Belirleyelim ve Mermi Atalım"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, ekran sınırı, clamp, area2d, mermi, instantiate, queue_free, sahne instancing]
 description: "Geminin ekran dışına çıkmasını önlüyoruz ve Area2D kullanarak mermi atma sistemini kuruyoruz. Sahne instancing ve queue_free kavramları anlatılıyor."

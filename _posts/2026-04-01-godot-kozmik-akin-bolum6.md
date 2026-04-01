@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 6: Çarpışmaları Yönetelim"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, collision layer, collision mask, area_entered, çarpışma, sinyal, mermi, düşman]
 description: "Godot'un collision layer ve mask sistemi ile mermi-düşman çarpışmasını kuruyoruz. area_entered sinyali ile ikisi de sahneden siliniyor."

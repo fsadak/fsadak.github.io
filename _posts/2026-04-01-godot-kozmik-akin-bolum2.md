@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 2: Uzay Gemisini Hareket Ettirelim"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, characterbody2d, sprite2d, collisionshape2d, gdscript, hareket, input, move_and_slide]
 description: "Godot 4 ile oyuncu gemisini oluşturuyoruz. CharacterBody2D, Sprite2D ve GDScript kullanarak klavye kontrolü adım adım anlatılıyor."

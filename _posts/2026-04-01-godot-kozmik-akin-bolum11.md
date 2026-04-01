@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 11: Game Over"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, game over, control, sinyal, sahne geçişi, skor gösterimi, tekrar oyna, ana menü]
 description: "Can sıfırlandığında Game Over ekranı açılıyor. game_over sinyali oyun sahnesinden dinleniyor, skor gösteriliyor ve Tekrar Oyna / Ana Menü butonları bağlanıyor."

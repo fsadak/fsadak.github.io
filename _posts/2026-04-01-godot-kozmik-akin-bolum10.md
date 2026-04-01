@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 10: Ana Menü ve Sahne Geçişi"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, ana menü, control, button, pressed sinyali, change_scene_to_file, sahne geçişi, ui]
 description: "Control node'u ile ana menü sahnesi oluşturuluyor. pressed sinyali ile butona tıklama dinleniyor ve change_scene_to_file ile sahneler arası geçiş öğreniliyor."

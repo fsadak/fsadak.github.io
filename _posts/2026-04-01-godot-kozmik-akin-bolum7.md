@@ -1,6 +1,6 @@
 ---
 title: "Godot Engine Oyun Mekanikleri - Kozmik Akın Bölüm 7: Can ve Skor Sistemi"
-date: 2026-04-01 12:00:00 +0300
+date: 2026-04-01 09:15:00 +0300
 categories: [Godot Eğitim Serisi, Oyun Geliştirme]
 tags: [godot, autoload, singleton, skor, can, sinyal, game_manager, hitbox, print debugging]
 description: "Autoload ile GameManager singleton oluşturuyoruz. Skor ve can sistemi kuruluyor, özel sinyaller tanımlanıyor ve düşman çarpışması Player'a bağlanıyor."
